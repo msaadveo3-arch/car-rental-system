@@ -19,14 +19,14 @@ const AddCustomer: React.FC = () => {
       <div className="p-6">
         <div className="mx-auto space-y-6">
           <div className="flex items-center gap-4">
-            <Link to="/customers" className="p-2 hover:bg-gray-200 rounded-lg text-gray-600">
+            <Link to="/customers" className="p-2 hover:bg-apple-dark-700/50 rounded-apple text-apple-dark-300">
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <UserPlus className="text-blue-600" size={24} /> Add New Customer
+              <h1 className="text-2xl font-bold text-apple-dark-50 flex items-center gap-2">
+                <UserPlus className="text-apple-accent-blue" size={24} /> Add New Customer
               </h1>
-              <p className="text-gray-500 text-sm mt-1">Create a new customer record</p>
+              <p className="text-apple-dark-400 text-sm mt-1">Create a new customer record</p>
             </div>
           </div>
 

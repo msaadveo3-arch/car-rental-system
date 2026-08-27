@@ -6,7 +6,6 @@ node_modules/
 dist/
 build/
 .next/
-.nuxt/
 out/
 
 # Environment variables
@@ -14,7 +13,7 @@ out/
 .env.local
 .env.*
 
-# IDE files
+# IDE specific
 .vscode/
 .idea/
 *.swp
@@ -25,14 +24,8 @@ out/
 
 # Temporary files
 *.tmp
-*.temp
 
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Python specific
+# Python specific (if applicable)
 __pycache__/
 *.pyc
 *.pyo
@@ -41,24 +34,71 @@ __pycache__/
 env/
 venv/
 .venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.mypy_cache/
 
-# Node.js specific
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-node_modules/
-jspm_packages/
+# Coverage reports
+coverage/
+htmlcov/
+
+# Local configuration
+*.local
+.settings/
 
 # OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+
+# Compiled assets
+*.min.js
+*.min.css
+*.bundle.js
+*.bundle.css
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Package manager caches
+.yarn-cache/
+.npm/
+.bower-cache/
+
+# Testing
+.nyc_output/
+coverage/
+
+# Runtime data
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compression
+*.zip
+*.tar.gz
+*.tar
+*.gz
+*.7z
+*.rar
+*.bz2
+*.xz
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+
+# Images (not ignored as they might be part of the project)
+# *.png
+# *.jpg
+# *.jpeg
+# *.bmp
+# *.gif
+# *.webm
 ```
