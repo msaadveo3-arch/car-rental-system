@@ -1,0 +1,15 @@
+import React from 'react';
+import DashboardLayout from '../components/layout/DashboardLayout';
+
+const Inspections: React.FC = () => {
+  return (
+    <DashboardLayout>
+      <h2 className="text-xl font-semibold">3D Inspections</h2>
+      <div className="mt-4 h-[600px]">
+        <iframe src="/inspections-3d/index.html" title="3D Inspections" className="w-full h-full border" />
+      </div>
+    </DashboardLayout>
+  );
+};
+
+export default Inspections;
