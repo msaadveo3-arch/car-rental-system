@@ -10,15 +10,29 @@ type ModalProps = {
 const Modal: React.FC<ModalProps> = ({ open, title, onClose, children }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-4 w-full max-w-2xl">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="text-gray-600">Close</button>
-        </div>
+    <dialog className={`modal ${open ? 'modal-open' : ''}`}>
+      <div className="modal-box">
+        {(title || onClose) && (
+          <form method="dialog" className="flex justify-between items-center mb-4">
+            {title && <h3 className="font-bold text-lg">{title}</h3>}
+            {onClose && (
+              <button onClick={onClose} className="btn btn-sm btn-circle btn-ghost">✕</button>
+            )}
+          </form>
+        )}
         <div>{children}</div>
+        <div className="modal-action">
+          {onClose && (
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          )}
+        </div>
       </div>
-    </div>
+      <form method="dialog" className="modal-backdrop">
+        <button onClick={onClose}>close</button>
+      </form>
+    </dialog>
   );
 };
 

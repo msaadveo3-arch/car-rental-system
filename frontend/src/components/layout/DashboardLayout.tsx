@@ -14,7 +14,7 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-base-200">
       <TopBar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />

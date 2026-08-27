@@ -11,5 +11,14 @@ body,
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  @apply bg-slate-100 text-slate-900 antialiased;
+}
+
+[data-theme='corporate'] {
+  --bg-base: oklch(var(--b1));
+  --text-base: oklch(var(--bc));
+}
+
+[data-theme='dark'] {
+  --bg-base: oklch(var(--b1));
+  --text-base: oklch(var(--bc));
 }
