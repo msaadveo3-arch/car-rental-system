@@ -1,19 +1,6 @@
-```
+```gitignore
 # Dependencies
 node_modules/
-
-# Environment
-.env
-.env.local
-.env.*
-
-# Logs
-*.log
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
 
 # Build outputs
 dist/
@@ -29,10 +16,17 @@ __pycache__/
 env/
 venv/
 .venv/
-.ENV
-.python-version
-.mypy_cache/
-.pytest_cache/
+.env
+.env.local
+.env.*
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
 # IDE
 .vscode/
@@ -44,7 +38,16 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Compressed
+# Temp files
+*.tmp
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.pytest_cache/
+
+# Compressed files
 *.zip
 *.gz
 *.tar

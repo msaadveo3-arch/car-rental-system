@@ -154,7 +154,11 @@ const Dashboard: React.FC = () => {
             return (
               <div
                 key={index}
-                className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow border border-base-200"
+                className="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 ease-out border border-base-200 hover:-translate-y-2 hover:scale-[1.02] transform-gpu"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  perspective: '1000px',
+                }}
               >
                 <div className="card-body p-6">
                   <div className="flex items-start justify-between">
@@ -173,7 +177,7 @@ const Dashboard: React.FC = () => {
                         {card.subtext}
                       </p>
                     </div>
-                    <div className={`${card.bgColor} p-3 rounded-lg`} data-theme="corporate">
+                    <div className={`${card.bgColor} p-3 rounded-lg shadow-md`}>
                       <Icon className={card.textColor} size={24} />
                     </div>
                   </div>
