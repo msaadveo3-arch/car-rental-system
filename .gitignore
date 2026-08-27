@@ -12,13 +12,15 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.py.class
 .Python
 env/
 venv/
 .venv/
+.ENV
 .env
-.env.local
 .env.*
+.env.local
 
 # Logs
 *.log
@@ -33,21 +35,13 @@ htmlcov/
 .idea/
 *.swp
 *.swo
+*.tmp
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Temp files
-*.tmp
-
-# MyPy
-.mypy_cache/
-
-# PyTest
-.pytest_cache/
-
-# Compressed files
+# Compressed
 *.zip
 *.gz
 *.tar

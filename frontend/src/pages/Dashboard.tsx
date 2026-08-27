@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
       subtext: 'All reservations',
     },
     {
-      title: 'Active Contracts',
+      title: 'Active Contract',
       value: stats.totalContracts,
       icon: FileText,
       color: 'from-purple-500 to-purple-600',
