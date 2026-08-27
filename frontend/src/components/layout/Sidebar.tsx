@@ -28,20 +28,20 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`${collapsed ? 'w-16' : 'w-64'} bg-slate-900 text-slate-200 border-r border-slate-800 shadow-lg transition-all duration-300 flex flex-col overflow-hidden`}
+      className={`${collapsed ? 'w-16' : 'w-64'} bg-apple-dark-900 text-apple-dark-200 border-r border-apple-dark-800 shadow-apple transition-all duration-300 flex flex-col overflow-hidden`}
     >
-      <div className="flex items-center justify-between px-3 py-4 border-b border-slate-800">
+      <div className="flex items-center justify-between px-3 py-4 border-b border-apple-dark-800">
         {collapsed ? (
-          <LogoIcon className="text-blue-400 mx-auto" size={24} />
+          <LogoIcon className="text-apple-accent-blue mx-auto" size={24} />
         ) : (
           <div className="flex items-center gap-2">
-            <LogoIcon className="text-blue-400" size={24} />
-            <span className="font-bold text-white">CarRental</span>
+            <LogoIcon className="text-apple-accent-blue" size={24} />
+            <span className="font-bold text-apple-dark-50">CarRental</span>
           </div>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+          className="p-1.5 rounded-apple hover:bg-apple-dark-800 text-apple-dark-400 hover:text-apple-dark-50 transition-colors shrink-0"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -49,19 +49,19 @@ const Sidebar: React.FC = () => {
       </div>
 
       {!collapsed && (
-        <div className="px-4 py-2 border-b border-slate-800">
+        <div className="px-4 py-2 border-b border-apple-dark-800">
           <span
-            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-apple ${
               role === 'admin'
-                ? 'bg-purple-500/20 text-purple-300'
+                ? 'bg-apple-accent-purple/20 text-apple-accent-purple'
                 : role === 'inspector'
-                  ? 'bg-amber-500/20 text-amber-300'
-                  : 'bg-blue-500/20 text-blue-300'
+                  ? 'bg-apple-accent-orange/20 text-apple-accent-orange'
+                  : 'bg-apple-accent-blue/20 text-apple-accent-blue'
             }`}
           >
             {role}
           </span>
-          <p className="text-[11px] text-slate-400 mt-1 truncate">{(user as any)?.full_name}</p>
+          <p className="text-[11px] text-apple-dark-400 mt-1 truncate">{(user as any)?.full_name}</p>
         </div>
       )}
 
@@ -73,11 +73,11 @@ const Sidebar: React.FC = () => {
             end={to === '/'}
             className={({ isActive }) =>
               [
-                'rounded-lg py-2.5 text-sm font-medium transition-colors duration-200 flex items-center gap-3',
+                'rounded-apple py-2.5 text-sm font-medium transition-colors duration-200 flex items-center gap-3',
                 collapsed ? 'justify-center px-0' : 'px-3',
                 isActive
-                  ? 'bg-slate-700 text-white shadow-sm'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white',
+                  ? 'bg-apple-dark-700 text-apple-dark-50 shadow-apple-sm'
+                  : 'text-apple-dark-300 hover:bg-apple-dark-800 hover:text-apple-dark-50',
               ].join(' ')
             }
             title={collapsed ? label : undefined}

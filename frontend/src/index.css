@@ -8,8 +8,38 @@ body,
   height: 100%;
 }
 
+/* Apple Dark Theme - Applied globally */
+html.dark {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  @apply bg-slate-100 text-slate-900 antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  @apply bg-apple-dark-900 text-apple-dark-50 antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for Apple-like appearance */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-apple-dark-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-apple-dark-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-apple-dark-500;
+}
+
+/* Glass morphism effect for Apple-style translucency */
+.glass {
+  @apply backdrop-blur-xs bg-apple-dark-800/70 border border-apple-dark-700/50;
 }

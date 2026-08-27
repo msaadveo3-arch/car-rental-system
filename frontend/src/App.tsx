@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -18,6 +18,11 @@ import RentalDetails from './pages/RentalDetails';
 
 
 const App: React.FC = () => {
+  // Enable Apple dark theme on mount
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>
