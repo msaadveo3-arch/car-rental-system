@@ -70,7 +70,7 @@ const InspectionQueue: React.FC = () => {
   if (role !== 'inspector') {
     return (
       <DashboardLayout>
-        <div className="bg-red-50 border border-red-200 text-red-600 px-5 py-4 rounded-lg flex items-center gap-2">
+        <div className="bg-error/10 border border-error/30 text-error px-5 py-4 rounded-lg flex items-center gap-2">
           <ShieldAlert size={18} /> Inspection area — inspector account only.
         </div>
       </DashboardLayout>
@@ -227,46 +227,46 @@ const InspectionQueue: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="app-page">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <ClipboardCheck className="text-amber-500" size={24} /> Inspection Queue
+          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
+            <ClipboardCheck className="text-warning" size={24} /> Inspection Queue
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-base-content/60 text-sm mt-1">
             Pending pickup inspections + your completed reports
           </p>
         </div>
 
         {/* Pending */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-5 py-3 bg-amber-50 border-b border-amber-100">
-            <h2 className="text-sm font-bold text-amber-700 uppercase tracking-wide">Waiting for Inspection</h2>
+        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-3 bg-warning/10 border-b border-warning/30">
+            <h2 className="text-sm font-bold text-warning uppercase tracking-wide">Waiting for Inspection</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-100">
+            <table className="app-table">
+              <thead className="bg-base-200 border-b border-base-300">
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Pickup Date</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Action</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Pickup Date</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {items.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50/60">
-                    <td className="px-5 py-4 font-medium text-gray-900">{r.booking_number ?? `#${r.id}`}</td>
-                    <td className="px-5 py-4 text-gray-600">{r.customer_name}</td>
-                    <td className="px-5 py-4 text-gray-600">
+                  <tr key={r.id} className="hover:bg-base-200/60">
+                    <td className="px-5 py-4 font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
+                    <td className="px-5 py-4 text-base-content/80">{r.customer_name}</td>
+                    <td className="px-5 py-4 text-base-content/80">
                       {r.plate_number}
-                      <span className="block text-xs text-gray-400">{[r.make, r.model].filter(Boolean).join(' ')}</span>
+                      <span className="block text-xs text-base-content/60">{[r.make, r.model].filter(Boolean).join(' ')}</span>
                     </td>
-                    <td className="px-5 py-4 text-gray-500 text-sm">{r.start_date?.slice(0, 10)}</td>
+                    <td className="px-5 py-4 text-base-content/60 text-sm">{r.start_date?.slice(0, 10)}</td>
                     <td className="px-5 py-4">
                       <button
                         onClick={() => navigate(`/inspection-view/${r.id}`)}
-                        className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 flex items-center gap-2 text-sm font-medium"
+                        className="btn btn-warning btn-sm px-4 text-sm font-medium"
                       >
                         <Box size={16} /> Start 3D Inspection
                       </button>
@@ -275,7 +275,7 @@ const InspectionQueue: React.FC = () => {
                 ))}
                 {!loading && items.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-gray-400">
+                    <td colSpan={5} className="px-5 py-10 text-center text-base-content/60">
                       No contracts waiting for inspection 🎉
                     </td>
                   </tr>
@@ -286,39 +286,39 @@ const InspectionQueue: React.FC = () => {
         </div>
 
         {/* Completed */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-5 py-3 bg-green-50 border-b border-green-100">
-            <h2 className="text-sm font-bold text-green-700 uppercase tracking-wide">Completed Inspections</h2>
+        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-3 bg-success/10 border-b border-success/30">
+            <h2 className="text-sm font-bold text-success uppercase tracking-wide">Completed Inspections</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-100">
+            <table className="app-table">
+              <thead className="bg-base-200 border-b border-base-300">
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Inspected At</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Damages</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Inspected At</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Damages</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {done.map((it) => (
-                  <tr key={it.inspection_id} className="hover:bg-gray-50/60">
-                    <td className="px-5 py-4 font-medium text-gray-900">{it.booking_number ?? `#${it.rental_id}`}</td>
-                    <td className="px-5 py-4 text-gray-600">{it.customer_name}</td>
-                    <td className="px-5 py-4 text-gray-600">{it.plate_number}</td>
-                    <td className="px-5 py-4 text-gray-500 text-xs">
+                  <tr key={it.inspection_id} className="hover:bg-base-200/60">
+                    <td className="px-5 py-4 font-medium text-base-content">{it.booking_number ?? `#${it.rental_id}`}</td>
+                    <td className="px-5 py-4 text-base-content/80">{it.customer_name}</td>
+                    <td className="px-5 py-4 text-base-content/80">{it.plate_number}</td>
+                    <td className="px-5 py-4 text-base-content/60 text-xs">
                       {it.inspection_date ? new Date(it.inspection_date).toLocaleString() : '—'}
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-gray-100 text-gray-600 border-gray-200">
+                      <span className="badge badge-ghost badge-sm">
                         {safeParse(it.damage_report).length} issue(s)
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-green-50 text-green-700 border-green-200">
+                      <span className="badge badge-success badge-sm capitalize">
                         {it.rental_status}
                       </span>
                     </td>
@@ -327,14 +327,14 @@ const InspectionQueue: React.FC = () => {
                         <button
                           disabled
                           title="Inspection report page — coming next"
-                          className="p-2 text-gray-300 cursor-not-allowed"
+                          className="p-2 text-base-content/60 cursor-not-allowed"
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           onClick={() => downloadPdf(it)}
                           title="Download PDF report"
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                         >
                           <Download size={16} />
                         </button>
@@ -344,7 +344,7 @@ const InspectionQueue: React.FC = () => {
                 ))}
                 {!loading && done.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-5 py-10 text-center text-gray-400">
+                    <td colSpan={7} className="px-5 py-10 text-center text-base-content/60">
                       No completed inspections yet
                     </td>
                   </tr>

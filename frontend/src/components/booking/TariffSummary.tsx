@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../services/api';
+import AppSelect from '../common/AppSelect';
 import { BookingDraft } from './BookingDetailsForm';
 
 interface CarInfo {
@@ -176,93 +177,91 @@ const TariffSummary: React.FC<{
     `AED ${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         <div className="space-y-3">
           <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-500">Pricing Mode</span>
-            <select
+            <span className="text-base-content/60">Pricing Mode</span>
+            <AppSelect
               value={modeName}
-              onChange={(e) => setModeName(e.target.value)}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              {modes.map((m) => (
-                <option key={m.id} value={m.name}>{m.name}</option>
-              ))}
-            </select>
+              onChange={setModeName}
+              size="sm"
+              className="w-36"
+              options={modes.map((mode) => ({ value: mode.name, label: mode.name }))}
+            />
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">
+            <span className="text-base-content/60">
               {line
                 ? `${line.tariff_name} • ${line.rental_type} — Rack ${fmt(Number(line.rack_rate))} × ${units}`
                 : value.rentalType === 'monthly'
                   ? `Car Monthly Rate × ${months} month(s)`
                   : `Car Daily Rate × ${days} day(s)`}
             </span>
-            <span className="font-medium text-gray-800">{fmt(rent)}</span>
+            <span className="font-medium text-base-content">{fmt(rent)}</span>
           </div>
 
           {kmRow && !isUnlimited && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">
+              <span className="text-base-content/60">
                 Included KM — {kmRow.max_km} km/day × {days} day(s)
               </span>
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-base-content">
                 {(kmRow.max_km * days).toLocaleString()} km
               </span>
             </div>
           )}
           {kmRow && !isUnlimited && (
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-base-content/60">
               Extra kilometer on return: AED {Number(kmRow.extra_km_rate)}/km
             </p>
           )}
 
           {isUnlimited && kmRow && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Unlimited Mileage Add-on × {days} day(s)</span>
-              <span className="font-medium text-gray-800">{fmt(unlimitedAddOn)}</span>
+              <span className="text-base-content/60">Unlimited Mileage Add-on × {days} day(s)</span>
+              <span className="font-medium text-base-content">{fmt(unlimitedAddOn)}</span>
             </div>
           )}
 
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">
+            <span className="text-base-content/60">
               Cross Border Fee{border ? ` — ${border.name}` : ''}
             </span>
-            <span className="font-medium text-gray-800">{fmt(borderFee)}</span>
+            <span className="font-medium text-base-content">{fmt(borderFee)}</span>
           </div>
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-500">Discount (AED)</span>
+            <span className="text-base-content/60">Discount (AED)</span>
             <input
               type="number"
               min="0"
               value={value.discount}
               onChange={(e) => onChange({ discount: e.target.value })}
-              className="w-28 px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right"
+              className="w-28 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-right"
             />
           </div>
           {capped && (
-            <p className="text-xs text-amber-600">
+            <p className="text-xs text-warning">
               Discount capped at {fmt(maxDiscount)} — floor rate protection 🛡️
             </p>
           )}
 
-          <div className="border-t border-gray-100 pt-3 flex justify-between text-sm">
-            <span className="text-gray-500">Subtotal</span>
-            <span className="font-medium text-gray-800">{fmt(subtotal)}</span>
+          <div className="border-t border-base-300 pt-3 flex justify-between text-sm">
+            <span className="text-base-content/60">Subtotal</span>
+            <span className="font-medium text-base-content">{fmt(subtotal)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">VAT 5%</span>
-            <span className="font-medium text-gray-800">{fmt(vat)}</span>
+            <span className="text-base-content/60">VAT 5%</span>
+            <span className="font-medium text-base-content">{fmt(vat)}</span>
           </div>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 flex flex-col justify-between">
-          <p className="text-sm font-semibold text-blue-700 uppercase tracking-wide">Total</p>
-          <p className="text-3xl font-extrabold text-blue-800">{fmt(total)}</p>
-          <p className="text-xs text-blue-500 mt-2">
+        <div className="bg-primary/10 border border-primary/30 rounded-xl p-5 flex flex-col justify-between">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wide">Total</p>
+          <p className="text-3xl font-extrabold text-primary">{fmt(total)}</p>
+          <p className="text-xs text-primary mt-2">
             {car
               ? `${car.car_group ?? '—'} • ${band ? `${band.name} (${days} days)` : `${days} days`}`
               : 'Select a vehicle to calculate'}
@@ -271,10 +270,10 @@ const TariffSummary: React.FC<{
       </div>
 
       {!car && (
-        <p className="text-sm text-amber-600 mt-3">Select a vehicle first to see the tariff.</p>
+        <p className="text-sm text-warning mt-3">Select a vehicle first to see the tariff.</p>
       )}
       {car && days > 0 && !line && (
-        <p className="text-sm text-amber-600 mt-3">
+        <p className="text-sm text-warning mt-3">
           No tariff line for ({car.car_group} • {band?.name ?? '—'} • {modeName}) — using the car's own rates.
         </p>
       )}

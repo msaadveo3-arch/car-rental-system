@@ -54,14 +54,14 @@ const safeParse = (s: string | null): any[] => {
 
 const badge = (s: string) =>
   s === 'active'
-    ? 'bg-green-50 text-green-700 border-green-200'
+    ? 'badge-success'
     : s === 'booked'
-      ? 'bg-blue-50 text-blue-700 border-blue-200'
+      ? 'badge-primary'
       : s === 'returned'
-        ? 'bg-amber-50 text-amber-700 border-amber-200'
+        ? 'badge-warning'
         : s === 'completed'
-          ? 'bg-gray-100 text-gray-600 border-gray-200'
-          : 'bg-red-50 text-red-600 border-red-200';
+          ? 'badge-neutral'
+          : 'badge-error';
 
 const downloadPdf = (it: DoneItem) => {
   const doc = new jsPDF();
@@ -258,66 +258,66 @@ const Rentals: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="app-page">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <FileText className="text-blue-600" size={24} /> Rental Contracts
+            <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
+              <FileText className="text-primary" size={24} /> Rental Contracts
             </h1>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-base-content/60 text-sm mt-1">
               Handover & activation happens only from the Inspection page (inspector account)
             </p>
           </div>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={18} />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search booking, contract, customer, plate..."
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-80 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="pl-10 pr-4 py-2 border border-base-300 rounded-lg w-80 focus:ring-2 focus:ring-primary outline-none"
             />
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>
+          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
         )}
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-100">
+            <table className="app-table">
+              <thead className="bg-base-200 border-b border-base-300">
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Contract</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Period</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Total</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Contract</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Period</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Total</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filtered.map((r) => {
                   const insp = inspByRental.get(r.id);
                   return (
-                    <tr key={r.id} className="hover:bg-gray-50/60">
-                      <td className="px-5 py-4 font-medium text-gray-900">{r.booking_number ?? `#${r.id}`}</td>
-                      <td className="px-5 py-4 text-gray-600">{r.contract_number ?? '—'}</td>
-                      <td className="px-5 py-4 text-gray-600">{r.customer_name}</td>
-                      <td className="px-5 py-4 text-gray-600">
+                    <tr key={r.id} className="hover:bg-base-200/60">
+                      <td className="px-5 py-4 font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
+                      <td className="px-5 py-4 text-base-content/80">{r.contract_number ?? '—'}</td>
+                      <td className="px-5 py-4 text-base-content/80">{r.customer_name}</td>
+                      <td className="px-5 py-4 text-base-content/80">
                         {r.plate_number}
-                        <span className="block text-xs text-gray-400">{[r.make, r.model].filter(Boolean).join(' ')}</span>
+                        <span className="block text-xs text-base-content/60">{[r.make, r.model].filter(Boolean).join(' ')}</span>
                       </td>
-                      <td className="px-5 py-4 text-gray-500 text-xs">
+                      <td className="px-5 py-4 text-base-content/60 text-xs">
                         {r.start_date?.slice(0, 10)} → {r.end_date?.slice(0, 10)}
                       </td>
-                      <td className="px-5 py-4 font-semibold text-gray-800">
+                      <td className="px-5 py-4 font-semibold text-base-content">
                         {r.total_amount != null ? `AED ${Number(r.total_amount).toLocaleString()}` : '—'}
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`text-[11px] px-2 py-0.5 rounded-full border ${badge(r.status)}`}>
+                        <span className={`badge badge-sm capitalize ${badge(r.status)}`}>
                           {r.status}
                         </span>
                       </td>
@@ -326,7 +326,7 @@ const Rentals: React.FC = () => {
                           <Link
                             to={`/rentals/${r.id}`}
                             title="View Contract"
-                            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+                            className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg"
                           >
                             <Eye size={16} />
                           </Link>
@@ -334,7 +334,7 @@ const Rentals: React.FC = () => {
                             <button
                               onClick={() => downloadPdf(insp)}
                               title="Download inspection report (PDF)"
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                              className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                             >
                               <Download size={16} />
                             </button>
@@ -344,7 +344,7 @@ const Rentals: React.FC = () => {
                               onClick={() => changeStatus(r.id, 'cancelled', `Cancel booking ${r.booking_number}?`)}
                               disabled={busy === r.id}
                               title="Cancel"
-                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                              className="p-2 text-error hover:bg-error/10 rounded-lg disabled:opacity-50"
                             >
                               <XCircle size={16} />
                             </button>
@@ -354,7 +354,7 @@ const Rentals: React.FC = () => {
                               onClick={() => changeStatus(r.id, 'returned', `Return car ${r.plate_number}?`)}
                               disabled={busy === r.id}
                               title="Return"
-                              className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg disabled:opacity-50"
+                              className="p-2 text-warning hover:bg-warning/10 rounded-lg disabled:opacity-50"
                             >
                               <Undo2 size={16} />
                             </button>
@@ -364,13 +364,13 @@ const Rentals: React.FC = () => {
                               onClick={() => changeStatus(r.id, 'completed', `Close contract ${r.booking_number}?`)}
                               disabled={busy === r.id}
                               title="Complete"
-                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50"
+                              className="p-2 text-base-content/80 hover:bg-base-200 rounded-lg disabled:opacity-50"
                             >
                               <CheckCircle2 size={16} />
                             </button>
                           )}
                           {(r.status === 'completed' || r.status === 'cancelled') && (
-                            <span className="text-xs text-gray-400">Closed</span>
+                            <span className="text-xs text-base-content/60">Closed</span>
                           )}
                         </div>
                       </td>
@@ -379,7 +379,7 @@ const Rentals: React.FC = () => {
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-gray-400">No contracts found</td>
+                    <td colSpan={8} className="px-5 py-12 text-center text-base-content/60">No contracts found</td>
                   </tr>
                 )}
               </tbody>

@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\RentalTypeRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: RentalTypeRepository::class)]
+#[ORM\Table(name: 'rental_types')]
+class RentalType
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    private ?int $id = null;
+
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 50)]
+    private string $name;
+
+    #[ORM\Column(name: 'min_days', type: Types::INTEGER)]
+    private int $minDays;
+
+    #[ORM\Column(name: 'max_days', type: Types::INTEGER)]
+    private int $maxDays;
+
+    #[ORM\Column(name: 'description', type: Types::STRING, length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20)]
+    private string $status;
+
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(name: 'created_by', type: Types::INTEGER, nullable: true)]
+    private ?int $createdBy = null;
+
+    #[ORM\Column(name: 'updated_by', type: Types::INTEGER, nullable: true)]
+    private ?int $updatedBy = null;
+
+    public function getId(): ?int { return $this->id; }
+
+    public function getName(): string { return $this->name; }
+    public function setName(string $name): self { $this->name = $name; return $this; }
+
+    public function getMinDays(): int { return $this->minDays; }
+    public function setMinDays(int $minDays): self { $this->minDays = $minDays; return $this; }
+
+    public function getMaxDays(): int { return $this->maxDays; }
+    public function setMaxDays(int $maxDays): self { $this->maxDays = $maxDays; return $this; }
+
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(?string $description): self { $this->description = $description; return $this; }
+
+    public function getStatus(): string { return $this->status; }
+    public function setStatus(string $status): self { $this->status = $status; return $this; }
+
+    public function getCreatedAt(): ?\DateTimeInterface { return $this->createdAt; }
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self { $this->createdAt = $createdAt; return $this; }
+
+    public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self { $this->updatedAt = $updatedAt; return $this; }
+
+    public function getCreatedBy(): ?int { return $this->createdBy; }
+    public function setCreatedBy(?int $createdBy): self { $this->createdBy = $createdBy; return $this; }
+
+    public function getUpdatedBy(): ?int { return $this->updatedBy; }
+    public function setUpdatedBy(?int $updatedBy): self { $this->updatedBy = $updatedBy; return $this; }
+}

@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Search, ChevronDown, ChevronUp, UserPlus, Pencil } from 'lucide-react';
+import { ChevronDown, ChevronUp, UserPlus, Pencil } from 'lucide-react';
 import api from '../../services/api';
 import CustomerForm, { Customer } from '../customers/CustomerForm';
+import AppSelect, { type AppSelectOption } from '../common/AppSelect';
 
 const initials = (name: string) =>
   name.split(' ').filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
 const Field: React.FC<{ label: string; value: string | null }> = ({ label, value }) => (
   <div>
-    <p className="text-xs text-gray-400">{label}</p>
-    <p className="text-sm font-semibold text-gray-800">{value || '—'}</p>
+    <p className="text-xs text-base-content/60">{label}</p>
+    <p className="text-sm font-semibold text-base-content">{value || '—'}</p>
   </div>
 );
 
@@ -20,9 +21,13 @@ interface Props {
   onChanged: () => void;
 }
 
+type CustomerOption = AppSelectOption & {
+  searchText: string;
+  customer: Customer;
+};
+
 const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChanged }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [q, setQ] = useState('');
   const [collapsed, setCollapsed] = useState(false);
   const [formMode, setFormMode] = useState<'new' | 'edit' | null>(null);
 
@@ -34,20 +39,19 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
     api.get('/customers').then((r) => setCustomers(r.data.data));
   }, []);
 
-  const results = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (!s) return [];
-    return customers
-      .filter(
-        (c) =>
-          (c.name ?? '').toLowerCase().includes(s) ||
-          (c.phone ?? '').toLowerCase().includes(s) ||
-          (c.email ?? '').toLowerCase().includes(s) ||
-          (c.national_id ?? '').toLowerCase().includes(s) ||
-          (c.license_number ?? '').toLowerCase().includes(s)
-      )
-      .slice(0, 5);
-  }, [q, customers]);
+  const customerOptions = useMemo<CustomerOption[]>(
+    () =>
+      customers.map((customer) => ({
+        value: String(customer.id),
+        label: customer.name,
+        searchText: [customer.name, customer.phone, customer.email, customer.national_id, customer.license_number]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase(),
+        customer,
+      })),
+    [customers]
+  );
 
   const selected = customers.find((c) => c.id === selectedId) ?? null;
 
@@ -62,19 +66,41 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="min-w-0 flex-1">
+          <AppSelect<CustomerOption>
+            inputId="customer-picker"
+            value={selectedId}
+            options={customerOptions}
+            isClearable
+            isSearchable
             placeholder="Search by name, phone, ID, or license..."
-                        className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            noOptionsMessage={() => 'No matching customers'}
+            filterOption={(option, input) => option.data.searchText.includes(input.trim().toLowerCase())}
+            onChange={(value) => {
+              if (value) onSelect(Number(value));
+              else onClear();
+            }}
+            formatOptionLabel={(option, { context }) => (
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                  {initials(option.customer.name)}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-base-content">{option.customer.name}</p>
+                  {context === 'menu' && (
+                    <p className="truncate text-sm text-base-content/60">
+                      {option.customer.phone}{option.customer.national_id ? ` • Emirates ID: ${option.customer.national_id}` : ''}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           />
         </div>
         <button
           onClick={() => setFormMode((v) => (v === 'new' ? null : 'new'))}
-          className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium flex items-center gap-2"
+          className="btn btn-primary h-12 min-h-12 whitespace-nowrap"
         >
           <UserPlus size={18} /> New Customer
         </button>
@@ -88,51 +114,26 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
         <CustomerForm initial={selected} onSaved={handleSaved} onCancel={() => setFormMode(null)} />
       )}
 
-      {results.map((c) => (
-        <div
-          key={c.id}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 px-5 py-4 flex items-center justify-between gap-4"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center">
-              {initials(c.name)}
-            </div>
-            <div>
-              <p className="text-lg font-bold text-gray-900">{c.name}</p>
-              <p className="text-sm text-gray-500">
-                {c.phone}{c.national_id ? ` • Emirates ID: ${c.national_id}` : ''}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => { onSelect(c.id); setQ(''); }}
-            className="px-7 py-2.5 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700"
-          >
-            Select
-          </button>
-        </div>
-      ))}
-
       {selected && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div className="card card-border bg-base-100 shadow-sm p-6">
           <div className="flex items-start gap-6">
-            <div className="w-24 h-24 rounded-full bg-blue-100 text-blue-700 text-2xl font-bold flex items-center justify-center shrink-0">
+            <div className="w-24 h-24 rounded-full bg-primary/10 text-primary text-2xl font-bold flex items-center justify-center shrink-0">
               {initials(selected.name)}
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Personal Information</h3>
+                <h3 className="text-lg font-bold text-base-content">Personal Information</h3>
                 <button
                   onClick={() => setCollapsed((v) => !v)}
                   title={collapsed ? 'Expand' : 'Collapse'}
-                  className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg"
+                  className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg"
                 >
                   {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
                 </button>
               </div>
 
               {collapsed ? (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-base-content/60">
                   {selected.phone}
                   {selected.national_id ? ` • Emirates ID: ${selected.national_id}` : ''}
                 </p>
@@ -156,14 +157,14 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
-                    <p className="text-xs text-gray-400">
+                  <div className="flex items-center justify-between mt-5 pt-4 border-t border-base-300">
+                    <p className="text-xs text-base-content/60">
                       Customer since{' '}
                       {selected.created_at ? new Date(selected.created_at).toLocaleDateString() : '—'}
                     </p>
                     <button
                       onClick={() => setFormMode('edit')}
-                      className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
                     >
                       <Pencil size={13} /> Edit
                     </button>

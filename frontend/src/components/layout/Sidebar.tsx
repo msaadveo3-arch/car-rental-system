@@ -28,20 +28,20 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`${collapsed ? 'w-16' : 'w-64'} bg-slate-900 text-slate-200 border-r border-slate-800 shadow-lg transition-all duration-300 flex flex-col overflow-hidden`}
+      className={`${collapsed ? 'w-16' : 'w-64'} h-screen shrink-0 bg-base-100 text-base-content border-r border-base-300 shadow-sm transition-all duration-300 flex flex-col overflow-hidden lg:sticky lg:top-0`}
     >
-      <div className="flex items-center justify-between px-3 py-4 border-b border-slate-800">
+      <div className="flex h-16 shrink-0 items-center justify-between px-3 border-b border-base-300">
         {collapsed ? (
-          <LogoIcon className="text-blue-400 mx-auto" size={24} />
+          <LogoIcon className="text-primary mx-auto" size={24} />
         ) : (
           <div className="flex items-center gap-2">
-            <LogoIcon className="text-blue-400" size={24} />
-            <span className="font-bold text-white">CarRental</span>
+            <LogoIcon className="text-primary" size={24} />
+            <span className="font-bold">CarRental</span>
           </div>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
+          className="btn btn-ghost btn-xs transition-colors shrink-0"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -49,19 +49,19 @@ const Sidebar: React.FC = () => {
       </div>
 
       {!collapsed && (
-        <div className="px-4 py-2 border-b border-slate-800">
+        <div className="px-4 py-2 border-b border-base-300">
           <span
-            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+            className={`badge text-[10px] font-bold uppercase tracking-wider ${
               role === 'admin'
-                ? 'bg-purple-500/20 text-purple-300'
+                ? 'badge-secondary'
                 : role === 'inspector'
-                  ? 'bg-amber-500/20 text-amber-300'
-                  : 'bg-blue-500/20 text-blue-300'
+                  ? 'badge-warning'
+                  : 'badge-primary'
             }`}
           >
             {role}
           </span>
-          <p className="text-[11px] text-slate-400 mt-1 truncate">{(user as any)?.full_name}</p>
+          <p className="text-[11px] text-base-content/60 mt-1 truncate">{(user as any)?.full_name}</p>
         </div>
       )}
 
@@ -76,8 +76,8 @@ const Sidebar: React.FC = () => {
                 'rounded-lg py-2.5 text-sm font-medium transition-colors duration-200 flex items-center gap-3',
                 collapsed ? 'justify-center px-0' : 'px-3',
                 isActive
-                  ? 'bg-slate-700 text-white shadow-sm'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white',
+                  ? 'bg-primary text-primary-content shadow-sm'
+                  : 'text-base-content/70 hover:bg-base-200 hover:text-base-content',
               ].join(' ')
             }
             title={collapsed ? label : undefined}

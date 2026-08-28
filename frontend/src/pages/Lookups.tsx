@@ -6,6 +6,7 @@ import BorderFees from '../components/lookups/BorderFees';
 import VehicleModels from '../components/lookups/VehicleModels';
 import TariffsManager from '../components/lookups/TariffsManager';
 import KmPoliciesManager from '../components/lookups/KmPoliciesManager';
+import AppSelect from '../components/common/AppSelect';
 
 type LookupType =
   | 'body_types' | 'fuel_types' | 'transmissions' | 'car_groups'
@@ -159,47 +160,39 @@ const Lookups: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="app-page">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Settings2 className="text-blue-600" size={24} /> Lookups
+          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
+            <Settings2 className="text-primary" size={24} /> Lookups
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-base-content/60 text-sm mt-1">
             Manage catalog values — any change appears in the forms instantly
           </p>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setActive(t.key)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                active === t.key
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         {active !== 'borders' && active !== 'vehicle_models' && active !== 'tariffs' && active !== 'km_policies' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-          <div className="flex gap-2 flex-wrap">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="w-full sm:w-64">
+              <AppSelect
+                value={active}
+                onChange={(value) => setActive(value as LookupType)}
+                options={TABS.map((tab) => ({ value: tab.key, label: tab.label }))}
+                aria-label="Lookup category"
+              />
+            </div>
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && add()}
               placeholder="Add new value..."
-              className="flex-1 min-w-40 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="input input-bordered min-w-48 flex-1 bg-base-100"
             />
             {extras.map((f) => (
               <input
@@ -210,34 +203,34 @@ const Lookups: React.FC = () => {
                 step={f.step ?? '0.0001'}
                 min={f.min}
                 placeholder={f.label}
-                className="w-32 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="input input-bordered w-32 bg-base-100"
               />
             ))}
             <button
               onClick={add}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+              className="btn btn-primary gap-2"
             >
               <Plus size={16} /> Add
             </button>
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-gray-400">Loading...</div>
+            <div className="p-8 text-center text-base-content/60">Loading...</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b border-gray-100">
+              <table className="app-table">
+                <thead className="bg-base-200 border-b border-base-300">
                   <tr>
-                    <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Name</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Name</th>
                     {extras.map((f) => (
-                      <th key={f.key} className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                      <th key={f.key} className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">
                         {f.label}
                       </th>
                     ))}
-                    <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Created</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Updated</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Created</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Updated</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -249,11 +242,11 @@ const Lookups: React.FC = () => {
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && saveEdit(item.id)}
-                            className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-full px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                             autoFocus
                           />
                         ) : (
-                          <span className="font-medium text-gray-800">{item.name}</span>
+                          <span className="font-medium text-base-content">{item.name}</span>
                         )}
                       </td>
 
@@ -266,24 +259,24 @@ const Lookups: React.FC = () => {
                               type={f.kind === 'number' ? 'number' : 'text'}
                               step={f.step ?? '0.0001'}
                               min={f.min}
-                              className="w-28 px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                              className="w-28 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                             />
                           ) : f.badge ? (
-                            <span className="text-[11px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                            <span className="badge badge-warning badge-sm">
                               {f.badge} {Number(extraValue(item, f.key) ?? 0)}
                             </span>
                           ) : (
-                            <span className="text-sm text-gray-600">{extraValue(item, f.key) ?? '—'}</span>
+                            <span className="text-sm text-base-content/80">{extraValue(item, f.key) ?? '—'}</span>
                           )}
                         </td>
                       ))}
 
                       <td className="px-5 py-3">
                         <span
-                          className={`text-[11px] px-2 py-0.5 rounded-full border ${
+                          className={`badge badge-sm capitalize ${
                             item.status === 'active'
-                              ? 'bg-green-50 text-green-700 border-green-200'
-                              : 'bg-gray-100 text-gray-500 border-gray-200'
+                              ? 'badge-success'
+                              : 'badge-ghost'
                           }`}
                         >
                           {item.status}
@@ -291,15 +284,15 @@ const Lookups: React.FC = () => {
                       </td>
 
                       <td className="px-5 py-3">
-                        <p className="text-sm text-gray-700">{item.created_by_name ?? '—'}</p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-sm text-base-content/80">{item.created_by_name ?? '—'}</p>
+                        <p className="text-xs text-base-content/60">
                           {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
                         </p>
                       </td>
 
                       <td className="px-5 py-3">
-                        <p className="text-sm text-gray-700">{item.updated_by_name ?? '—'}</p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-sm text-base-content/80">{item.updated_by_name ?? '—'}</p>
+                        <p className="text-xs text-base-content/60">
                           {item.updated_at ? new Date(item.updated_at).toLocaleString() : ''}
                         </p>
                       </td>
@@ -308,10 +301,10 @@ const Lookups: React.FC = () => {
                         <div className="flex items-center gap-1">
                           {editingId === item.id ? (
                             <>
-                              <button onClick={() => saveEdit(item.id)} title="Save" className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                              <button onClick={() => saveEdit(item.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
                                 <Check size={16} />
                               </button>
-                              <button onClick={() => setEditingId(null)} title="Cancel" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                              <button onClick={() => setEditingId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
                                 <X size={16} />
                               </button>
                             </>
@@ -320,7 +313,7 @@ const Lookups: React.FC = () => {
                               <button
                                 onClick={() => toggle(item)}
                                 title={item.status === 'active' ? 'Deactivate' : 'Activate'}
-                                className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg"
+                                className="p-2 text-warning hover:bg-warning/10 rounded-lg"
                               >
                                 <Power size={16} />
                               </button>
@@ -335,14 +328,14 @@ const Lookups: React.FC = () => {
                                   setEditExtras(ex);
                                 }}
                                 title="Edit"
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                                className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                               >
                                 <Pencil size={16} />
                               </button>
                               <button
                                 onClick={() => remove(item.id, item.name)}
                                 title="Delete"
-                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                                className="p-2 text-error hover:bg-error/10 rounded-lg"
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -354,7 +347,7 @@ const Lookups: React.FC = () => {
                   ))}
                   {items.length === 0 && (
                     <tr>
-                      <td colSpan={colCount} className="px-5 py-8 text-center text-gray-400">No values yet</td>
+                      <td colSpan={colCount} className="px-5 py-8 text-center text-base-content/60">No values yet</td>
                     </tr>
                   )}
                 </tbody>

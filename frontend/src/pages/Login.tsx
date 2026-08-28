@@ -32,56 +32,58 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-base-200 p-6">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 space-y-5"
+        className="card card-border w-full max-w-md bg-base-100 shadow-xl"
       >
+        <div className="card-body p-8 space-y-5">
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto">
-            <Lock className="text-white" size={26} />
+          <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto">
+            <Lock className="text-primary-content" size={26} />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Car Rental Dubai</h1>
-          <p className="text-gray-500 text-sm">Admin Portal — سجل دخولك للمتابعة</p>
+          <h1 className="text-2xl font-bold text-base-content">Car Rental Dubai</h1>
+          <p className="text-base-content/60 text-sm">Admin Portal — سجل دخولك للمتابعة</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+          <div role="alert" className="alert alert-error text-sm">
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <label className="label"><span className="app-label">Username</span></label>
           <input
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             required
             placeholder="root"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="input input-bordered w-full"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="label"><span className="app-label">Password</span></label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             placeholder="••••••••"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="input input-bordered w-full"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-70"
+          className="btn btn-primary w-full gap-2"
         >
           <LogIn size={18} />
           {loading ? 'Signing in...' : 'Login'}
         </button>
+        </div>
       </form>
     </div>
   );

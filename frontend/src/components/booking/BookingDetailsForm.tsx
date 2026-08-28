@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../services/api';
+import AppSelect from '../common/AppSelect';
+import AppDatePicker from '../common/AppDatePicker';
 
 export interface BookingDraft {
   startDate: string;
@@ -58,10 +60,10 @@ interface KmRow {
 }
 
 const inputCls =
-  'w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none';
+  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
 
 const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-3">{children}</p>
+  <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">{children}</p>
 );
 
 const BookingDetailsForm: React.FC<{
@@ -148,38 +150,34 @@ const BookingDetailsForm: React.FC<{
       : null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+      <div className="space-y-8">
       {/* RENTAL SETUP */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <SectionLabel>Rental Setup</SectionLabel>
           {days > 0 && (
-            <span className="text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium bg-primary/10 text-primary border border-primary/30 px-2 py-1 rounded-full">
               Period: {days} Days • {band?.name ?? '—'}
             </span>
           )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Rental Type (auto)</label>
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Rental Type (auto)</label>
             <input
               value={value.rentalType === 'monthly' ? 'Monthly' : 'Daily'}
               disabled
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-100 text-gray-600"
+              className="w-full px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Hirer Source</label>
-            <select
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Hirer Source</label>
+            <AppSelect
               value={value.hirerSourceId}
-              onChange={(e) => onChange({ hirerSourceId: e.target.value })}
-              className={inputCls}
-            >
-              <option value="">—</option>
-              {sources.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
+              onChange={(hirerSourceId) => onChange({ hirerSourceId })}
+              placeholder="—"
+              options={sources.map((source) => ({ value: source.id, label: source.name }))}
+            />
           </div>
         </div>
       </div>
@@ -189,66 +187,58 @@ const BookingDetailsForm: React.FC<{
         <SectionLabel>Dates & Locations</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-In (Pickup) *</label>
-            <input type="date" value={value.startDate} onChange={(e) => onChange({ startDate: e.target.value })} className={inputCls} />
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Check-In (Pickup) *</label>
+            <AppDatePicker value={value.startDate} onChange={(startDate) => onChange({ startDate })} placeholder="Select pickup date" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-Out (Return) *</label>
-            <input type="date" value={value.endDate} onChange={(e) => onChange({ endDate: e.target.value })} className={inputCls} />
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Check-Out (Return) *</label>
+            <AppDatePicker value={value.endDate} onChange={(endDate) => onChange({ endDate })} placeholder="Select return date" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
-            <select
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Pickup Location</label>
+            <AppSelect
               value={value.pickupBranchId}
-              onChange={(e) => {
-                const b = branches.find((x) => String(x.id) === e.target.value);
+              onChange={(pickupBranchId) => {
+                const b = branches.find((x) => String(x.id) === pickupBranchId);
                 const addr = b?.address ?? '';
                 onChange(
                   value.returnBranchId
-                    ? { pickupBranchId: e.target.value, pickupAddress: addr }
+                    ? { pickupBranchId, pickupAddress: addr }
                     : {
-                        pickupBranchId: e.target.value,
+                        pickupBranchId,
                         pickupAddress: addr,
-                        returnBranchId: e.target.value,
+                        returnBranchId: pickupBranchId,
                         dropoffAddress: addr,
                       }
                 );
               }}
-              className={inputCls}
-            >
-              <option value="">—</option>
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
+              placeholder="—"
+              options={branches.map((branch) => ({ value: branch.id, label: branch.name }))}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Drop-Off Location</label>
-            <select
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Drop-Off Location</label>
+            <AppSelect
               value={value.returnBranchId}
-              onChange={(e) => {
-                const b = branches.find((x) => String(x.id) === e.target.value);
-                onChange({ returnBranchId: e.target.value, dropoffAddress: b?.address ?? '' });
+              onChange={(returnBranchId) => {
+                const b = branches.find((x) => String(x.id) === returnBranchId);
+                onChange({ returnBranchId, dropoffAddress: b?.address ?? '' });
               }}
-              className={inputCls}
-            >
-              <option value="">—</option>
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
+              placeholder="—"
+              options={branches.map((branch) => ({ value: branch.id, label: branch.name }))}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Address</label>
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Pickup Address</label>
             <input value={value.pickupAddress} onChange={(e) => onChange({ pickupAddress: e.target.value })} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Drop-Off Address</label>
+            <label className="block text-sm font-medium text-base-content/80 mb-1">Drop-Off Address</label>
             <input value={value.dropoffAddress} onChange={(e) => onChange({ dropoffAddress: e.target.value })} className={inputCls} />
           </div>
         </div>
         {days === 0 && value.startDate && value.endDate && (
-          <p className="text-sm text-red-600 mt-2">End date must be after start date</p>
+          <p className="text-sm text-error mt-2">End date must be after start date</p>
         )}
       </div>
 
@@ -257,19 +247,19 @@ const BookingDetailsForm: React.FC<{
         <SectionLabel>KM Policy</SectionLabel>
 
         {!carGroupName && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2.5 rounded-lg text-sm mb-4">
+          <div className="bg-warning/10 border border-warning/30 text-warning px-4 py-2.5 rounded-lg text-sm mb-4">
             Select a vehicle first to load the KM policy
           </div>
         )}
 
         {carGroupName && !kmRow && days > 0 && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-lg text-sm mb-4">
+          <div className="bg-error/10 border border-error/30 text-error px-4 py-2.5 rounded-lg text-sm mb-4">
             No KM policy configured for <strong>{carGroupName}</strong> • <strong>{band?.name ?? '—'}</strong> — add it in Lookups → KM Policies
           </div>
         )}
 
         <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-base-content/80">
             <input
               type="radio"
               checked={value.kmPolicy === 'limited'}
@@ -278,7 +268,7 @@ const BookingDetailsForm: React.FC<{
             />
             Limited
           </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-base-content/80">
             <input
               type="radio"
               checked={value.kmPolicy === 'unlimited'}
@@ -287,7 +277,7 @@ const BookingDetailsForm: React.FC<{
             />
             Unlimited
             {kmRow && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full border bg-green-50 text-green-700 border-green-200">
+              <span className="text-[11px] px-2 py-0.5 rounded-full border bg-success/10 text-success border-success/30">
                 + AED {Number(kmRow.unlimited_daily_amount)}/day
               </span>
             )}
@@ -300,9 +290,9 @@ const BookingDetailsForm: React.FC<{
                   type="number"
                   value={value.allowedKm}
                   readOnly
-                  className="w-28 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 font-medium"
+                  className="w-28 px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80 font-medium"
                 />
-                <span className="text-xs text-gray-400 font-medium">KM Total</span>
+                <span className="text-xs text-base-content/60 font-medium">KM Total</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -310,16 +300,16 @@ const BookingDetailsForm: React.FC<{
                   step="0.5"
                   value={value.extraKmFee}
                   readOnly
-                  className="w-24 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 font-medium"
+                  className="w-24 px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80 font-medium"
                 />
-                <span className="text-xs text-gray-400 font-medium">AED/Extra KM</span>
+                <span className="text-xs text-base-content/60 font-medium">AED/Extra KM</span>
               </div>
             </>
           )}
         </div>
 
         {kmRow && value.kmPolicy === 'limited' && (
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-base-content/60 mt-2">
             From matrix: {kmRow.max_km} km/day × {days} days = {(kmRow.max_km * days).toLocaleString()} km included • AED {Number(kmRow.extra_km_rate)} per extra km on return
           </p>
         )}
@@ -329,28 +319,24 @@ const BookingDetailsForm: React.FC<{
       <div>
         <SectionLabel>Cross Borders</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-          <select
+          <AppSelect
             value={value.crossBorderId}
-            onChange={(e) => onChange({ crossBorderId: e.target.value })}
-            className={inputCls}
-          >
-            <option value="">No cross border</option>
-            {borders.map((b) => (
-              <option key={b.id} value={b.id}>{b.name}</option>
-            ))}
-          </select>
+            onChange={(crossBorderId) => onChange({ crossBorderId })}
+            placeholder="No cross border"
+            options={borders.map((border) => ({ value: border.id, label: border.name }))}
+          />
           {border && !carGroupName && (
-            <div className="bg-gray-50 border border-gray-200 text-gray-500 px-4 py-2.5 rounded-lg text-sm">
+            <div className="bg-base-200 border border-base-300 text-base-content/60 px-4 py-2.5 rounded-lg text-sm">
               Select a vehicle to see the group rate
             </div>
           )}
           {border && carGroupName && borderFee && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2.5 rounded-lg text-sm font-medium">
+            <div className="bg-warning/10 border border-warning/30 text-warning px-4 py-2.5 rounded-lg text-sm font-medium">
               + AED {Number(borderFee.fee)} fee applies ({carGroupName} rate)
             </div>
           )}
           {border && carGroupName && !borderFee && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-lg text-sm">
+            <div className="bg-error/10 border border-error/30 text-error px-4 py-2.5 rounded-lg text-sm">
               No fee configured for {carGroupName} → {border.name} — add it in Lookups
             </div>
           )}
@@ -359,7 +345,7 @@ const BookingDetailsForm: React.FC<{
 
       {/* NOTES */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+        <label className="block text-sm font-medium text-base-content/80 mb-1">Notes</label>
         <textarea rows={3} value={value.notes} onChange={(e) => onChange({ notes: e.target.value })} className={inputCls} />
       </div>
     </div>
