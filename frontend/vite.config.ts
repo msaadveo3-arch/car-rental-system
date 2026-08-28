@@ -12,9 +12,8 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost/car-rental-system/backend',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/index.php/api'),
       },
     },
   },

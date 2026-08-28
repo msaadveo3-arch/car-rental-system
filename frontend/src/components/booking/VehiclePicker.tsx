@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import api from '../../services/api';
+import AppSelect from '../common/AppSelect';
 
 interface Car {
   id: number;
@@ -56,48 +57,40 @@ const VehiclePicker: React.FC<{
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-52">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+      <div className="card card-border grid grid-cols-1 gap-3 bg-base-100 p-4 shadow-sm lg:grid-cols-[minmax(0,1fr)_10rem_10rem]">
+        <div className="relative min-w-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={18} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by make, model, or plate..."
-            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full focus:ring-2 focus:ring-blue-500 outline-none"
+            className="pl-10 pr-4 py-2 border border-base-300 rounded-lg w-full focus:ring-2 focus:ring-primary outline-none"
           />
         </div>
-        <select
+        <AppSelect
           value={makeFilter}
-          onChange={(e) => setMakeFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg bg-white"
-        >
-          <option value="all">All Makes</option>
-          {makes.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-        <select
+          onChange={setMakeFilter}
+          className="w-full"
+          options={[{ value: 'all', label: 'All Makes' }, ...makes.map((make) => ({ value: make, label: make }))]}
+        />
+        <AppSelect
           value={groupFilter}
-          onChange={(e) => setGroupFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg bg-white"
-        >
-          <option value="all">All Groups</option>
-          {groups.map((g) => (
-            <option key={g} value={g}>{g}</option>
-          ))}
-        </select>
+          onChange={setGroupFilter}
+          className="w-full"
+          options={[{ value: 'all', label: 'All Groups' }, ...groups.map((group) => ({ value: group, label: group }))]}
+        />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
+      <div className="card card-border bg-base-100 shadow-sm overflow-x-auto">
+        <table className="app-table">
+          <thead className="bg-base-200 border-b border-base-300">
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Vehicle</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Year / KM</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Fuel</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Engine / HP</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Rate / Day</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Select</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Vehicle</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Year / KM</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Fuel</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Engine / HP</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rate / Day</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Select</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
@@ -105,33 +98,33 @@ const VehiclePicker: React.FC<{
               <tr
                 key={c.id}
                 onClick={() => onSelect(c.id)}
-                className={`cursor-pointer ${selectedId === c.id ? 'bg-blue-50' : 'hover:bg-gray-50/60'}`}
+                className={`cursor-pointer ${selectedId === c.id ? 'bg-primary/10' : 'hover:bg-base-200/60'}`}
               >
                 <td className="px-5 py-3">
-                  <p className="font-semibold text-gray-900">{c.make} {c.model}</p>
-                  <span className="text-xs text-gray-500">{c.car_group} • {c.plate_number}</span>
+                  <p className="font-semibold text-base-content">{c.make} {c.model}</p>
+                  <span className="text-xs text-base-content/60">{c.car_group} • {c.plate_number}</span>
                 </td>
-                <td className="px-5 py-3 text-gray-600">
+                <td className="px-5 py-3 text-base-content/80">
                   {c.year}
-                  <span className="block text-xs text-gray-400">{Number(c.mileage).toLocaleString()} km</span>
+                  <span className="block text-xs text-base-content/60">{Number(c.mileage).toLocaleString()} km</span>
                 </td>
-                <td className="px-5 py-3 text-gray-600">{c.fuel_type}</td>
-                <td className="px-5 py-3 text-gray-600">{c.engine_capacity ?? '—'} / {c.horsepower} HP</td>
-                <td className="px-5 py-3 font-semibold text-gray-900">AED {c.daily_rate}</td>
+                <td className="px-5 py-3 text-base-content/80">{c.fuel_type}</td>
+                <td className="px-5 py-3 text-base-content/80">{c.engine_capacity ?? '—'} / {c.horsepower} HP</td>
+                <td className="px-5 py-3 font-semibold text-base-content">AED {c.daily_rate}</td>
                 <td className="px-5 py-3">
                   <input
                     type="radio"
                     name="vehicle"
                     checked={selectedId === c.id}
                     onChange={() => onSelect(c.id)}
-                    className="w-4 h-4 text-blue-600"
+                    className="w-4 h-4 text-primary"
                   />
                 </td>
               </tr>
             ))}
             {filteredCars.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-gray-400">No available cars match</td>
+                <td colSpan={6} className="px-5 py-8 text-center text-base-content/60">No available cars match</td>
               </tr>
             )}
           </tbody>
@@ -139,16 +132,16 @@ const VehiclePicker: React.FC<{
       </div>
 
       {car && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center justify-between">
           <div>
-            <p className="font-bold text-gray-900">{car.make} {car.model}</p>
-            <p className="text-xs text-gray-500">
+            <p className="font-bold text-base-content">{car.make} {car.model}</p>
+            <p className="text-xs text-base-content/60">
               {car.plate_number} • {car.body_type} • {car.seats} seats • {car.color}
             </p>
           </div>
-          <p className="text-xl font-bold text-gray-900">
+          <p className="text-xl font-bold text-base-content">
             AED {car.daily_rate}
-            <span className="text-xs text-gray-500"> / day</span>
+            <span className="text-xs text-base-content/60"> / day</span>
           </p>
         </div>
       )}

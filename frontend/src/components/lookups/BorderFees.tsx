@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, Check, X } from 'lucide-react';
 import api from '../../services/api';
 import CountryInput from '../customers/CountryInput';
+import AppSelect from '../common/AppSelect';
 
 interface BorderFee {
   id: number;
@@ -98,19 +99,19 @@ const BorderFees: React.FC = () => {
   };
 
   const selectCls =
-    'px-3 py-2 border border-gray-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none';
+    'px-3 py-2 border border-base-300 rounded-lg bg-white focus:ring-2 focus:ring-primary outline-none';
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
+    <div className="card card-border bg-base-100 shadow-sm p-6 space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-gray-900">Cross Borders & Fees</h2>
-        <p className="text-gray-500 text-sm mt-1">
+        <h2 className="text-lg font-bold text-base-content">Cross Borders & Fees</h2>
+        <p className="text-base-content/60 text-sm mt-1">
           Type the country, choose the vehicle group, then set the fee — new countries are created automatically
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
       <div className="flex gap-2 flex-wrap items-center">
@@ -118,12 +119,7 @@ const BorderFees: React.FC = () => {
           <CountryInput value={borderName} onChange={setBorderName} withCode={false} />
         </div>
 
-        <select value={groupId} onChange={(e) => setGroupId(e.target.value)} className={selectCls}>
-          <option value="">— Vehicle Group —</option>
-          {groups.map((g) => (
-            <option key={g.id} value={g.id}>{g.name}</option>
-          ))}
-        </select>
+        <AppSelect value={groupId} onChange={setGroupId} className="w-48" placeholder="— Vehicle Group —" options={groups.map((group) => ({ value: group.id, label: group.name }))} />
 
         <input
           value={fee}
@@ -132,32 +128,32 @@ const BorderFees: React.FC = () => {
           min="0"
           step="0.5"
           placeholder="Fee (AED)"
-          className="w-28 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          className="w-28 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
         />
 
         <button
           onClick={add}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center gap-2"
         >
           <Plus size={16} /> Add Fee
         </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
+        <table className="app-table">
+          <thead className="bg-base-200 border-b border-base-300">
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Border</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Vehicle Group</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Fee</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Border</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Vehicle Group</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Fee</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {rows.map((r) => (
               <tr key={r.id}>
-                <td className="px-5 py-3 font-medium text-gray-800">{r.border_name}</td>
-                <td className="px-5 py-3 text-gray-600">{r.group_name}</td>
+                <td className="px-5 py-3 font-medium text-base-content">{r.border_name}</td>
+                <td className="px-5 py-3 text-base-content/80">{r.group_name}</td>
                 <td className="px-5 py-3">
                   {editId === r.id ? (
                     <input
@@ -166,11 +162,11 @@ const BorderFees: React.FC = () => {
                       type="number"
                       min="0"
                       step="0.5"
-                      className="w-24 px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="w-24 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                       autoFocus
                     />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">
                       AED {Number(r.fee)}
                     </span>
                   )}
@@ -179,10 +175,10 @@ const BorderFees: React.FC = () => {
                   <div className="flex items-center gap-1">
                     {editId === r.id ? (
                       <>
-                        <button onClick={() => save(r.id)} title="Save" className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                        <button onClick={() => save(r.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
                           <Check size={16} />
                         </button>
-                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
                           <X size={16} />
                         </button>
                       </>
@@ -191,11 +187,11 @@ const BorderFees: React.FC = () => {
                         <button
                           onClick={() => { setEditId(r.id); setEditFee(r.fee); }}
                           title="Edit"
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                         >
                           <Pencil size={16} />
                         </button>
-                        <button onClick={() => del(r.id)} title="Delete" className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                        <button onClick={() => del(r.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
                           <Trash2 size={16} />
                         </button>
                       </>
@@ -206,7 +202,7 @@ const BorderFees: React.FC = () => {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center text-gray-400">No border fees yet</td>
+                <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">No border fees yet</td>
               </tr>
             )}
           </tbody>

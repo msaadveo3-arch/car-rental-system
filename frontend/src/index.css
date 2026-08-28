@@ -11,5 +11,191 @@ body,
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  @apply bg-slate-100 text-slate-900 antialiased;
+  @apply bg-base-100 text-base-content antialiased;
+}
+
+@layer components {
+  .app-page {
+    @apply space-y-6;
+  }
+
+  .app-page-title {
+    @apply text-2xl font-bold tracking-tight text-base-content;
+  }
+
+  .app-page-description {
+    @apply mt-1 text-sm text-base-content/60;
+  }
+
+  .app-section-title {
+    @apply text-lg font-semibold text-base-content;
+  }
+
+  .app-text-secondary {
+    @apply text-base-content/70;
+  }
+
+  .app-text-muted {
+    @apply text-base-content/60;
+  }
+
+  .app-card {
+    @apply card card-border bg-base-100 shadow-sm;
+  }
+
+  /* `card-border` is the shared card surface variant. DaisyUI v4 does not
+     expose this v5 utility yet, so define its semantic equivalent once. */
+  .card-border {
+    @apply border border-base-300;
+  }
+
+  .app-card-body {
+    @apply card-body;
+  }
+
+  .app-table {
+    @apply table table-zebra;
+  }
+
+  .app-field {
+    @apply input input-bordered w-full bg-base-100;
+  }
+
+  .app-select {
+    @apply select select-bordered w-full bg-base-100;
+  }
+
+  .app-textarea {
+    @apply textarea textarea-bordered w-full bg-base-100;
+  }
+
+  /* The booking stepper keeps DaisyUI's colors but uses a lighter connector
+     so the progress line does not compete with the active step. */
+  .booking-steps.steps-vertical .step::before {
+    width: 0.25rem;
+  }
+
+  .booking-steps .step {
+    color: oklch(var(--bc) / 0.55);
+    font-weight: 600;
+  }
+
+  .app-label {
+    @apply label-text font-medium text-base-content/70;
+  }
+
+  /* Normalize older page markup so tables and fields have the same DaisyUI
+     behavior while individual screens are progressively simplified. */
+  main table:not(.table) {
+    @apply w-full text-left;
+  }
+
+  main table:not(.table) tbody tr:nth-child(even) {
+    @apply bg-base-200/40;
+  }
+
+main input:not([type='checkbox']):not([type='radio']):not([type='range']) {
+  @apply h-12 min-h-12 rounded-btn;
+}
+
+/* AppSelect contains its own invisible text input. Keep it out of the
+   legacy control-size normalization so the shared select matches DaisyUI inputs. */
+main .app-react-select input {
+  height: auto !important;
+  min-height: 0 !important;
+  border-radius: 0 !important;
+}
+
+  main select {
+    @apply h-12 min-h-12 rounded-btn;
+  }
+
+  main textarea {
+    @apply rounded-btn;
+  }
+
+  main button:not(.btn) {
+    @apply min-h-10 rounded-btn text-sm font-medium;
+  }
+
+  main button:not(.btn).p-2 {
+    @apply inline-flex size-9 min-h-9 items-center justify-center p-0 rounded-btn;
+  }
+
+  main a.p-2 {
+    @apply inline-flex size-9 items-center justify-center p-0 rounded-btn;
+  }
+
+  main button.bg-primary:not(.btn),
+  main a.bg-primary:not(.btn) {
+    @apply inline-flex h-12 min-h-12 items-center justify-center gap-2 rounded-btn px-4 text-sm font-semibold text-primary-content;
+  }
+
+  /* One radius language: surfaces are rounded-box, controls are rounded-btn,
+     and status badges remain pills through DaisyUI's badge component. */
+  main .rounded-xl:not(.badge):not(.avatar):not(.mask) {
+    border-radius: var(--rounded-box, 1rem);
+  }
+
+  main .rounded-lg:not(.badge):not(.btn):not(.input):not(.select):not(.textarea):not(.avatar):not(.mask) {
+    border-radius: var(--rounded-btn, 0.5rem);
+  }
+}
+
+main span.rounded-full.border {
+  @apply badge badge-sm;
+}
+
+/* DaisyUI v4 has semantic badge colors but no native `badge-soft` modifier.
+   Keep the familiar DaisyUI variants and render them as soft theme-aware chips. */
+.badge {
+  @apply border-transparent font-medium;
+}
+
+.badge.badge-primary {
+  @apply bg-primary/15 text-primary;
+}
+
+.badge.badge-secondary {
+  @apply bg-secondary/15 text-secondary;
+}
+
+.badge.badge-success {
+  @apply bg-success/15 text-success;
+}
+
+.badge.badge-warning {
+  @apply bg-warning/15 text-warning;
+}
+
+.badge.badge-error {
+  @apply bg-error/15 text-error;
+}
+
+.badge.badge-neutral {
+  @apply bg-neutral/15 text-neutral;
+}
+
+.badge.badge-ghost {
+  @apply bg-base-200 text-base-content/70;
+}
+
+/* DaisyUI supplies these semantic variables for both supported themes. */
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* Temporary compatibility for older screens while their controls use semantic
+   DaisyUI classes. This prevents a white surface or pale separator from leaking
+   into the Dark theme. */
+[data-theme='dark'] .bg-white {
+  background-color: hsl(var(--b1)) !important;
+}
+
+[data-theme='dark'] .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: hsl(var(--b2)) !important;
 }

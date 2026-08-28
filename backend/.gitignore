@@ -1,4 +1,9 @@
 .phpunit.cache/
 .phpcs-cache
 vendor/
+var/cache/
 logs/
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

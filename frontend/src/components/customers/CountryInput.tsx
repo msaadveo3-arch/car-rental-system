@@ -26,17 +26,17 @@ const CountryInput: React.FC<{
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
         placeholder="Type country name..."
-        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+        className="w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+        <ul className="absolute z-20 mt-1 w-full bg-white border border-base-300 rounded-lg shadow-lg max-h-56 overflow-auto">
           {suggestions.map((c) => (
             <li key={c.code}>
               <button
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onChange(withCode ? `${c.name} (${c.code})` : c.name); setOpen(false); }}
-                className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm text-gray-700"
+                className="w-full text-left px-4 py-2 hover:bg-primary/10 text-sm text-base-content/80"
               >
                 {c.name} ({c.code})
               </button>

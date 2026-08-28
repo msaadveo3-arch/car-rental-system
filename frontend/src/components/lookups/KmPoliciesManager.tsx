@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Gauge, Plus, Pencil, Trash2, Check, X, Power } from 'lucide-react';
 import api from '../../services/api';
+import AppSelect from '../common/AppSelect';
 
 interface Policy {
   id: number;
@@ -20,9 +21,9 @@ interface Opt {
 }
 
 const inputCls =
-  'w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none';
+  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
 
-const labelCls = 'block text-sm font-medium text-gray-700 mb-1';
+const labelCls = 'block text-sm font-medium text-base-content/80 mb-1';
 
 const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: string }> = ({
   icon,
@@ -30,12 +31,12 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   subtitle,
 }) => (
   <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
       {icon}
     </div>
     <div>
-      <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-      <p className="text-sm text-gray-400">{subtitle}</p>
+      <h2 className="text-lg font-bold text-base-content">{title}</h2>
+      <p className="text-sm text-base-content/60">{subtitle}</p>
     </div>
   </div>
 );
@@ -120,7 +121,7 @@ const KmPoliciesManager: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="card card-border bg-base-100 shadow-sm p-6">
       <SectionTitle
         icon={<Gauge size={20} />}
         title="KM Policies"
@@ -128,27 +129,17 @@ const KmPoliciesManager: React.FC = () => {
       />
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4">{error}</div>
+        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm mb-4">{error}</div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
         <div>
           <label className={labelCls}>Rental Type *</label>
-          <select value={rType} onChange={(e) => setRType(e.target.value)} className={inputCls}>
-            <option value="">— Rental Type —</option>
-            {rtypes.map((r) => (
-              <option key={r.id} value={r.id}>{r.name}</option>
-            ))}
-          </select>
+          <AppSelect value={rType} onChange={setRType} placeholder="— Rental Type —" options={rtypes.map((type) => ({ value: type.id, label: type.name }))} />
         </div>
         <div>
           <label className={labelCls}>Vehicle Group *</label>
-          <select value={group} onChange={(e) => setGroup(e.target.value)} className={inputCls}>
-            <option value="">— Vehicle Group —</option>
-            {groups.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
-            ))}
-          </select>
+          <AppSelect value={group} onChange={setGroup} placeholder="— Vehicle Group —" options={groups.map((vehicleGroup) => ({ value: vehicleGroup.id, label: vehicleGroup.name }))} />
         </div>
         <div>
           <label className={labelCls}>Max KM / Day *</label>
@@ -165,7 +156,7 @@ const KmPoliciesManager: React.FC = () => {
         <div className="flex items-end">
           <button
             onClick={add}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
           >
             <Plus size={16} /> Add Policy
           </button>
@@ -173,50 +164,50 @@ const KmPoliciesManager: React.FC = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
+        <table className="app-table">
+          <thead className="bg-base-200 border-b border-base-300">
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Rental Type</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Group</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Max KM/Day</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Extra KM (AED)</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Unlimited (AED/Day)</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-              <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rental Type</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Group</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Max KM/Day</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Extra KM (AED)</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Unlimited (AED/Day)</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
+              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {rows.map((p) => (
               <tr key={p.id} className={p.status !== 'active' ? 'opacity-50' : ''}>
-                <td className="px-5 py-3 font-medium text-gray-800">{p.rental_type}</td>
-                <td className="px-5 py-3 text-gray-600">{p.group_name}</td>
+                <td className="px-5 py-3 font-medium text-base-content">{p.rental_type}</td>
+                <td className="px-5 py-3 text-base-content/80">{p.group_name}</td>
                 <td className="px-5 py-3">
                   {editId === p.id ? (
-                    <input value={eMax} onChange={(e) => setEMax(e.target.value)} type="number" min="0" step="1" className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg outline-none" autoFocus />
+                    <input value={eMax} onChange={(e) => setEMax(e.target.value)} type="number" min="0" step="1" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" autoFocus />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-blue-50 text-blue-700 border-blue-200">{p.max_km} km</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-primary/10 text-primary border-primary/30">{p.max_km} km</span>
                   )}
                 </td>
                 <td className="px-5 py-3">
                   {editId === p.id ? (
-                    <input value={eExtra} onChange={(e) => setEExtra(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg outline-none" />
+                    <input value={eExtra} onChange={(e) => setEExtra(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">AED {Number(p.extra_km_rate)}</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">AED {Number(p.extra_km_rate)}</span>
                   )}
                 </td>
                 <td className="px-5 py-3">
                   {editId === p.id ? (
-                    <input value={eUnl} onChange={(e) => setEUnl(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg outline-none" />
+                    <input value={eUnl} onChange={(e) => setEUnl(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-green-50 text-green-700 border-green-200">AED {Number(p.unlimited_daily_amount)}</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-success/10 text-success border-success/30">AED {Number(p.unlimited_daily_amount)}</span>
                   )}
                 </td>
                 <td className="px-5 py-3">
                   <span
                     className={`text-[11px] px-2 py-0.5 rounded-full border ${
                       p.status === 'active'
-                        ? 'bg-green-50 text-green-700 border-green-200'
-                        : 'bg-gray-100 text-gray-500 border-gray-200'
+                        ? 'bg-success/10 text-success border-success/30'
+                        : 'bg-base-200 text-base-content/60 border-base-300'
                     }`}
                   >
                     {p.status}
@@ -226,26 +217,26 @@ const KmPoliciesManager: React.FC = () => {
                   <div className="flex items-center gap-1">
                     {editId === p.id ? (
                       <>
-                        <button onClick={() => save(p.id)} title="Save" className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                        <button onClick={() => save(p.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
                           <Check size={16} />
                         </button>
-                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
                           <X size={16} />
                         </button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => toggle(p)} title={p.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg">
+                        <button onClick={() => toggle(p)} title={p.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
                           <Power size={16} />
                         </button>
                         <button
                           onClick={() => { setEditId(p.id); setEMax(String(p.max_km)); setEExtra(p.extra_km_rate); setEUnl(p.unlimited_daily_amount); }}
                           title="Edit"
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                         >
                           <Pencil size={16} />
                         </button>
-                        <button onClick={() => del(p.id)} title="Delete" className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                        <button onClick={() => del(p.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
                           <Trash2 size={16} />
                         </button>
                       </>
@@ -256,7 +247,7 @@ const KmPoliciesManager: React.FC = () => {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-5 py-8 text-center text-gray-400">No KM policies yet</td>
+                <td colSpan={7} className="px-5 py-8 text-center text-base-content/60">No KM policies yet</td>
               </tr>
             )}
           </tbody>

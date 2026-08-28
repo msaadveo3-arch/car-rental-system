@@ -14,11 +14,11 @@ const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <TopBar />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+    <div className="min-h-screen bg-base-100 text-base-content flex">
+      <Sidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar />
+        <main className="flex-1 overflow-y-auto bg-base-100 p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

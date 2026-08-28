@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BadgeDollarSign, Tags, Plus, Pencil, Trash2, Check, X, Power, Star } from 'lucide-react';
 import api from '../../services/api';
+import AppSelect from '../common/AppSelect';
 
 interface Tariff {
   id: number;
@@ -33,9 +34,9 @@ interface Opt {
 }
 
 const inputCls =
-  'w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none';
+  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
 
-const labelCls = 'block text-sm font-medium text-gray-700 mb-1';
+const labelCls = 'block text-sm font-medium text-base-content/80 mb-1';
 
 const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: string }> = ({
   icon,
@@ -43,12 +44,12 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   subtitle,
 }) => (
   <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
       {icon}
     </div>
     <div>
-      <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-      <p className="text-sm text-gray-400">{subtitle}</p>
+      <h2 className="text-lg font-bold text-base-content">{title}</h2>
+      <p className="text-sm text-base-content/60">{subtitle}</p>
     </div>
   </div>
 );
@@ -208,11 +209,11 @@ const TariffsManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
       {/* Tariff lists */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="card card-border bg-base-100 shadow-sm p-6">
         <SectionTitle
           icon={<BadgeDollarSign size={20} />}
           title="Tariff Lists"
@@ -241,7 +242,7 @@ const TariffsManager: React.FC = () => {
           <div className="flex items-end">
             <button
               onClick={addTariff}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+              className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
             >
               <Plus size={16} /> Add Tariff
             </button>
@@ -249,13 +250,13 @@ const TariffsManager: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-100">
+          <table className="app-table">
+            <thead className="bg-base-200 border-b border-base-300">
               <tr>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Name</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Description</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Name</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Description</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -266,20 +267,20 @@ const TariffsManager: React.FC = () => {
                       <input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                         autoFocus
                       />
                     ) : (
-                      <span className="font-medium text-gray-800">{t.name}</span>
+                      <span className="font-medium text-base-content">{t.name}</span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-gray-600">{t.description ?? '—'}</td>
+                  <td className="px-5 py-3 text-base-content/80">{t.description ?? '—'}</td>
                   <td className="px-5 py-3">
                     <span
                       className={`text-[11px] px-2 py-0.5 rounded-full border ${
                         t.status === 'active'
-                          ? 'bg-green-50 text-green-700 border-green-200'
-                          : 'bg-gray-100 text-gray-500 border-gray-200'
+                          ? 'bg-success/10 text-success border-success/30'
+                          : 'bg-base-200 text-base-content/60 border-base-300'
                       }`}
                     >
                       {t.status}
@@ -289,26 +290,26 @@ const TariffsManager: React.FC = () => {
                     <div className="flex items-center gap-1">
                       {editId === t.id ? (
                         <>
-                          <button onClick={() => saveTariff(t.id)} title="Save" className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                          <button onClick={() => saveTariff(t.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
                             <Check size={16} />
                           </button>
-                          <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                          <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
                             <X size={16} />
                           </button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => toggleTariff(t)} title={t.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg">
+                          <button onClick={() => toggleTariff(t)} title={t.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
                             <Power size={16} />
                           </button>
                           <button
                             onClick={() => { setEditId(t.id); setEditName(t.name); }}
                             title="Edit"
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                            className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button onClick={() => delTariff(t.id, t.name)} title="Delete" className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                          <button onClick={() => delTariff(t.id, t.name)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -319,7 +320,7 @@ const TariffsManager: React.FC = () => {
               ))}
               {tariffs.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-gray-400">No tariffs yet</td>
+                  <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">No tariffs yet</td>
                 </tr>
               )}
             </tbody>
@@ -328,7 +329,7 @@ const TariffsManager: React.FC = () => {
       </div>
 
       {/* Price lines */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="card card-border bg-base-100 shadow-sm p-6">
         <SectionTitle
           icon={<Tags size={20} />}
           title="Price Lines (Rack / Floor)"
@@ -338,48 +339,23 @@ const TariffsManager: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5">
           <div>
             <label className={labelCls}>Tariff *</label>
-            <select value={dTariff} onChange={(e) => setDTariff(e.target.value)} className={inputCls}>
-              <option value="">— Tariff —</option>
-              {tariffs.filter((t) => t.status === 'active').map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </select>
+            <AppSelect value={dTariff} onChange={setDTariff} placeholder="— Tariff —" options={tariffs.filter((tariff) => tariff.status === 'active').map((tariff) => ({ value: tariff.id, label: tariff.name }))} />
           </div>
           <div>
             <label className={labelCls}>Vehicle Group *</label>
-            <select value={dGroup} onChange={(e) => setDGroup(e.target.value)} className={inputCls}>
-              <option value="">— Vehicle Group —</option>
-              {groups.map((g) => (
-                <option key={g.id} value={g.id}>{g.name}</option>
-              ))}
-            </select>
+            <AppSelect value={dGroup} onChange={setDGroup} placeholder="— Vehicle Group —" options={groups.map((group) => ({ value: group.id, label: group.name }))} />
           </div>
           <div>
             <label className={labelCls}>Branch</label>
-            <select value={dBranch} onChange={(e) => setDBranch(e.target.value)} className={inputCls}>
-              <option value="">All Branches</option>
-              {branches.map((b) => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
+            <AppSelect value={dBranch} onChange={setDBranch} placeholder="All Branches" options={branches.map((branch) => ({ value: branch.id, label: branch.name }))} />
           </div>
           <div>
             <label className={labelCls}>Pricing Mode *</label>
-            <select value={dMode} onChange={(e) => setDMode(e.target.value)} className={inputCls}>
-              <option value="">— Pricing Mode —</option>
-              {modes.map((m) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
+            <AppSelect value={dMode} onChange={setDMode} placeholder="— Pricing Mode —" options={modes.map((mode) => ({ value: mode.id, label: mode.name }))} />
           </div>
           <div>
             <label className={labelCls}>Rental Type *</label>
-            <select value={dType} onChange={(e) => setDType(e.target.value)} className={inputCls}>
-              <option value="">— Rental Type —</option>
-              {rtypes.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
+            <AppSelect value={dType} onChange={setDType} placeholder="— Rental Type —" options={rtypes.map((type) => ({ value: type.id, label: type.name }))} />
           </div>
           <div>
             <label className={labelCls}>Rack Rate (AED) *</label>
@@ -406,18 +382,18 @@ const TariffsManager: React.FC = () => {
             />
           </div>
           <div className="flex items-end gap-3">
-            <label className="flex items-center gap-2 text-sm text-gray-600 pb-2">
+            <label className="flex items-center gap-2 text-sm text-base-content/80 pb-2">
               <input
                 type="checkbox"
                 checked={dDefault}
                 onChange={(e) => setDDefault(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded"
+                className="w-4 h-4 text-primary rounded"
               />
               Default
             </label>
             <button
               onClick={addDetail}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
             >
               <Plus size={16} /> Add Line
             </button>
@@ -425,28 +401,28 @@ const TariffsManager: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-100">
+          <table className="app-table">
+            <thead className="bg-base-200 border-b border-base-300">
               <tr>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Tariff</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Group</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Branch</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Mode</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Rental Type</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Rack</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Floor</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Default</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Tariff</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Group</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Branch</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Mode</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rental Type</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rack</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Floor</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Default</th>
+                <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {details.map((d) => (
                 <tr key={d.id} className={d.status !== 'active' ? 'opacity-50' : ''}>
-                  <td className="px-5 py-3 font-medium text-gray-800">{d.tariff_name}</td>
-                  <td className="px-5 py-3 text-gray-600">{d.group_name}</td>
-                  <td className="px-5 py-3 text-gray-600">{d.branch_name ?? 'All'}</td>
-                  <td className="px-5 py-3 text-gray-600">{d.pricing_mode}</td>
-                  <td className="px-5 py-3 text-gray-600">{d.rental_type}</td>
+                  <td className="px-5 py-3 font-medium text-base-content">{d.tariff_name}</td>
+                  <td className="px-5 py-3 text-base-content/80">{d.group_name}</td>
+                  <td className="px-5 py-3 text-base-content/80">{d.branch_name ?? 'All'}</td>
+                  <td className="px-5 py-3 text-base-content/80">{d.pricing_mode}</td>
+                  <td className="px-5 py-3 text-base-content/80">{d.rental_type}</td>
                   <td className="px-5 py-3">
                     {editDetailId === d.id ? (
                       <input
@@ -455,11 +431,11 @@ const TariffsManager: React.FC = () => {
                         type="number"
                         min="0"
                         step="0.5"
-                        className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg outline-none"
+                        className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none"
                         autoFocus
                       />
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">
                         AED {Number(d.rack_rate)}
                       </span>
                     )}
@@ -472,10 +448,10 @@ const TariffsManager: React.FC = () => {
                         type="number"
                         min="0"
                         step="0.5"
-                        className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg outline-none"
+                        className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none"
                       />
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-red-50 text-red-600 border-red-200">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-error/10 text-error border-error/30">
                         AED {Number(d.floor_rate)}
                       </span>
                     )}
@@ -484,7 +460,7 @@ const TariffsManager: React.FC = () => {
                     <button
                       onClick={() => toggleDefault(d)}
                       title={d.is_default ? 'Remove default' : 'Make default'}
-                      className={d.is_default ? 'text-amber-500' : 'text-gray-300 hover:text-amber-400'}
+                      className={d.is_default ? 'text-warning' : 'text-base-content/60 hover:text-warning'}
                     >
                       <Star size={18} fill={d.is_default ? 'currentColor' : 'none'} />
                     </button>
@@ -493,26 +469,26 @@ const TariffsManager: React.FC = () => {
                     <div className="flex items-center gap-1">
                       {editDetailId === d.id ? (
                         <>
-                          <button onClick={() => saveDetail(d.id)} title="Save" className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                          <button onClick={() => saveDetail(d.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
                             <Check size={16} />
                           </button>
-                          <button onClick={() => setEditDetailId(null)} title="Cancel" className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                          <button onClick={() => setEditDetailId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
                             <X size={16} />
                           </button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => toggleDetailStatus(d)} title={d.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg">
+                          <button onClick={() => toggleDetailStatus(d)} title={d.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
                             <Power size={16} />
                           </button>
                           <button
                             onClick={() => { setEditDetailId(d.id); setERack(d.rack_rate); setEFloor(d.floor_rate); }}
                             title="Edit rates"
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                            className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button onClick={() => delDetail(d.id)} title="Delete" className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                          <button onClick={() => delDetail(d.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -523,7 +499,7 @@ const TariffsManager: React.FC = () => {
               ))}
               {details.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-5 py-8 text-center text-gray-400">No price lines yet</td>
+                  <td colSpan={9} className="px-5 py-8 text-center text-base-content/60">No price lines yet</td>
                 </tr>
               )}
             </tbody>
