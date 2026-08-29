@@ -13,7 +13,11 @@ interface BorderFee {
   group_name: string;
 }
 
-const BorderFees: React.FC = () => {
+type BorderFeesProps = {
+  searchQuery?: string;
+};
+
+const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
   const [rows, setRows] = useState<BorderFee[]>([]);
   const [borders, setBorders] = useState<{ id: number; name: string }[]>([]);
   const [groups, setGroups] = useState<{ id: number; name: string }[]>([]);
@@ -100,6 +104,14 @@ const BorderFees: React.FC = () => {
 
   const selectCls =
     'px-3 py-2 border border-base-300 rounded-lg bg-white focus:ring-2 focus:ring-primary outline-none';
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredRows = normalizedSearch
+    ? rows.filter((row) =>
+        [row.border_name, row.group_name, row.fee].some((value) =>
+          String(value).toLowerCase().includes(normalizedSearch),
+        ),
+      )
+    : rows;
 
   return (
     <div className="card card-border bg-base-100 shadow-sm p-6 space-y-4">
@@ -150,7 +162,7 @@ const BorderFees: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {rows.map((r) => (
+            {filteredRows.map((r) => (
               <tr key={r.id}>
                 <td className="px-5 py-3 font-medium text-base-content">{r.border_name}</td>
                 <td className="px-5 py-3 text-base-content/80">{r.group_name}</td>
@@ -200,9 +212,11 @@ const BorderFees: React.FC = () => {
                 </td>
               </tr>
             ))}
-            {rows.length === 0 && (
+            {filteredRows.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">No border fees yet</td>
+                <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">
+                  {rows.length === 0 ? 'No border fees yet' : 'No border fees match your search'}
+                </td>
               </tr>
             )}
           </tbody>

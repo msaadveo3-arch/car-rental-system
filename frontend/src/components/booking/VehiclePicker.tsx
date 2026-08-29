@@ -132,14 +132,14 @@ const VehiclePicker: React.FC<{
       </div>
 
       {car && (
-        <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center justify-between">
-          <div>
+        <div className="flex items-center gap-4 rounded-xl border border-primary/30 bg-primary/10 p-4">
+          <div className="min-w-0">
             <p className="font-bold text-base-content">{car.make} {car.model}</p>
             <p className="text-xs text-base-content/60">
               {car.plate_number} • {car.body_type} • {car.seats} seats • {car.color}
             </p>
           </div>
-          <p className="text-xl font-bold text-base-content">
+          <p className="ml-auto shrink-0 text-right text-xl font-bold text-base-content">
             AED {car.daily_rate}
             <span className="text-xs text-base-content/60"> / day</span>
           </p>

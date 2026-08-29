@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  /* Keep the entire application at a consistent 90% UI density without
+     transform/zoom overflow that can clip full-width page layouts. */
+  font-size: 90%;
+}
+
 html,
 body,
 #root {

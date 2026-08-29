@@ -33,6 +33,7 @@ const Placeholder: React.FC<{ label: string }> = ({ label }) => (
 
 const Booking: React.FC = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [highestReachedStepIndex, setHighestReachedStepIndex] = useState(0);
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [carId, setCarId] = useState<number | null>(null);
   const [draft, setDraft] = useState<BookingDraft>(emptyDraft);
@@ -87,6 +88,12 @@ const Booking: React.FC = () => {
             ? page2Done
             : true;
 
+  const goToNextStep = () => {
+    const nextStepIndex = Math.min(STEPS.length - 1, currentStepIndex + 1);
+    setCurrentStepIndex(nextStepIndex);
+    setHighestReachedStepIndex((highestStep) => Math.max(highestStep, nextStepIndex));
+  };
+
   return (
     <DashboardLayout>
       <div className="app-page xl:flex xl:h-[calc(100vh-7rem)] xl:flex-col xl:gap-6 xl:space-y-0 xl:overflow-hidden">
@@ -101,17 +108,41 @@ const Booking: React.FC = () => {
           <aside className="self-start xl:sticky xl:top-0">
             <div className="p-1">
               <ul className="booking-steps steps steps-vertical">
-                {STEPS.map((step, index) => (
-                  <li
-                    key={step.n}
-                    data-content={step.n}
-                    className={`step text-base-content/70 font-semibold ${
-                      index < currentStepIndex ? 'step-success' : index === currentStepIndex ? 'step-primary' : ''
-                    }`}
-                  >
-                    {step.label}
-                  </li>
-                ))}
+                {STEPS.map((step, index) => {
+                  const isCurrent = index === currentStepIndex;
+                  const isCompleted = index < highestReachedStepIndex;
+
+                  return (
+                    <li
+                      key={step.n}
+                      data-content={step.n}
+                      onClick={isCompleted && !isCurrent ? () => setCurrentStepIndex(index) : undefined}
+                      onKeyDown={
+                        isCompleted && !isCurrent
+                          ? (event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                setCurrentStepIndex(index);
+                              }
+                            }
+                          : undefined
+                      }
+                      role={isCompleted && !isCurrent ? 'button' : undefined}
+                      tabIndex={isCompleted && !isCurrent ? 0 : undefined}
+                      aria-label={isCompleted && !isCurrent ? `Go to completed step ${step.n}: ${step.label}` : undefined}
+                      aria-current={isCurrent ? 'step' : undefined}
+                      className={`step rounded-btn text-base-content/70 font-semibold ${
+                        isCurrent ? 'step-primary' : isCompleted ? 'step-success' : ''
+                      } ${
+                        isCompleted && !isCurrent
+                          ? 'cursor-pointer transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary'
+                          : ''
+                      }`}
+                    >
+                      <span>{step.label}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </aside>
@@ -310,7 +341,7 @@ const Booking: React.FC = () => {
           </button>
           {currentStepIndex < STEPS.length - 1 && (
             <button
-              onClick={() => setCurrentStepIndex((step) => Math.min(STEPS.length - 1, step + 1))}
+              onClick={goToNextStep}
               disabled={!canAdvance}
               className="btn btn-primary gap-2 disabled:opacity-50"
             >

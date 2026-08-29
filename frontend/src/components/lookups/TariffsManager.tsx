@@ -33,6 +33,10 @@ interface Opt {
   name: string;
 }
 
+type TariffsManagerProps = {
+  searchQuery?: string;
+};
+
 const inputCls =
   'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
 
@@ -54,7 +58,7 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   </div>
 );
 
-const TariffsManager: React.FC = () => {
+const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => {
   const [tariffs, setTariffs] = useState<Tariff[]>([]);
   const [details, setDetails] = useState<Detail[]>([]);
   const [groups, setGroups] = useState<Opt[]>([]);
@@ -206,6 +210,29 @@ const TariffsManager: React.FC = () => {
     }
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredTariffs = normalizedSearch
+    ? tariffs.filter((tariff) =>
+        [tariff.name, tariff.description, tariff.status].some((value) =>
+          String(value ?? '').toLowerCase().includes(normalizedSearch),
+        ),
+      )
+    : tariffs;
+  const filteredDetails = normalizedSearch
+    ? details.filter((detail) =>
+        [
+          detail.tariff_name,
+          detail.group_name,
+          detail.branch_name,
+          detail.pricing_mode,
+          detail.rental_type,
+          detail.rack_rate,
+          detail.floor_rate,
+          detail.status,
+        ].some((value) => String(value ?? '').toLowerCase().includes(normalizedSearch)),
+      )
+    : details;
+
   return (
     <div className="space-y-6">
       {error && (
@@ -260,7 +287,7 @@ const TariffsManager: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {tariffs.map((t) => (
+              {filteredTariffs.map((t) => (
                 <tr key={t.id} className={t.status !== 'active' ? 'opacity-50' : ''}>
                   <td className="px-5 py-3">
                     {editId === t.id ? (
@@ -318,9 +345,11 @@ const TariffsManager: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {tariffs.length === 0 && (
+              {filteredTariffs.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">No tariffs yet</td>
+                  <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">
+                    {tariffs.length === 0 ? 'No tariffs yet' : 'No tariffs match your search'}
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -416,7 +445,7 @@ const TariffsManager: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {details.map((d) => (
+              {filteredDetails.map((d) => (
                 <tr key={d.id} className={d.status !== 'active' ? 'opacity-50' : ''}>
                   <td className="px-5 py-3 font-medium text-base-content">{d.tariff_name}</td>
                   <td className="px-5 py-3 text-base-content/80">{d.group_name}</td>
@@ -497,9 +526,11 @@ const TariffsManager: React.FC = () => {
                   </td>
                 </tr>
               ))}
-              {details.length === 0 && (
+              {filteredDetails.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-5 py-8 text-center text-base-content/60">No price lines yet</td>
+                  <td colSpan={9} className="px-5 py-8 text-center text-base-content/60">
+                    {details.length === 0 ? 'No price lines yet' : 'No price lines match your search'}
+                  </td>
                 </tr>
               )}
             </tbody>

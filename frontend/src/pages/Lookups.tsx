@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Settings2, Plus, Pencil, Trash2, Check, X, Power } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Settings2, Plus, Pencil, Trash2, Check, X, Power, Search } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import BorderFees from '../components/lookups/BorderFees';
@@ -74,8 +74,10 @@ const Lookups: React.FC = () => {
   const [editName, setEditName] = useState('');
   const [editExtras, setEditExtras] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
 
   const extras = EXTRA_FIELDS[active] ?? [];
+  const isGenericLookup = !['borders', 'vehicle_models', 'tariffs', 'km_policies'].includes(active);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -86,6 +88,7 @@ const Lookups: React.FC = () => {
   }, [active]);
 
   useEffect(() => {
+    setSearch('');
     setNewName('');
     setNewExtras({});
     setEditingId(null);
@@ -156,6 +159,21 @@ const Lookups: React.FC = () => {
   const extraValue = (item: LookupItem, key: string): string | null =>
     (item as any)[key] ?? null;
 
+  const filteredItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return items;
+
+    return items.filter((item) =>
+      [
+        item.name,
+        item.status,
+        item.created_by_name,
+        item.updated_by_name,
+        ...extras.map((field) => extraValue(item, field.key)),
+      ].some((value) => String(value ?? '').toLowerCase().includes(query)),
+    );
+  }, [extras, items, search]);
+
   const colCount = 1 + extras.length + 4;
 
   return (
@@ -176,9 +194,8 @@ const Lookups: React.FC = () => {
           </div>
         )}
 
-        {active !== 'borders' && active !== 'vehicle_models' && active !== 'tariffs' && active !== 'km_policies' && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
             <div className="w-full sm:w-64">
               <AppSelect
                 value={active}
@@ -187,32 +204,54 @@ const Lookups: React.FC = () => {
                 aria-label="Lookup category"
               />
             </div>
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && add()}
-              placeholder="Add new value..."
-              className="input input-bordered min-w-48 flex-1 bg-base-100"
-            />
-            {extras.map((f) => (
-              <input
-                key={f.key}
-                value={newExtras[f.key] ?? ''}
-                onChange={(e) => setNewExtras({ ...newExtras, [f.key]: e.target.value })}
-                type={f.kind === 'number' ? 'number' : 'text'}
-                step={f.step ?? '0.0001'}
-                min={f.min}
-                placeholder={f.label}
-                className="input input-bordered w-32 bg-base-100"
+            <div className="relative w-full sm:w-80">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60"
+                size={18}
+                aria-hidden="true"
               />
-            ))}
-            <button
-              onClick={add}
-              className="btn btn-primary gap-2"
-            >
-              <Plus size={16} /> Add
-            </button>
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search lookup values..."
+                aria-label="Search lookup values"
+                className="input input-bordered h-12 min-h-12 w-full bg-base-100 pl-10 pr-4 focus:outline-primary"
+              />
+            </div>
           </div>
+
+          {isGenericLookup && (
+            <div className="flex w-full flex-wrap items-center justify-end gap-3 lg:w-auto lg:flex-1">
+              <input
+                value={newName}
+                onChange={(event) => setNewName(event.target.value)}
+                onKeyDown={(event) => event.key === 'Enter' && add()}
+                placeholder="Add new lookup..."
+                aria-label="New lookup value"
+                className="input input-bordered h-12 min-h-12 min-w-56 flex-1 bg-base-100 lg:max-w-md"
+              />
+              {extras.map((field) => (
+                <input
+                  key={field.key}
+                  value={newExtras[field.key] ?? ''}
+                  onChange={(event) => setNewExtras({ ...newExtras, [field.key]: event.target.value })}
+                  type={field.kind === 'number' ? 'number' : 'text'}
+                  step={field.step ?? '0.0001'}
+                  min={field.min}
+                  placeholder={field.label}
+                  aria-label={field.label}
+                  className="input input-bordered h-12 min-h-12 w-36 bg-base-100"
+                />
+              ))}
+              <button onClick={add} className="btn btn-primary h-12 min-h-12 gap-2 whitespace-nowrap">
+                <Plus size={16} aria-hidden="true" /> Add
+              </button>
+            </div>
+          )}
+        </div>
+
+        {isGenericLookup && (
+        <div className="space-y-4">
 
           {loading ? (
             <div className="p-8 text-center text-base-content/60">Loading...</div>
@@ -234,7 +273,7 @@ const Lookups: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {items.map((item) => (
+                  {filteredItems.map((item) => (
                     <tr key={item.id} className={item.status !== 'active' ? 'opacity-50' : ''}>
                       <td className="px-5 py-3">
                         {editingId === item.id ? (
@@ -345,9 +384,11 @@ const Lookups: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  {items.length === 0 && (
+                  {filteredItems.length === 0 && (
                     <tr>
-                      <td colSpan={colCount} className="px-5 py-8 text-center text-base-content/60">No values yet</td>
+                      <td colSpan={colCount} className="px-5 py-8 text-center text-base-content/60">
+                        {items.length === 0 ? 'No values yet' : 'No lookup values match your search'}
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -357,10 +398,10 @@ const Lookups: React.FC = () => {
         </div>
         )}
 
-        {active === 'borders' && <BorderFees />}
-        {active === 'vehicle_models' && <VehicleModels />}
-        {active === 'tariffs' && <TariffsManager />}
-        {active === 'km_policies' && <KmPoliciesManager />}
+        {active === 'borders' && <BorderFees searchQuery={search} />}
+        {active === 'vehicle_models' && <VehicleModels searchQuery={search} />}
+        {active === 'tariffs' && <TariffsManager searchQuery={search} />}
+        {active === 'km_policies' && <KmPoliciesManager searchQuery={search} />}
       </div>
     </DashboardLayout>
   );

@@ -10,7 +10,11 @@ interface ModelRow {
   status: string;
 }
 
-const VehicleModels: React.FC = () => {
+type VehicleModelsProps = {
+  searchQuery?: string;
+};
+
+const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
   const [makes, setMakes] = useState<{ id: number; name: string; status: string }[]>([]);
   const [models, setModels] = useState<ModelRow[]>([]);
   const [makeId, setMakeId] = useState('');
@@ -29,7 +33,14 @@ const VehicleModels: React.FC = () => {
   }, []);
 
   const makeName = (id: number) => makes.find((m) => m.id === id)?.name ?? '—';
-  const shown = makeId ? models.filter((m) => String(m.make_id) === makeId) : models;
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const shown = models.filter((model) => {
+    const matchesMake = !makeId || String(model.make_id) === makeId;
+    const matchesSearch = !normalizedSearch || [model.name, makeName(model.make_id), model.status]
+      .some((value) => value.toLowerCase().includes(normalizedSearch));
+
+    return matchesMake && matchesSearch;
+  });
 
   const add = async () => {
     if (!makeId || !name.trim()) {
@@ -208,7 +219,9 @@ const VehicleModels: React.FC = () => {
             ))}
             {shown.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">No models yet</td>
+                <td colSpan={4} className="px-5 py-8 text-center text-base-content/60">
+                  {models.length === 0 ? 'No models yet' : 'No models match your filters'}
+                </td>
               </tr>
             )}
           </tbody>

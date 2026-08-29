@@ -20,6 +20,10 @@ interface Opt {
   name: string;
 }
 
+type KmPoliciesManagerProps = {
+  searchQuery?: string;
+};
+
 const inputCls =
   'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
 
@@ -41,7 +45,7 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   </div>
 );
 
-const KmPoliciesManager: React.FC = () => {
+const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' }) => {
   const [rows, setRows] = useState<Policy[]>([]);
   const [rtypes, setRtypes] = useState<Opt[]>([]);
   const [groups, setGroups] = useState<Opt[]>([]);
@@ -120,6 +124,20 @@ const KmPoliciesManager: React.FC = () => {
     }
   };
 
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredRows = normalizedSearch
+    ? rows.filter((policy) =>
+        [
+          policy.rental_type,
+          policy.group_name,
+          policy.max_km,
+          policy.extra_km_rate,
+          policy.unlimited_daily_amount,
+          policy.status,
+        ].some((value) => String(value).toLowerCase().includes(normalizedSearch)),
+      )
+    : rows;
+
   return (
       <div className="card card-border bg-base-100 shadow-sm p-6">
       <SectionTitle
@@ -177,7 +195,7 @@ const KmPoliciesManager: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {rows.map((p) => (
+            {filteredRows.map((p) => (
               <tr key={p.id} className={p.status !== 'active' ? 'opacity-50' : ''}>
                 <td className="px-5 py-3 font-medium text-base-content">{p.rental_type}</td>
                 <td className="px-5 py-3 text-base-content/80">{p.group_name}</td>
@@ -245,9 +263,11 @@ const KmPoliciesManager: React.FC = () => {
                 </td>
               </tr>
             ))}
-            {rows.length === 0 && (
+            {filteredRows.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-5 py-8 text-center text-base-content/60">No KM policies yet</td>
+                <td colSpan={7} className="px-5 py-8 text-center text-base-content/60">
+                  {rows.length === 0 ? 'No KM policies yet' : 'No KM policies match your search'}
+                </td>
               </tr>
             )}
           </tbody>
