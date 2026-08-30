@@ -96,33 +96,28 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
   };
 
   const selectCls =
-    'px-3 py-2 border border-base-300 rounded-lg bg-white focus:ring-2 focus:ring-primary outline-none';
+    'app-field';
 
   return (
-    <div className="card card-border bg-base-100 shadow-sm p-6 space-y-4">
-      <div>
-        <h2 className="text-lg font-bold text-base-content">Vehicle Models</h2>
-        <p className="text-base-content/60 text-sm mt-1">
-          Pick the make, then add its models — filter the list by make if you want
-        </p>
-      </div>
+    <div className="space-y-4 p-5 sm:p-6">
+      <p className="text-sm leading-6 text-base-content/60">Choose a vehicle make, add its model, and maintain availability for vehicle registration.</p>
 
       {error && (
         <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
-      <div className="flex gap-2 flex-wrap items-center">
+      <div className="redwood-inline-create rounded-box border border-base-300">
         <AppSelect value={makeId} onChange={setMakeId} className="w-44" placeholder="— Make —" options={makes.filter((make) => make.status === 'active').map((make) => ({ value: make.id, label: make.name }))} />
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && add()}
           placeholder="Model name (e.g. Camry)"
-          className="w-52 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+          className="app-field w-56"
         />
         <button
           onClick={add}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center gap-2"
+            className="btn btn-primary gap-2"
         >
           <Plus size={16} /> Add Model
         </button>
@@ -138,15 +133,12 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
 
       <div className="overflow-x-auto">
         <table className="app-table">
-          <thead className="bg-base-200 border-b border-base-300">
+          <thead>
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Model</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Make</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+              <th>Model</th><th>Make</th><th>Status</th><th><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-base-300">
             {shown.map((m) => (
               <tr key={m.id} className={m.status !== 'active' ? 'opacity-50' : ''}>
                 <td className="px-5 py-3">
@@ -189,26 +181,27 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
                   <div className="flex items-center gap-1">
                     {editId === m.id ? (
                       <>
-                        <button onClick={() => save(m.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
+                        <button type="button" onClick={() => save(m.id)} title="Save" aria-label={`Save ${m.name}`} className="btn btn-ghost btn-square btn-sm text-success">
                           <Check size={16} />
                         </button>
-                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
+                        <button type="button" onClick={() => setEditId(null)} title="Cancel" aria-label={`Cancel editing ${m.name}`} className="btn btn-ghost btn-square btn-sm">
                           <X size={16} />
                         </button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => toggle(m)} title={m.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
+                        <button type="button" onClick={() => toggle(m)} title={m.status === 'active' ? 'Deactivate' : 'Activate'} aria-label={`${m.status === 'active' ? 'Deactivate' : 'Activate'} ${m.name}`} className="btn btn-ghost btn-square btn-sm text-warning">
                           <Power size={16} />
                         </button>
                         <button
                           onClick={() => { setEditId(m.id); setEditName(m.name); setEditMakeId(String(m.make_id)); }}
                           title="Edit"
-                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                          aria-label={`Edit ${m.name}`}
+                          className="btn btn-ghost btn-square btn-sm text-primary"
                         >
                           <Pencil size={16} />
                         </button>
-                        <button onClick={() => del(m.id, m.name)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
+                        <button type="button" onClick={() => del(m.id, m.name)} title="Delete" aria-label={`Delete ${m.name}`} className="btn btn-ghost btn-square btn-sm text-error">
                           <Trash2 size={16} />
                         </button>
                       </>

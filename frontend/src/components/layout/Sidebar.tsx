@@ -20,7 +20,12 @@ const navItems: { to: string; label: string; icon: any; roles: Role[] }[] = [
   { to: '/inspection-queue', label: 'Inspection Queue', icon: ClipboardCheck, roles: ['inspector'] },
 ];
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  mobileOpen: boolean;
+  onMobileClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onMobileClose }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { user } = useContext(AuthContext);
   const role = ((user as any)?.role ?? 'staff') as Role;
@@ -28,65 +33,73 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`${collapsed ? 'w-16' : 'w-64'} h-screen shrink-0 bg-base-100 text-base-content border-r border-base-300 shadow-sm transition-all duration-300 flex flex-col overflow-hidden lg:sticky lg:top-0`}
+      className={`${collapsed ? 'lg:w-[4.5rem]' : 'lg:w-64'} ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-50 flex h-screen w-[min(19rem,86vw)] shrink-0 flex-col overflow-hidden border-r border-neutral-content/10 bg-neutral text-neutral-content shadow-redwood-lg transition-[width,transform] duration-300 lg:sticky lg:top-0 lg:z-30 lg:translate-x-0`}
+      aria-label="Primary navigation"
     >
-      <div className="flex h-16 shrink-0 items-center justify-between px-3 border-b border-base-300">
+      <div className="flex h-[4.5rem] shrink-0 items-center justify-between border-b border-neutral-content/10 px-4 lg:px-3">
         {collapsed ? (
-          <LogoIcon className="text-primary mx-auto" size={24} />
+          <LogoIcon className="mx-auto text-neutral-content" size={24} />
         ) : (
           <div className="flex items-center gap-2">
-            <LogoIcon className="text-primary" size={24} />
-            <span className="font-bold">CarRental</span>
+            <span className="flex size-9 items-center justify-center rounded-btn bg-neutral-content/10">
+              <LogoIcon className="text-neutral-content" size={21} aria-hidden />
+            </span>
+            <div className="leading-tight">
+              <span className="block text-sm font-semibold">Car Rental</span>
+              <span className="block text-[10px] tracking-wide text-neutral-content/55">Fleet operations</span>
+            </div>
           </div>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="btn btn-ghost btn-xs transition-colors shrink-0"
+          className="btn btn-ghost btn-xs hidden shrink-0 text-neutral-content/70 transition-colors hover:bg-neutral-content/10 hover:text-neutral-content lg:inline-flex"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
       </div>
 
-      {!collapsed && (
-        <div className="px-4 py-2 border-b border-base-300">
-          <span
-            className={`badge text-[10px] font-bold uppercase tracking-wider ${
-              role === 'admin'
-                ? 'badge-secondary'
-                : role === 'inspector'
-                  ? 'badge-warning'
-                  : 'badge-primary'
-            }`}
-          >
-            {role}
-          </span>
-          <p className="text-[11px] text-base-content/60 mt-1 truncate">{(user as any)?.full_name}</p>
-        </div>
-      )}
-
-      <nav className="flex flex-col gap-1 p-2 flex-1 overflow-y-auto">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-2 py-4">
+        {!collapsed && (
+          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wide text-neutral-content/45">
+            Workspace
+          </p>
+        )}
         {items.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
             end={to === '/'}
+            onClick={onMobileClose}
             className={({ isActive }) =>
               [
-                'rounded-lg py-2.5 text-sm font-medium transition-colors duration-200 flex items-center gap-3',
-                collapsed ? 'justify-center px-0' : 'px-3',
+                'flex items-center gap-3 rounded-btn py-2.5 text-sm font-medium transition-colors duration-200',
+                collapsed ? 'lg:justify-center lg:px-0' : 'px-3',
                 isActive
-                  ? 'bg-primary text-primary-content shadow-sm'
-                  : 'text-base-content/70 hover:bg-base-200 hover:text-base-content',
+                  ? 'bg-neutral-content text-neutral shadow-sm'
+                  : 'text-neutral-content/70 hover:bg-neutral-content/10 hover:text-neutral-content',
               ].join(' ')
             }
             title={collapsed ? label : undefined}
           >
             <Icon size={18} className="shrink-0" />
-            {!collapsed && <span className="whitespace-nowrap">{label}</span>}
+            <span className={`${collapsed ? 'lg:hidden' : ''} whitespace-nowrap`}>{label}</span>
           </NavLink>
         ))}
       </nav>
+
+      <div className="border-t border-neutral-content/10 p-3">
+        <div className={`${collapsed ? 'lg:justify-center' : ''} flex items-center gap-3 rounded-btn px-2 py-2`}>
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-neutral-content/10 text-sm font-semibold">
+            {((user as any)?.full_name ?? (user as any)?.name ?? 'U').charAt(0).toUpperCase()}
+          </span>
+          <div className={`${collapsed ? 'lg:hidden' : ''} min-w-0`}>
+            <p className="truncate text-sm font-medium">{(user as any)?.full_name ?? (user as any)?.name ?? 'User'}</p>
+            <p className="text-xs capitalize text-neutral-content/55">{role} access</p>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 };

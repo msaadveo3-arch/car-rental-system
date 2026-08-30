@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Save, User, Fingerprint, KeyRound, MapPin } from 'lucide-react';
+import { Save, ShieldCheck } from 'lucide-react';
 import api from '../../services/api';
 import CountryInput from './CountryInput';
 import AppSelect from '../common/AppSelect';
 import AppDatePicker from '../common/AppDatePicker';
+import { RedwoodFormActions, RedwoodSection } from '../common/RedwoodPage';
 
 export interface Customer {
   id: number;
@@ -34,8 +35,7 @@ export interface Customer {
   created_at: string | null;
 }
 
-const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
+const inputCls = 'app-field';
 
 const empty = {
   name: '', phone: '', email: '', customer_type_id: '', nationality: '', gender: '',
@@ -45,22 +45,6 @@ const empty = {
   license_type_id: '', license_number: '', license_issue_date: '', license_expiry_date: '',
   notes: '',
 };
-
-const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: string }> = ({
-  icon,
-  title,
-  subtitle,
-}) => (
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-      {icon}
-    </div>
-    <div>
-      <h2 className="text-lg font-bold text-base-content">{title}</h2>
-      <p className="text-sm text-base-content/60">{subtitle}</p>
-    </div>
-  </div>
-);
 
 const CustomerForm: React.FC<{
   initial?: Customer | null;
@@ -125,18 +109,14 @@ const CustomerForm: React.FC<{
   };
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="redwood-form-grid">
+      <div className="redwood-form-main">
       {error && (
-        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div role="alert" className="alert alert-error"><span>{error}</span></div>
       )}
 
       {/* 1) Personal Info */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
-        <SectionTitle
-          icon={<User size={20} />}
-          title="Personal Info"
-          subtitle="Who this customer is and how to reach them"
-        />
+      <RedwoodSection title="Personal information" description="Identity, customer type, and primary contact details.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Full Name *</label>
@@ -175,15 +155,10 @@ const CustomerForm: React.FC<{
             <input value={form.job} onChange={set('job')} required className={inputCls} />
           </div>
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* 2) Identification */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
-        <SectionTitle
-          icon={<Fingerprint size={20} />}
-          title="Identification"
-          subtitle="ID document details"
-        />
+      <RedwoodSection title="Identification" description="Government-issued identity document and validity.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">ID Number</label>
@@ -198,15 +173,10 @@ const CustomerForm: React.FC<{
             <AppDatePicker value={form.id_expiry_date} onChange={setSelect('id_expiry_date')} placeholder="Select expiry date" />
           </div>
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* 3) Driving License */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
-        <SectionTitle
-          icon={<KeyRound size={20} />}
-          title="Driving License"
-          subtitle="License details and validity"
-        />
+      <RedwoodSection title="Driving license" description="License classification, number, and validity dates.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">License Type</label>
@@ -225,15 +195,10 @@ const CustomerForm: React.FC<{
             <AppDatePicker value={form.license_expiry_date} onChange={setSelect('license_expiry_date')} placeholder="Select expiry date" />
           </div>
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* 4) Address & Contact */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
-        <SectionTitle
-          icon={<MapPin size={20} />}
-          title="Address & Contact"
-          subtitle="Where to reach the customer"
-        />
+      <RedwoodSection title="Address" description="Residential and mailing information for the customer.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Address 1</label>
@@ -252,22 +217,36 @@ const CustomerForm: React.FC<{
             <input value={form.postal_code} onChange={set('postal_code')} className={inputCls} />
           </div>
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* Notes */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
+      <RedwoodSection title="Internal notes" description="Operational notes are visible to staff managing this customer.">
         <label className="block text-sm font-medium text-base-content/80 mb-1">Notes</label>
-        <textarea value={form.notes} onChange={set('notes')} rows={2} className={inputCls} />
+        <textarea value={form.notes} onChange={set('notes')} rows={3} className="app-textarea" />
+      </RedwoodSection>
       </div>
 
-      <div className="flex justify-end">
+      <aside className="redwood-form-aside">
+        <RedwoodSection title="Record guidance">
+          <div className="space-y-4 text-sm leading-6 text-base-content/65">
+            <ShieldCheck size={22} className="text-primary" aria-hidden />
+            <p>Required fields establish the minimum customer record needed for a rental contract.</p>
+            <p>Verify identity and license expiry dates before saving.</p>
+          </div>
+        </RedwoodSection>
+      </aside>
+
+      <div className="xl:col-span-2">
+      <RedwoodFormActions message="Changes are validated before the record is saved.">
+        {onCancel && <button type="button" onClick={onCancel} className="btn btn-ghost">Cancel</button>}
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary font-medium flex items-center gap-2 disabled:opacity-60"
+          className="btn btn-primary gap-2 disabled:opacity-60"
         >
-          <Save size={16} /> {saving ? 'Saving...' : initial ? 'Update Customer' : 'Save Customer'}
+          <Save size={16} aria-hidden /> {saving ? 'Saving…' : initial ? 'Update customer' : 'Save customer'}
         </button>
+      </RedwoodFormActions>
       </div>
     </form>
   );

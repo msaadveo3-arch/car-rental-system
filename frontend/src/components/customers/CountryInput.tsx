@@ -29,7 +29,7 @@ const CountryInput: React.FC<{
         className="w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-20 mt-1 w-full bg-white border border-base-300 rounded-lg shadow-lg max-h-56 overflow-auto">
+      <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-box border border-base-300 bg-base-100 shadow-redwood-lg">
           {suggestions.map((c) => (
             <li key={c.code}>
               <button

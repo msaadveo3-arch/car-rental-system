@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../services/api';
 import AppSelect from '../common/AppSelect';
 import { BookingDraft } from './BookingDetailsForm';
+import { RedwoodSection } from '../common/RedwoodPage';
 
 interface CarInfo {
   id: number;
@@ -177,6 +178,7 @@ const TariffSummary: React.FC<{
     `AED ${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
+    <RedwoodSection title="Contract pricing" description="Calculated tariff, mileage policy, adjustments, tax, and contract total.">
       <div className="space-y-6">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         <div className="space-y-3">
@@ -239,7 +241,7 @@ const TariffSummary: React.FC<{
               min="0"
               value={value.discount}
               onChange={(e) => onChange({ discount: e.target.value })}
-              className="w-28 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-right"
+              className="app-field h-9 min-h-9 w-28 text-right"
             />
           </div>
           {capped && (
@@ -258,8 +260,8 @@ const TariffSummary: React.FC<{
           </div>
         </div>
 
-        <div className="bg-primary/10 border border-primary/30 rounded-xl p-5 flex flex-col justify-between">
-          <p className="text-sm font-semibold text-primary uppercase tracking-wide">Total</p>
+        <div className="redwood-summary-panel">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">Contract total</p>
           <p className="text-3xl font-extrabold text-primary">{fmt(total)}</p>
           <p className="text-xs text-primary mt-2">
             {car
@@ -278,6 +280,7 @@ const TariffSummary: React.FC<{
         </p>
       )}
     </div>
+    </RedwoodSection>
   );
 };
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, ArrowLeft } from 'lucide-react';
-import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import { UserPlus } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import CustomerForm, { Customer } from '../components/customers/CustomerForm';
+import { RedwoodPage, RedwoodPageHeader } from '../components/common/RedwoodPage';
 
 const AddCustomer: React.FC = () => {
   const navigate = useNavigate();
@@ -16,26 +16,21 @@ const AddCustomer: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div className="mx-auto space-y-6">
-          <div className="flex items-center gap-4">
-            <Link to="/customers" className="p-2 hover:bg-base-300 rounded-lg text-base-content/80">
-              <ArrowLeft size={20} />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-                <UserPlus className="text-primary" size={24} /> Add New Customer
-              </h1>
-              <p className="text-base-content/60 text-sm mt-1">Create a new customer record</p>
-            </div>
-          </div>
+      <RedwoodPage>
+          <RedwoodPageHeader
+            eyebrow="Advanced create"
+            title="Add customer"
+            description="Create the identity, driving credential, and contact record used in rental contracts."
+            icon={<UserPlus size={21} />}
+            backLabel="Customers"
+            onBack={() => navigate('/customers')}
+          />
 
           <CustomerForm
             onSaved={handleSaved}
             onCancel={() => navigate('/customers')}
           />
-        </div>
-      </div>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

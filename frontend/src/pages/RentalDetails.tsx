@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, User, CarFront, CalendarRange, BadgeDollarSign, ShieldCheck,
-  Undo2, CheckCircle2, XCircle,
+  FileText, Undo2, CheckCircle2, XCircle,
 } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { RedwoodContextItem, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 const Field: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
   <div>
@@ -13,20 +13,6 @@ const Field: React.FC<{ label: string; value: React.ReactNode }> = ({ label, val
     <p className="text-sm font-semibold text-base-content">
       {value === null || value === undefined || value === '' ? '—' : value}
     </p>
-  </div>
-);
-
-const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: string }> = ({
-  icon, title, subtitle,
-}) => (
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-      {icon}
-    </div>
-    <div>
-      <h2 className="text-lg font-bold text-base-content">{title}</h2>
-      <p className="text-sm text-base-content/60">{subtitle}</p>
-    </div>
   </div>
 );
 
@@ -43,6 +29,7 @@ const badge = (s: string) =>
 
 const RentalDetails: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [r, setR] = useState<any>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -83,37 +70,31 @@ const RentalDetails: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        {/* Header */}
-        <div className="card card-border bg-base-100 shadow-sm p-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Link to="/rentals" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg" title="Back to contracts">
-              <ArrowLeft size={18} />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-base-content flex items-center gap-3">
-                {r.booking_number ?? `#${r.id}`}
-                <span className={`badge badge-sm capitalize ${badge(r.status)}`}>{r.status}</span>
-              </h1>
-              <p className="text-base-content/60 text-sm mt-1">
-                {r.contract_number ?? 'No contract number yet'} • Created by {r.staff_name ?? '—'} •{' '}
-                {r.created_at ? new Date(r.created_at).toLocaleString() : ''}
-              </p>
-              {r.status === 'booked' && (
-                <p className="text-xs text-warning mt-1">
-                  Waiting for pickup inspection — handover happens only from the Inspection page (inspector account)
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Contract detail"
+          title={r.booking_number ?? `Rental #${r.id}`}
+          description={r.status === 'booked' ? 'Waiting for pickup inspection before vehicle handover.' : 'Review the people, vehicle, dates, pricing, and deposit for this contract.'}
+          icon={<FileText size={21} />}
+          backLabel="Rental contracts"
+          onBack={() => navigate('/rentals')}
+          context={
+            <>
+              <RedwoodContextItem label="Contract" value={r.contract_number ?? 'Not assigned'} />
+              <RedwoodContextItem label="Status" value={<span className={`badge badge-sm capitalize ${badge(r.status)}`}>{r.status}</span>} />
+              <RedwoodContextItem label="Created by" value={r.staff_name ?? '—'} />
+              <RedwoodContextItem label="Created" value={r.created_at ? new Date(r.created_at).toLocaleDateString() : '—'} />
+            </>
+          }
+          actions={
+            <>
             {r.status === 'booked' && (
               <button
                 onClick={() => changeStatus('cancelled', `Cancel booking ${r.booking_number}?`)}
                 disabled={busy}
                 className="btn btn-outline btn-error px-4 disabled:opacity-50"
               >
-                <XCircle size={16} /> Cancel
+                <XCircle size={16} aria-hidden /> Cancel booking
               </button>
             )}
             {r.status === 'active' && (
@@ -122,7 +103,7 @@ const RentalDetails: React.FC = () => {
                 disabled={busy}
                 className="btn btn-warning px-4 disabled:opacity-50"
               >
-                <Undo2 size={16} /> Return Vehicle
+                <Undo2 size={16} aria-hidden /> Return vehicle
               </button>
             )}
             {r.status === 'returned' && (
@@ -131,19 +112,20 @@ const RentalDetails: React.FC = () => {
                 disabled={busy}
                 className="btn btn-neutral px-4 disabled:opacity-50"
               >
-                <CheckCircle2 size={16} /> Complete & Close
+                <CheckCircle2 size={16} aria-hidden /> Complete contract
               </button>
             )}
-          </div>
-        </div>
+            </>
+          }
+        />
 
         {error && (
-          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+          <div role="alert" className="alert alert-error"><span>{error}</span></div>
         )}
 
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Customer */}
-          <div className="card card-border bg-base-100 shadow-sm p-6">
-          <SectionTitle icon={<User size={20} />} title="Customer" subtitle="Who rented the vehicle" />
+        <RedwoodSection title="Customer" description="Identity and driving credentials for the hirer.">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
             <Field label="Full Name" value={r.customer_name} />
             <Field label="Mobile" value={r.customer_phone} />
@@ -157,11 +139,10 @@ const RentalDetails: React.FC = () => {
             <Field label="License Number" value={r.customer_license_number} />
             <Field label="License Expiry" value={r.customer_license_expiry} />
           </div>
-        </div>
+        </RedwoodSection>
 
         {/* Vehicle */}
-          <div className="card card-border bg-base-100 shadow-sm p-6">
-          <SectionTitle icon={<CarFront size={20} />} title="Vehicle" subtitle="The exact unit under contract" />
+        <RedwoodSection title="Vehicle" description="The exact fleet unit assigned to this contract.">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
             <Field label="Plate Number" value={r.plate_number} />
             <Field label="Make / Model" value={[r.make, r.model].filter(Boolean).join(' ')} />
@@ -170,11 +151,10 @@ const RentalDetails: React.FC = () => {
             <Field label="VIN" value={r.vin} />
             <Field label="Registration No" value={r.registration_number} />
           </div>
-        </div>
+        </RedwoodSection>
 
         {/* Rental Details */}
-          <div className="card card-border bg-base-100 shadow-sm p-6">
-          <SectionTitle icon={<CalendarRange size={20} />} title="Rental Details" subtitle="Period, locations and kilometers" />
+        <RedwoodSection title="Rental details" description="Period, handover locations, mileage policy, and travel terms." className="xl:col-span-2">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
             <Field label="Pickup Date" value={r.start_date?.slice(0, 10)} />
             <Field label="Return Date" value={r.end_date?.slice(0, 10)} />
@@ -189,11 +169,10 @@ const RentalDetails: React.FC = () => {
             <Field label="Allowed KM" value={r.allowed_km} />
             <Field label="Extra KM Fee" value={r.extra_km_fee != null ? `AED ${Number(r.extra_km_fee)}/km` : null} />
           </div>
-        </div>
+        </RedwoodSection>
 
         {/* Tariff & Charges */}
-          <div className="card card-border bg-base-100 shadow-sm p-6">
-          <SectionTitle icon={<BadgeDollarSign size={20} />} title="Tariff & Charges" subtitle="How the total was calculated" />
+        <RedwoodSection title="Tariff and charges" description="How the final contract total was calculated.">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
             <Field label="Tariff Name" value={r.tariff_name} />
             <Field label="Pricing Mode" value={r.pricing_mode} />
@@ -210,11 +189,10 @@ const RentalDetails: React.FC = () => {
             <p className="text-sm font-semibold text-base-content/60 uppercase">Contract Total</p>
             <p className="text-2xl font-extrabold text-primary">{fmt(r.total_amount)}</p>
           </div>
-        </div>
+        </RedwoodSection>
 
         {/* Deposit */}
-        <div className="card card-border bg-base-100 shadow-sm p-6">
-          <SectionTitle icon={<ShieldCheck size={20} />} title="Security Deposit" subtitle="Collected at booking" />
+        <RedwoodSection title="Security deposit" description="Collection method, currency, and receipt status.">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4">
             <Field label="Deposit Amount" value={r.security_deposit != null ? fmt(r.security_deposit) : null} />
             <Field label="Method" value={r.deposit_method} />
@@ -233,8 +211,9 @@ const RentalDetails: React.FC = () => {
               </span>
             </div>
           </div>
+        </RedwoodSection>
         </div>
-      </div>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

@@ -31,8 +31,8 @@ const selectStyles = (size: 'sm' | 'md'): StylesConfig<AppSelectOption, false> =
       minHeight: height,
       borderWidth: 1,
       borderColor: state.isFocused ? 'oklch(var(--p))' : 'oklch(var(--b3))',
-      borderRadius: 'var(--rounded-btn, 0.5rem)',
-      boxShadow: state.isFocused ? '0 0 0 1px oklch(var(--p))' : 'none',
+      borderRadius: 'var(--redwood-radius-control, 0.25rem)',
+      boxShadow: state.isFocused ? '0 0 0 3px oklch(var(--p) / 0.14)' : 'none',
       backgroundColor: 'oklch(var(--b1))',
       color: 'oklch(var(--bc))',
       cursor: 'text',
@@ -52,7 +52,7 @@ const selectStyles = (size: 'sm' | 'md'): StylesConfig<AppSelectOption, false> =
       ...base,
       minHeight: size === 'sm' ? '2.25rem' : '2.75rem',
       padding: '0.625rem 0.75rem',
-      borderRadius: 'var(--rounded-btn, 0.5rem)',
+      borderRadius: 'var(--redwood-radius-control, 0.25rem)',
       color: state.isSelected ? 'oklch(var(--pc))' : 'oklch(var(--bc))',
       backgroundColor: state.isSelected ? 'oklch(var(--p))' : state.isFocused ? 'oklch(var(--b2))' : 'transparent',
       ':active': { backgroundColor: 'oklch(var(--p))', color: 'oklch(var(--pc))' },
@@ -63,7 +63,7 @@ const selectStyles = (size: 'sm' | 'md'): StylesConfig<AppSelectOption, false> =
 
 const AppSelectMenu: React.FC<MenuProps<AppSelectOption, false>> = (props) => (
   <components.Menu {...props}>
-    <div className="overflow-hidden rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+    <div className="overflow-hidden rounded-box border border-base-300 bg-base-100 p-2 shadow-redwood-lg">
       {props.children}
     </div>
   </components.Menu>

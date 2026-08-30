@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, FileText } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import CustomerPicker from '../components/booking/CustomerPicker';
@@ -9,6 +9,7 @@ import TariffSummary, { TariffSummaryData } from '../components/booking/TariffSu
 import { Link } from 'react-router-dom';
 import { FileCheck2 } from 'lucide-react';
 import AppSelect from '../components/common/AppSelect';
+import { RedwoodContextItem, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 const STEPS = [
   { n: 1, label: 'Customer Docs', key: 'customer', contentTitle: 'Customer' },
@@ -22,12 +23,12 @@ const STEPS = [
   { n: 9, label: 'NOL & Contract', key: 'legal', contentTitle: 'Legal Documentation & Signatures' },
 ];
 
-const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
+const inputCls = 'app-field';
 
 const Placeholder: React.FC<{ label: string }> = ({ label }) => (
-  <div className="bg-white rounded-xl border border-dashed border-base-300 p-12 text-center text-base-content/60">
-    {label} — coming in the next step
+  <div className="redwood-empty-state rounded-box border border-dashed border-base-300 bg-base-200/35">
+    <p className="font-semibold text-base-content">{label}</p>
+    <p className="text-sm text-base-content/60">This workflow is intentionally not implemented yet.</p>
   </div>
 );
 
@@ -96,18 +97,27 @@ const Booking: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page xl:flex xl:h-[calc(100vh-7rem)] xl:flex-col xl:gap-6 xl:space-y-0 xl:overflow-hidden">
-        <div>
-          <h1 className="text-2xl font-bold text-base-content">Rental Contract</h1>
-          <p className="text-base-content/60 text-sm mt-1">
-            Complete each page to unlock the next — the steps above track your progress
-          </p>
-        </div>
+      <RedwoodPage className="xl:h-[calc(100vh-8rem)] xl:overflow-hidden">
+        <RedwoodPageHeader
+          eyebrow="Guided transaction"
+          title="Create rental contract"
+          description="Complete each business step in sequence. Finished steps remain available for review."
+          icon={<FileText size={21} />}
+          context={
+            <>
+              <RedwoodContextItem label="Current step" value={`${activeStep.n} of ${STEPS.length}`} />
+              <RedwoodContextItem label="Customer" value={customerId ? `#${customerId}` : 'Not selected'} />
+              <RedwoodContextItem label="Vehicle" value={carId ? `#${carId}` : 'Not selected'} />
+            </>
+          }
+          actions={<Link to="/rentals" className="btn btn-ghost">View contracts</Link>}
+        />
 
         <div className="grid grid-cols-1 items-start gap-6 xl:min-h-0 xl:flex-1 xl:grid-cols-4 xl:items-stretch">
-          <aside className="self-start xl:sticky xl:top-0">
-            <div className="p-1">
-              <ul className="booking-steps steps steps-vertical">
+          <aside className="redwood-wizard-nav self-start xl:sticky xl:top-0 xl:self-stretch">
+            <nav aria-label="Rental contract steps" className="p-4">
+              <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.12em] text-base-content/50">Contract workflow</p>
+              <ol className="booking-steps steps steps-vertical w-full">
                 {STEPS.map((step, index) => {
                   const isCurrent = index === currentStepIndex;
                   const isCompleted = index < highestReachedStepIndex;
@@ -143,16 +153,17 @@ const Booking: React.FC = () => {
                     </li>
                   );
                 })}
-              </ul>
-            </div>
+              </ol>
+            </nav>
           </aside>
 
-          <div className="card card-border min-w-0 bg-base-100 shadow-sm xl:col-span-3 xl:h-full xl:min-h-0 xl:flex xl:flex-col xl:overflow-hidden">
+          <section className="redwood-wizard-panel xl:col-span-3 xl:h-full xl:min-h-0 xl:flex xl:flex-col xl:overflow-hidden">
             <div className="card-body gap-8 p-8 sm:p-10 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
 
         {/* Active step */}
         <div className="border-b border-base-300 pb-6">
-          <h2 className="text-2xl font-bold text-base-content">{activeStep.label}</h2>
+          <p className="redwood-kicker">Step {activeStep.n} of {STEPS.length}</p>
+          <h2 className="mt-2 font-serif text-3xl font-normal text-base-content">{activeStep.contentTitle}</h2>
           <p className="mt-2 text-sm text-base-content/60">Complete the required details below to continue.</p>
         </div>
 
@@ -172,7 +183,7 @@ const Booking: React.FC = () => {
               )}
 
           {activeStep.key === 'deposit' && (
-              <div className="card card-border bg-base-100 shadow-sm p-6 space-y-5">
+              <div className="redwood-section space-y-5 p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-base-content/80 mb-1">Deposit Amount</label>
@@ -245,7 +256,7 @@ const Booking: React.FC = () => {
         </div>
     {/* Confirm */}
     {activeStep.key === 'legal' && (
-          <div className="card card-border bg-base-100 shadow-sm p-6 space-y-4">
+          <div className="redwood-section space-y-4 p-6">
         {error && (
           <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
         )}
@@ -331,7 +342,7 @@ const Booking: React.FC = () => {
           </div>
 
         {/* Persistent wizard navigation */}
-        <div className="flex shrink-0 justify-between border-t border-base-300 bg-base-100 px-8 py-6 sm:px-10">
+        <div className="flex shrink-0 justify-between border-t border-base-300 bg-base-100/95 px-8 py-4 backdrop-blur-sm sm:px-10">
           <button
             onClick={() => setCurrentStepIndex((step) => Math.max(0, step - 1))}
             disabled={currentStepIndex === 0}
@@ -349,9 +360,9 @@ const Booking: React.FC = () => {
             </button>
           )}
         </div>
-          </div>
+          </section>
         </div>
-      </div>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

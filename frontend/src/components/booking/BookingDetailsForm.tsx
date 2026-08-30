@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../services/api';
 import AppSelect from '../common/AppSelect';
 import AppDatePicker from '../common/AppDatePicker';
+import { RedwoodSection } from '../common/RedwoodPage';
 
 export interface BookingDraft {
   startDate: string;
@@ -59,12 +60,7 @@ interface KmRow {
   status: string;
 }
 
-const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
-
-const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">{children}</p>
-);
+const inputCls = 'app-field';
 
 const BookingDetailsForm: React.FC<{
   value: BookingDraft;
@@ -152,15 +148,15 @@ const BookingDetailsForm: React.FC<{
   return (
       <div className="space-y-8">
       {/* RENTAL SETUP */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <SectionLabel>Rental Setup</SectionLabel>
-          {days > 0 && (
+      <RedwoodSection
+        title="Rental setup"
+        description="Contract type and originating business source."
+        actions={days > 0 ? (
             <span className="text-xs font-medium bg-primary/10 text-primary border border-primary/30 px-2 py-1 rounded-full">
               Period: {days} Days • {band?.name ?? '—'}
             </span>
-          )}
-        </div>
+          ) : undefined}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Rental Type (auto)</label>
@@ -180,11 +176,10 @@ const BookingDetailsForm: React.FC<{
             />
           </div>
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* DATES & LOCATIONS */}
-      <div>
-        <SectionLabel>Dates & Locations</SectionLabel>
+      <RedwoodSection title="Dates and locations" description="Pickup and return schedule, branches, and handover addresses.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Check-In (Pickup) *</label>
@@ -240,11 +235,10 @@ const BookingDetailsForm: React.FC<{
         {days === 0 && value.startDate && value.endDate && (
           <p className="text-sm text-error mt-2">End date must be after start date</p>
         )}
-      </div>
+      </RedwoodSection>
 
       {/* KM POLICY */}
-      <div>
-        <SectionLabel>KM Policy</SectionLabel>
+      <RedwoodSection title="Mileage policy" description="Included distance and excess kilometer terms for this rental.">
 
         {!carGroupName && (
           <div className="bg-warning/10 border border-warning/30 text-warning px-4 py-2.5 rounded-lg text-sm mb-4">
@@ -313,11 +307,10 @@ const BookingDetailsForm: React.FC<{
             From matrix: {kmRow.max_km} km/day × {days} days = {(kmRow.max_km * days).toLocaleString()} km included • AED {Number(kmRow.extra_km_rate)} per extra km on return
           </p>
         )}
-      </div>
+      </RedwoodSection>
 
       {/* CROSS BORDERS */}
-      <div>
-        <SectionLabel>Cross Borders</SectionLabel>
+      <RedwoodSection title="Cross-border travel" description="Optional destination and the applicable vehicle-group fee.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <AppSelect
             value={value.crossBorderId}
@@ -341,13 +334,13 @@ const BookingDetailsForm: React.FC<{
             </div>
           )}
         </div>
-      </div>
+      </RedwoodSection>
 
       {/* NOTES */}
-      <div>
+      <RedwoodSection title="Contract notes" description="Operational notes carried with the rental transaction.">
         <label className="block text-sm font-medium text-base-content/80 mb-1">Notes</label>
-        <textarea rows={3} value={value.notes} onChange={(e) => onChange({ notes: e.target.value })} className={inputCls} />
-      </div>
+        <textarea rows={3} value={value.notes} onChange={(e) => onChange({ notes: e.target.value })} className="app-textarea" />
+      </RedwoodSection>
     </div>
   );
 };

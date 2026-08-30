@@ -48,7 +48,7 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: s
   subtitle,
 }) => (
   <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+    <div className="w-10 h-10 rounded-btn bg-primary/10 text-primary flex items-center justify-center">
       {icon}
     </div>
     <div>
@@ -240,7 +240,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
       )}
 
       {/* Tariff lists */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
+      <section className="space-y-4 p-5 sm:p-6">
         <SectionTitle
           icon={<BadgeDollarSign size={20} />}
           title="Tariff Lists"
@@ -269,7 +269,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
           <div className="flex items-end">
             <button
               onClick={addTariff}
-              className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
+              className="btn btn-primary w-full gap-2"
             >
               <Plus size={16} /> Add Tariff
             </button>
@@ -286,7 +286,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                 <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-base-300">
               {filteredTariffs.map((t) => (
                 <tr key={t.id} className={t.status !== 'active' ? 'opacity-50' : ''}>
                   <td className="px-5 py-3">
@@ -317,26 +317,27 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                     <div className="flex items-center gap-1">
                       {editId === t.id ? (
                         <>
-                          <button onClick={() => saveTariff(t.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
+                          <button type="button" onClick={() => saveTariff(t.id)} title="Save" aria-label={`Save ${t.name}`} className="btn btn-ghost btn-square btn-sm text-success">
                             <Check size={16} />
                           </button>
-                          <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
+                          <button type="button" onClick={() => setEditId(null)} title="Cancel" aria-label={`Cancel editing ${t.name}`} className="btn btn-ghost btn-square btn-sm">
                             <X size={16} />
                           </button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => toggleTariff(t)} title={t.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
+                          <button type="button" onClick={() => toggleTariff(t)} title={t.status === 'active' ? 'Deactivate' : 'Activate'} aria-label={`${t.status === 'active' ? 'Deactivate' : 'Activate'} ${t.name}`} className="btn btn-ghost btn-square btn-sm text-warning">
                             <Power size={16} />
                           </button>
                           <button
                             onClick={() => { setEditId(t.id); setEditName(t.name); }}
                             title="Edit"
-                            className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                            aria-label={`Edit ${t.name}`}
+                            className="btn btn-ghost btn-square btn-sm text-primary"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button onClick={() => delTariff(t.id, t.name)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
+                          <button type="button" onClick={() => delTariff(t.id, t.name)} title="Delete" aria-label={`Delete ${t.name}`} className="btn btn-ghost btn-square btn-sm text-error">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -355,10 +356,10 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
       {/* Price lines */}
-      <div className="card card-border bg-base-100 shadow-sm p-6">
+      <section className="space-y-4 border-t border-base-300 p-5 sm:p-6">
         <SectionTitle
           icon={<Tags size={20} />}
           title="Price Lines (Rack / Floor)"
@@ -422,7 +423,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
             </label>
             <button
               onClick={addDetail}
-              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
+                className="btn btn-primary flex-1 gap-2"
             >
               <Plus size={16} /> Add Line
             </button>
@@ -444,7 +445,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                 <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-base-300">
               {filteredDetails.map((d) => (
                 <tr key={d.id} className={d.status !== 'active' ? 'opacity-50' : ''}>
                   <td className="px-5 py-3 font-medium text-base-content">{d.tariff_name}</td>
@@ -498,26 +499,27 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                     <div className="flex items-center gap-1">
                       {editDetailId === d.id ? (
                         <>
-                          <button onClick={() => saveDetail(d.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
+                          <button type="button" onClick={() => saveDetail(d.id)} title="Save" aria-label="Save tariff rate" className="btn btn-ghost btn-square btn-sm text-success">
                             <Check size={16} />
                           </button>
-                          <button onClick={() => setEditDetailId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
+                          <button type="button" onClick={() => setEditDetailId(null)} title="Cancel" aria-label="Cancel editing tariff rate" className="btn btn-ghost btn-square btn-sm">
                             <X size={16} />
                           </button>
                         </>
                       ) : (
                         <>
-                          <button onClick={() => toggleDetailStatus(d)} title={d.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
+                          <button type="button" onClick={() => toggleDetailStatus(d)} title={d.status === 'active' ? 'Deactivate' : 'Activate'} aria-label={`${d.status === 'active' ? 'Deactivate' : 'Activate'} tariff rate`} className="btn btn-ghost btn-square btn-sm text-warning">
                             <Power size={16} />
                           </button>
                           <button
                             onClick={() => { setEditDetailId(d.id); setERack(d.rack_rate); setEFloor(d.floor_rate); }}
                             title="Edit rates"
-                            className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                            aria-label="Edit tariff rate"
+                            className="btn btn-ghost btn-square btn-sm text-primary"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button onClick={() => delDetail(d.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
+                          <button type="button" onClick={() => delDetail(d.id)} title="Delete" aria-label="Delete tariff rate" className="btn btn-ghost btn-square btn-sm text-error">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -536,7 +538,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

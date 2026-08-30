@@ -103,7 +103,7 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
   };
 
   const selectCls =
-    'px-3 py-2 border border-base-300 rounded-lg bg-white focus:ring-2 focus:ring-primary outline-none';
+    'app-field';
   const normalizedSearch = searchQuery.trim().toLowerCase();
   const filteredRows = normalizedSearch
     ? rows.filter((row) =>
@@ -114,19 +114,14 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
     : rows;
 
   return (
-    <div className="card card-border bg-base-100 shadow-sm p-6 space-y-4">
-      <div>
-        <h2 className="text-lg font-bold text-base-content">Cross Borders & Fees</h2>
-        <p className="text-base-content/60 text-sm mt-1">
-          Type the country, choose the vehicle group, then set the fee — new countries are created automatically
-        </p>
-      </div>
+    <div className="space-y-4 p-5 sm:p-6">
+      <p className="text-sm leading-6 text-base-content/60">Choose a destination and vehicle group, then set the applicable cross-border fee.</p>
 
       {error && (
         <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
-      <div className="flex gap-2 flex-wrap items-center">
+      <div className="redwood-inline-create rounded-box border border-base-300">
         <div className="w-48">
           <CountryInput value={borderName} onChange={setBorderName} withCode={false} />
         </div>
@@ -140,12 +135,12 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
           min="0"
           step="0.5"
           placeholder="Fee (AED)"
-          className="w-28 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+          className="app-field w-32"
         />
 
         <button
           onClick={add}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center gap-2"
+            className="btn btn-primary gap-2"
         >
           <Plus size={16} /> Add Fee
         </button>
@@ -153,15 +148,12 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
 
       <div className="overflow-x-auto">
         <table className="app-table">
-          <thead className="bg-base-200 border-b border-base-300">
+          <thead>
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Border</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Vehicle Group</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Fee</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+              <th>Destination</th><th>Vehicle group</th><th>Fee</th><th><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-base-300">
             {filteredRows.map((r) => (
               <tr key={r.id}>
                 <td className="px-5 py-3 font-medium text-base-content">{r.border_name}</td>
@@ -187,11 +179,11 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
                   <div className="flex items-center gap-1">
                     {editId === r.id ? (
                       <>
-                        <button onClick={() => save(r.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
-                          <Check size={16} />
+                        <button type="button" onClick={() => save(r.id)} title="Save" aria-label={`Save border fee for ${r.border_name}`} className="btn btn-ghost btn-square btn-sm text-success">
+                          <Check size={16} aria-hidden />
                         </button>
-                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
-                          <X size={16} />
+                        <button type="button" onClick={() => setEditId(null)} title="Cancel" aria-label="Cancel editing border fee" className="btn btn-ghost btn-square btn-sm">
+                          <X size={16} aria-hidden />
                         </button>
                       </>
                     ) : (
@@ -199,12 +191,13 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
                         <button
                           onClick={() => { setEditId(r.id); setEditFee(r.fee); }}
                           title="Edit"
-                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                          aria-label={`Edit border fee for ${r.border_name}`}
+                          className="btn btn-ghost btn-square btn-sm text-primary"
                         >
                           <Pencil size={16} />
                         </button>
-                        <button onClick={() => del(r.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
-                          <Trash2 size={16} />
+                        <button type="button" onClick={() => del(r.id)} title="Delete" aria-label={`Delete border fee for ${r.border_name}`} className="btn btn-ghost btn-square btn-sm text-error">
+                          <Trash2 size={16} aria-hidden />
                         </button>
                       </>
                     )}

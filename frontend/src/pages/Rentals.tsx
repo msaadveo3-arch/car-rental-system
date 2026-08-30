@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { FileText, Search, Undo2, CheckCircle2, XCircle, Eye, Download } from 'lucide-react';
+import { FileText, Undo2, CheckCircle2, XCircle, Eye, Download, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { RedwoodCollectionToolbar, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 interface Rental {
   id: number;
@@ -258,47 +259,36 @@ const Rentals: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-              <FileText className="text-primary" size={24} /> Rental Contracts
-            </h1>
-            <p className="text-base-content/60 text-sm mt-1">
-              Handover & activation happens only from the Inspection page (inspector account)
-            </p>
-          </div>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={18} />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search booking, contract, customer, plate..."
-              className="pl-10 pr-4 py-2 border border-base-300 rounded-lg w-80 focus:ring-2 focus:ring-primary outline-none"
-            />
-          </div>
-        </div>
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Rental operations"
+          title="Rental contracts"
+          description="Track bookings through inspection, handover, return, and contract closure."
+          icon={<FileText size={21} />}
+          actions={<Link to="/booking" className="btn btn-primary gap-2"><Plus size={18} aria-hidden /> New contract</Link>}
+        />
 
         {error && (
-          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+          <div role="alert" className="alert alert-error"><span>{error}</span></div>
         )}
 
-        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
+        <RedwoodSection
+          title="Contract register"
+          description="Handover and activation are completed by an inspector after pickup inspection."
+          contentMode="flush"
+        >
+          <RedwoodCollectionToolbar
+            search={{ value: q, onChange: setQ, placeholder: 'Search booking, contract, customer, or plate' }}
+            summary={`${filtered.length} of ${rentals.length} contracts`}
+          />
           <div className="overflow-x-auto">
             <table className="app-table">
-              <thead className="bg-base-200 border-b border-base-300">
+              <thead>
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Contract</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Period</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Total</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+                  <th>Booking</th><th>Contract</th><th>Customer</th><th>Vehicle</th><th>Period</th><th>Total</th><th>Status</th><th><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-base-300">
                 {filtered.map((r) => {
                   const insp = inspByRental.get(r.id);
                   return (
@@ -325,16 +315,18 @@ const Rentals: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <Link
                             to={`/rentals/${r.id}`}
-                            title="View Contract"
-                            className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg"
+                             title="View Contract"
+                             aria-label={`View contract ${r.booking_number ?? r.id}`}
+                             className="btn btn-ghost btn-square btn-sm"
                           >
                             <Eye size={16} />
                           </Link>
                           {insp && (
                             <button
                               onClick={() => downloadPdf(insp)}
-                              title="Download inspection report (PDF)"
-                              className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                               title="Download inspection report (PDF)"
+                               aria-label={`Download inspection report for ${r.booking_number ?? r.id}`}
+                               className="btn btn-ghost btn-square btn-sm text-primary"
                             >
                               <Download size={16} />
                             </button>
@@ -343,8 +335,9 @@ const Rentals: React.FC = () => {
                             <button
                               onClick={() => changeStatus(r.id, 'cancelled', `Cancel booking ${r.booking_number}?`)}
                               disabled={busy === r.id}
-                              title="Cancel"
-                              className="p-2 text-error hover:bg-error/10 rounded-lg disabled:opacity-50"
+                               title="Cancel"
+                               aria-label={`Cancel booking ${r.booking_number ?? r.id}`}
+                               className="btn btn-ghost btn-square btn-sm text-error hover:bg-error/10 disabled:opacity-50"
                             >
                               <XCircle size={16} />
                             </button>
@@ -353,8 +346,9 @@ const Rentals: React.FC = () => {
                             <button
                               onClick={() => changeStatus(r.id, 'returned', `Return car ${r.plate_number}?`)}
                               disabled={busy === r.id}
-                              title="Return"
-                              className="p-2 text-warning hover:bg-warning/10 rounded-lg disabled:opacity-50"
+                               title="Return"
+                               aria-label={`Return vehicle ${r.plate_number}`}
+                               className="btn btn-ghost btn-square btn-sm text-warning hover:bg-warning/10 disabled:opacity-50"
                             >
                               <Undo2 size={16} />
                             </button>
@@ -363,8 +357,9 @@ const Rentals: React.FC = () => {
                             <button
                               onClick={() => changeStatus(r.id, 'completed', `Close contract ${r.booking_number}?`)}
                               disabled={busy === r.id}
-                              title="Complete"
-                              className="p-2 text-base-content/80 hover:bg-base-200 rounded-lg disabled:opacity-50"
+                               title="Complete"
+                               aria-label={`Complete contract ${r.booking_number ?? r.id}`}
+                               className="btn btn-ghost btn-square btn-sm disabled:opacity-50"
                             >
                               <CheckCircle2 size={16} />
                             </button>
@@ -385,8 +380,8 @@ const Rentals: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </RedwoodSection>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

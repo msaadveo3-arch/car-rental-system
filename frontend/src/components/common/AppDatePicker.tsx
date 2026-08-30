@@ -60,7 +60,7 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
       </summary>
 
       {!disabled && (
-        <div className="dropdown-content z-20 mt-2 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+          <div className="dropdown-content z-20 mt-2 rounded-box border border-base-300 bg-base-100 p-2 shadow-redwood-lg">
           <DayPicker
             mode="single"
             selected={selected}

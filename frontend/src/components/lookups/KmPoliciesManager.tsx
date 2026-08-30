@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Gauge, Plus, Pencil, Trash2, Check, X, Power } from 'lucide-react';
+import { Plus, Pencil, Trash2, Check, X, Power } from 'lucide-react';
 import api from '../../services/api';
 import AppSelect from '../common/AppSelect';
 
@@ -24,26 +24,9 @@ type KmPoliciesManagerProps = {
   searchQuery?: string;
 };
 
-const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
+const inputCls = 'app-field';
 
 const labelCls = 'block text-sm font-medium text-base-content/80 mb-1';
-
-const SectionTitle: React.FC<{ icon: React.ReactNode; title: string; subtitle: string }> = ({
-  icon,
-  title,
-  subtitle,
-}) => (
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-      {icon}
-    </div>
-    <div>
-      <h2 className="text-lg font-bold text-base-content">{title}</h2>
-      <p className="text-sm text-base-content/60">{subtitle}</p>
-    </div>
-  </div>
-);
 
 const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' }) => {
   const [rows, setRows] = useState<Policy[]>([]);
@@ -139,18 +122,14 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
     : rows;
 
   return (
-      <div className="card card-border bg-base-100 shadow-sm p-6">
-      <SectionTitle
-        icon={<Gauge size={20} />}
-        title="KM Policies"
-        subtitle="Included kilometers per day, extra-km rate and unlimited add-on per group"
-      />
+      <div className="space-y-4 p-5 sm:p-6">
+      <p className="text-sm leading-6 text-base-content/60">Define included kilometers, excess usage rates, and unlimited-distance add-ons by rental type and vehicle group.</p>
 
       {error && (
         <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm mb-4">{error}</div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+      <div className="redwood-inline-create grid grid-cols-1 rounded-box border border-base-300 md:grid-cols-3">
         <div>
           <label className={labelCls}>Rental Type *</label>
           <AppSelect value={rType} onChange={setRType} placeholder="— Rental Type —" options={rtypes.map((type) => ({ value: type.id, label: type.name }))} />
@@ -174,7 +153,7 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
         <div className="flex items-end">
           <button
             onClick={add}
-            className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary flex items-center justify-center gap-2"
+              className="btn btn-primary w-full gap-2"
           >
             <Plus size={16} /> Add Policy
           </button>
@@ -183,18 +162,12 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
 
       <div className="overflow-x-auto">
         <table className="app-table">
-          <thead className="bg-base-200 border-b border-base-300">
+          <thead>
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rental Type</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Group</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Max KM/Day</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Extra KM (AED)</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Unlimited (AED/Day)</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+              <th>Rental type</th><th>Group</th><th>Max km/day</th><th>Extra km</th><th>Unlimited/day</th><th>Status</th><th><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-base-300">
             {filteredRows.map((p) => (
               <tr key={p.id} className={p.status !== 'active' ? 'opacity-50' : ''}>
                 <td className="px-5 py-3 font-medium text-base-content">{p.rental_type}</td>
@@ -235,26 +208,27 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
                   <div className="flex items-center gap-1">
                     {editId === p.id ? (
                       <>
-                        <button onClick={() => save(p.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
+                        <button type="button" onClick={() => save(p.id)} title="Save" aria-label="Save mileage policy" className="btn btn-ghost btn-square btn-sm text-success">
                           <Check size={16} />
                         </button>
-                        <button onClick={() => setEditId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
+                        <button type="button" onClick={() => setEditId(null)} title="Cancel" aria-label="Cancel editing mileage policy" className="btn btn-ghost btn-square btn-sm">
                           <X size={16} />
                         </button>
                       </>
                     ) : (
                       <>
-                        <button onClick={() => toggle(p)} title={p.status === 'active' ? 'Deactivate' : 'Activate'} className="p-2 text-warning hover:bg-warning/10 rounded-lg">
+                        <button type="button" onClick={() => toggle(p)} title={p.status === 'active' ? 'Deactivate' : 'Activate'} aria-label={`${p.status === 'active' ? 'Deactivate' : 'Activate'} mileage policy`} className="btn btn-ghost btn-square btn-sm text-warning">
                           <Power size={16} />
                         </button>
                         <button
                           onClick={() => { setEditId(p.id); setEMax(String(p.max_km)); setEExtra(p.extra_km_rate); setEUnl(p.unlimited_daily_amount); }}
                           title="Edit"
-                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                          aria-label="Edit mileage policy"
+                          className="btn btn-ghost btn-square btn-sm text-primary"
                         >
                           <Pencil size={16} />
                         </button>
-                        <button onClick={() => del(p.id)} title="Delete" className="p-2 text-error hover:bg-error/10 rounded-lg">
+                        <button type="button" onClick={() => del(p.id)} title="Delete" aria-label="Delete mileage policy" className="btn btn-ghost btn-square btn-sm text-error">
                           <Trash2 size={16} />
                         </button>
                       </>

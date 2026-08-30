@@ -5,6 +5,7 @@ import { jsPDF } from 'jspdf';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { AuthContext } from '../context/AuthContext';
+import { RedwoodContextItem, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 interface QueueItem {
   id: number;
@@ -70,9 +71,15 @@ const InspectionQueue: React.FC = () => {
   if (role !== 'inspector') {
     return (
       <DashboardLayout>
-        <div className="bg-error/10 border border-error/30 text-error px-5 py-4 rounded-lg flex items-center gap-2">
-          <ShieldAlert size={18} /> Inspection area — inspector account only.
-        </div>
+        <RedwoodPage>
+          <RedwoodPageHeader
+            eyebrow="Restricted workspace"
+            title="Inspection queue"
+            description="Vehicle handover inspections are available only to inspector accounts."
+            icon={<ShieldAlert size={20} />}
+            actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/')}>Return to dashboard</button>}
+          />
+        </RedwoodPage>
       </DashboardLayout>
     );
   }
@@ -227,33 +234,35 @@ const InspectionQueue: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div>
-          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-            <ClipboardCheck className="text-warning" size={24} /> Inspection Queue
-          </h1>
-          <p className="text-base-content/60 text-sm mt-1">
-            Pending pickup inspections + your completed reports
-          </p>
-        </div>
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Vehicle handover"
+          title="Inspection queue"
+          description="Complete pickup inspections, record vehicle condition, and access completed reports."
+          icon={<ClipboardCheck size={21} />}
+          context={
+            <>
+              <RedwoodContextItem label="Waiting" value={items.length} />
+              <RedwoodContextItem label="Completed" value={done.length} />
+            </>
+          }
+        />
 
         {/* Pending */}
-        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
-          <div className="px-5 py-3 bg-warning/10 border-b border-warning/30">
-            <h2 className="text-sm font-bold text-warning uppercase tracking-wide">Waiting for Inspection</h2>
-          </div>
+        <RedwoodSection
+          title="Waiting for inspection"
+          description="Pickup contracts that require a condition report before handover."
+          actions={<span className="badge badge-warning">{items.length} waiting</span>}
+          contentMode="flush"
+        >
           <div className="overflow-x-auto">
             <table className="app-table">
-              <thead className="bg-base-200 border-b border-base-300">
+              <thead>
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Pickup Date</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Action</th>
+                  <th>Booking</th><th>Customer</th><th>Vehicle</th><th>Pickup date</th><th><span className="sr-only">Action</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-base-300">
                 {items.map((r) => (
                   <tr key={r.id} className="hover:bg-base-200/60">
                     <td className="px-5 py-4 font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
@@ -268,7 +277,7 @@ const InspectionQueue: React.FC = () => {
                         onClick={() => navigate(`/inspection-view/${r.id}`)}
                         className="btn btn-warning btn-sm px-4 text-sm font-medium"
                       >
-                        <Box size={16} /> Start 3D Inspection
+                        <Box size={16} aria-hidden /> Start inspection
                       </button>
                     </td>
                   </tr>
@@ -283,27 +292,23 @@ const InspectionQueue: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </RedwoodSection>
 
         {/* Completed */}
-        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
-          <div className="px-5 py-3 bg-success/10 border-b border-success/30">
-            <h2 className="text-sm font-bold text-success uppercase tracking-wide">Completed Inspections</h2>
-          </div>
+        <RedwoodSection
+          title="Completed inspections"
+          description="Condition reports completed by the current inspection team."
+          actions={<span className="badge badge-success">{done.length} completed</span>}
+          contentMode="flush"
+        >
           <div className="overflow-x-auto">
             <table className="app-table">
-              <thead className="bg-base-200 border-b border-base-300">
+              <thead>
                 <tr>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Booking</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Customer</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Car</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Inspected At</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Damages</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+                  <th>Booking</th><th>Customer</th><th>Vehicle</th><th>Inspected at</th><th>Issues</th><th>Status</th><th><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-base-300">
                 {done.map((it) => (
                   <tr key={it.inspection_id} className="hover:bg-base-200/60">
                     <td className="px-5 py-4 font-medium text-base-content">{it.booking_number ?? `#${it.rental_id}`}</td>
@@ -327,14 +332,16 @@ const InspectionQueue: React.FC = () => {
                         <button
                           disabled
                           title="Inspection report page — coming next"
-                          className="p-2 text-base-content/60 cursor-not-allowed"
+                          className="btn btn-ghost btn-square btn-sm cursor-not-allowed"
+                          aria-label="Inspection report view unavailable"
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           onClick={() => downloadPdf(it)}
                           title="Download PDF report"
-                          className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                          className="btn btn-ghost btn-square btn-sm text-primary"
+                          aria-label={`Download report for ${it.booking_number ?? it.rental_id}`}
                         >
                           <Download size={16} />
                         </button>
@@ -352,8 +359,8 @@ const InspectionQueue: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </RedwoodSection>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

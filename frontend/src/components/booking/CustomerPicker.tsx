@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, UserPlus, Pencil } from 'lucide-react';
 import api from '../../services/api';
 import CustomerForm, { Customer } from '../customers/CustomerForm';
 import AppSelect, { type AppSelectOption } from '../common/AppSelect';
+import { RedwoodSection } from '../common/RedwoodPage';
 
 const initials = (name: string) =>
   name.split(' ').filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
@@ -66,7 +67,19 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <RedwoodSection
+        title="Find customer"
+        description="Search existing records or create a customer without leaving the contract flow."
+        actions={
+          <button
+            type="button"
+            onClick={() => setFormMode((v) => (v === 'new' ? null : 'new'))}
+            className="btn btn-primary btn-sm gap-2 whitespace-nowrap"
+          >
+            <UserPlus size={17} aria-hidden /> New customer
+          </button>
+        }
+      >
         <div className="min-w-0 flex-1">
           <AppSelect<CustomerOption>
             inputId="customer-picker"
@@ -98,13 +111,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
             )}
           />
         </div>
-        <button
-          onClick={() => setFormMode((v) => (v === 'new' ? null : 'new'))}
-          className="btn btn-primary h-12 min-h-12 whitespace-nowrap"
-        >
-          <UserPlus size={18} /> New Customer
-        </button>
-      </div>
+      </RedwoodSection>
 
       {formMode === 'new' && (
         <CustomerForm onSaved={handleSaved} onCancel={() => setFormMode(null)} />
@@ -115,7 +122,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
       )}
 
       {selected && (
-          <div className="card card-border bg-base-100 shadow-sm p-6">
+        <RedwoodSection title="Selected customer" description="Review credentials before continuing with this contract.">
           <div className="flex items-start gap-6">
             <div className="w-24 h-24 rounded-full bg-primary/10 text-primary text-2xl font-bold flex items-center justify-center shrink-0">
               {initials(selected.name)}
@@ -173,7 +180,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
               )}
             </div>
           </div>
-        </div>
+        </RedwoodSection>
       )}
     </div>
   );

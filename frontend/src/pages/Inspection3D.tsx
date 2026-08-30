@@ -59,9 +59,18 @@ const Inspection3D: React.FC = () => {
 
   if (role !== 'inspector') {
     return (
-      <div className="min-h-screen bg-base-200 flex items-center justify-center p-6">
-        <div className="bg-error/10 border border-error/30 text-error px-5 py-4 rounded-lg flex items-center gap-2">
-          <ShieldAlert size={18} /> Inspection area — inspector account only.
+      <div className="flex min-h-screen items-center justify-center bg-base-200 p-6">
+        <div className="redwood-section max-w-lg p-7 text-center">
+          <span className="mx-auto flex size-12 items-center justify-center rounded-btn bg-error/10 text-error">
+            <ShieldAlert size={22} aria-hidden />
+          </span>
+          <h1 className="mt-4 font-serif text-2xl text-base-content">Inspector access required</h1>
+          <p className="mt-2 text-sm leading-6 text-base-content/65">
+            Vehicle handover inspections are available only to inspector accounts.
+          </p>
+          <button type="button" className="btn btn-primary btn-sm mt-5" onClick={() => navigate('/')}>
+            Return to dashboard
+          </button>
         </div>
       </div>
     );
@@ -129,20 +138,24 @@ const Inspection3D: React.FC = () => {
     'http://localhost/car-rental-system/inspections-3d/index.html' + (params ? `?${params}` : '');
 
   return (
-    <div className="h-screen flex flex-col bg-base-200 text-base-content">
-      {/* الشريط العلوي */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-base-100 p-3 border-b border-base-300">
-        <div className="flex items-center gap-3">
+    <div className="redwood-visual-space">
+      <header className="redwood-visual-header">
+        <div className="flex min-w-0 items-center gap-3">
           <button
+            type="button"
             onClick={() => navigate('/inspection-queue')}
-            className="p-2 hover:bg-base-200 rounded-lg text-base-content/80"
+            className="btn btn-ghost btn-square btn-sm shrink-0"
             title="Back to queue"
+            aria-label="Back to inspection queue"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={20} aria-hidden />
           </button>
-          <div>
-            <h2 className="font-bold text-base-content">3D Damage Inspection — Pickup</h2>
-            <p className="text-xs text-base-content/60">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-primary">Pickup inspection</p>
+            <h1 className="truncate font-serif text-xl leading-tight text-base-content sm:text-2xl">
+              Vehicle condition workspace
+            </h1>
+            <p className="mt-1 truncate text-xs text-base-content/60">
               {rental
                 ? `${rental.booking_number ?? `#${rental.id}`} • ${rental.plate_number} • ${rental.customer_name}`
                 : 'Loading contract...'}
@@ -150,42 +163,57 @@ const Inspection3D: React.FC = () => {
           </div>
         </div>
         <button
+          type="button"
           onClick={saveReport}
           disabled={saving || !rental}
-          className="btn btn-success px-5 py-2 font-medium disabled:opacity-50"
+          className="btn btn-primary btn-sm shrink-0 sm:btn-md"
         >
-          <Save size={18} /> {saving ? 'Saving...' : 'Save Report & Release Car'}
+          <Save size={18} aria-hidden />
+          <span className="hidden sm:inline">{saving ? 'Saving inspection...' : 'Save inspection & release vehicle'}</span>
+          <span className="sm:hidden">{saving ? 'Saving...' : 'Save'}</span>
         </button>
-      </div>
+      </header>
 
       {error && (
-        <div className="bg-error/10 border-b border-error/30 text-error px-4 py-2 text-sm">{error}</div>
+        <div role="alert" className="border-b border-error/30 bg-error/10 px-4 py-2 text-sm text-error">
+          {error}
+        </div>
       )}
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Aside الأضرار — سكرول رأسي بس */}
-        <aside className="w-80 shrink-0 bg-base-100 border-r border-base-300 flex flex-col">
-          <div className="flex-1 overflow-y-auto p-5">
+      <div className="redwood-visual-layout">
+        <aside className="redwood-visual-panel" aria-label="Damage observations">
+          <div className="border-b border-base-300 px-5 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-semibold text-base-content">Damage observations</h2>
+                <p className="mt-1 text-xs text-base-content/60">Select the vehicle model to add an observation.</p>
+              </div>
+              <span className="badge badge-primary badge-sm">{damages.length}</span>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5">
             {damages.length === 0 ? (
-              <div className="text-center py-10">
-                <div className="w-16 h-16 mx-auto rounded-2xl border-2 border-dashed border-base-300 bg-base-200 flex items-center justify-center">
-                  <Crosshair size={22} className="text-base-content/60" />
-                </div>
-                <p className="text-sm font-bold text-base-content/80 mt-4">No damages recorded yet</p>
-                <p className="text-xs text-base-content/60 mt-1 leading-relaxed">
-                  Click any point on the vehicle above to register new damage
+              <div className="flex flex-col items-center px-3 py-10 text-center">
+                <span className="redwood-empty-icon">
+                  <Crosshair size={22} aria-hidden />
+                </span>
+                <p className="mt-4 text-sm font-semibold text-base-content">No damage recorded</p>
+                <p className="mt-1 max-w-56 text-xs leading-relaxed text-base-content/60">
+                  Select a point on the 3D vehicle to record its condition.
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
                 {damages.map((d, i) =>
                   editing === i ? (
-                    <div key={i} className="border border-primary/30 rounded-xl p-3 bg-primary/10/40 space-y-2">
+                    <div key={i} className="space-y-3 rounded-box border border-primary/30 bg-primary/10 p-3">
                       <input
                         value={ePart}
                         onChange={(ev) => setEPart(ev.target.value)}
                         placeholder="Part name"
-                        className="w-full px-3 py-1.5 border border-base-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                        className="input input-bordered input-sm w-full bg-base-100"
+                        aria-label="Vehicle part"
                       />
                       <div className="grid grid-cols-2 gap-2">
                         <AppSelect value={eType} onChange={setEType} size="sm" options={TYPES.map((type) => ({ value: type, label: type }))} />
@@ -196,22 +224,23 @@ const Inspection3D: React.FC = () => {
                         onChange={(ev) => setENotes(ev.target.value)}
                         rows={2}
                         placeholder="Notes"
-                        className="w-full px-3 py-1.5 border border-base-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                        className="textarea textarea-bordered textarea-sm w-full bg-base-100"
+                        aria-label="Damage notes"
                       />
                       <div className="flex items-center gap-1 justify-end">
-                        <button onClick={() => saveEdit(i)} title="Save" className="p-1.5 text-success hover:bg-success/10 rounded-lg">
-                          <Check size={15} />
+                        <button type="button" onClick={() => saveEdit(i)} title="Save changes" aria-label="Save changes" className="btn btn-ghost btn-square btn-xs text-success">
+                          <Check size={15} aria-hidden />
                         </button>
-                        <button onClick={() => setEditing(null)} title="Cancel" className="p-1.5 text-base-content/60 hover:bg-base-200 rounded-lg">
-                          <X size={15} />
+                        <button type="button" onClick={() => setEditing(null)} title="Cancel editing" aria-label="Cancel editing" className="btn btn-ghost btn-square btn-xs">
+                          <X size={15} aria-hidden />
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div key={i} className="border border-base-300 rounded-xl p-3 bg-base-200/60 min-w-0">
+                    <article key={i} className="redwood-card min-w-0 border border-base-300 bg-base-100 p-3">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm font-bold text-error break-words min-w-0">#{i + 1} — {d.part || '—'}</p>
-                        <span className="badge badge-ghost badge-sm shrink-0">
+                        <p className="min-w-0 break-words text-sm font-semibold text-base-content">{d.part || `Observation ${i + 1}`}</p>
+                        <span className={`badge badge-sm shrink-0 ${d.severity === 'Severe' ? 'badge-error' : d.severity === 'Moderate' ? 'badge-warning' : 'badge-neutral'}`}>
                           {d.severity || '—'}
                         </span>
                       </div>
@@ -220,50 +249,48 @@ const Inspection3D: React.FC = () => {
                       {Array.isArray(d.photos) && d.photos.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {d.photos.map((ph, pi) => (
-                            <img key={pi} src={ph} alt={`damage ${i + 1}`} className="w-16 h-12 object-cover rounded-lg border border-base-300" />
+                            <img key={pi} src={ph} alt={`damage ${i + 1}`} className="w-16 h-12 object-cover rounded-btn border border-base-300" />
                           ))}
                         </div>
                       )}
-                      <div className="flex items-center gap-1 mt-2 pt-2 border-t border-base-300">
-                        <button onClick={() => startEdit(i)} title="Edit" className="p-1.5 text-primary hover:bg-primary/10 rounded-lg">
-                          <Pencil size={14} />
+                      <div className="mt-3 flex items-center justify-end gap-1 border-t border-base-300 pt-2">
+                        <button type="button" onClick={() => startEdit(i)} title="Edit observation" aria-label={`Edit observation ${i + 1}`} className="btn btn-ghost btn-square btn-xs text-primary">
+                          <Pencil size={14} aria-hidden />
                         </button>
-                        <button onClick={() => deleteDamage(i)} title="Delete" className="p-1.5 text-error hover:bg-error/10 rounded-lg">
-                          <Trash2 size={14} />
+                        <button type="button" onClick={() => deleteDamage(i)} title="Delete observation" aria-label={`Delete observation ${i + 1}`} className="btn btn-ghost btn-square btn-xs text-error">
+                          <Trash2 size={14} aria-hidden />
                         </button>
                       </div>
-                    </div>
+                    </article>
                   )
                 )}
               </div>
             )}
           </div>
 
-          {/* Damage Log — تحت fixed */}
-          <div className="border-t border-base-300 p-4 bg-base-100 flex items-center justify-between shrink-0">
+          <div className="flex shrink-0 items-center justify-between border-t border-base-300 bg-base-200/55 p-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                <ClipboardList size={16} />
+              <div className="flex size-8 items-center justify-center rounded-btn bg-primary/10 text-primary">
+                <ClipboardList size={16} aria-hidden />
               </div>
               <div>
-                <p className="text-sm font-bold text-base-content">Damage Log</p>
-                <p className="text-[11px] text-base-content/60">Damages recorded on this vehicle</p>
+                <p className="text-sm font-semibold text-base-content">Inspection progress</p>
+                <p className="text-[11px] text-base-content/60">Review observations before saving</p>
               </div>
             </div>
             <span className="badge badge-primary badge-sm">{damages.length}</span>
           </div>
         </aside>
 
-        {/* الـ 3D */}
-        <div className="flex-1 relative overflow-hidden">
+        <main className="redwood-visual-canvas" aria-label="3D vehicle inspection canvas">
           <iframe
             ref={iframeRef}
             title="3D Car Inspection"
             src={iframeSrc}
-            style={{ position: 'absolute', left: 0, width: '100%', height: '100%', border: 'none', display: 'block' }}
+            className="absolute inset-0 block size-full border-0"
             allowFullScreen
           />
-        </div>
+        </main>
       </div>
     </div>
   );

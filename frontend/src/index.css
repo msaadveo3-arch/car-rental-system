@@ -2,10 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Oracle Sans';
+  src: url('./assets/fonts/OracleSans-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oracle Sans';
+  src: url('./assets/fonts/OracleSans-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oracle Sans';
+  src: url('./assets/fonts/OracleSans-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 html {
-  /* Keep the entire application at a consistent 90% UI density without
-     transform/zoom overflow that can clip full-width page layouts. */
-  font-size: 90%;
+  font-size: 100%;
+  scroll-behavior: smooth;
+}
+
+:root {
+  /* Oracle Redwood component geometry. These are deliberately role-specific:
+     controls 4px, cards 6px, regions/dialogs 8px, and badges remain pills. */
+  --redwood-radius-control: 0.25rem;
+  --redwood-radius-card: 0.375rem;
+  --redwood-radius-region: 0.5rem;
+  --redwood-radius-icon: 0.25rem;
+  --redwood-shadow-sm: 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --redwood-shadow-md: 0 0.5rem 2rem -10px rgb(0 0 0 / 0.3);
 }
 
 html,
@@ -16,25 +50,237 @@ body,
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  @apply bg-base-100 text-base-content antialiased;
+  font-family: 'Oracle Sans', 'Oracle Sans UI', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  @apply bg-base-200 text-base-content antialiased;
+  letter-spacing: -0.005em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  @apply bg-primary/20 text-base-content;
+}
+
+:focus-visible {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 3px;
 }
 
 @layer components {
   .app-page {
-    @apply space-y-6;
+    @apply mx-auto w-full max-w-[100rem] space-y-7;
+  }
+
+  .redwood-template {
+    @apply mx-auto flex w-full max-w-[100rem] min-w-0 flex-col gap-6;
+  }
+
+  .redwood-template-header {
+    @apply flex flex-col gap-5 border-b border-base-300 pb-6 lg:flex-row lg:items-end lg:justify-between;
+  }
+
+  .redwood-template-heading {
+    @apply min-w-0 space-y-2;
+  }
+
+  .redwood-template-icon {
+    @apply mt-1 flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary;
+    border-radius: var(--redwood-radius-icon);
+  }
+
+  .redwood-template-actions {
+    @apply flex shrink-0 flex-wrap items-center gap-3 lg:justify-end;
+  }
+
+  .redwood-context-row {
+    @apply mt-4 flex flex-wrap items-center gap-x-6 gap-y-3;
+  }
+
+  .redwood-context-item {
+    @apply flex items-baseline gap-2 border-r border-base-300 pr-6 last:border-r-0 last:pr-0;
+  }
+
+  .redwood-context-item span {
+    @apply text-xs text-base-content/55;
+  }
+
+  .redwood-context-item strong {
+    @apply text-sm font-semibold text-base-content;
+  }
+
+  .redwood-section {
+    @apply overflow-hidden border border-base-300 bg-base-100;
+    border-radius: var(--redwood-radius-region);
+    box-shadow: var(--redwood-shadow-sm);
+  }
+
+  .redwood-section-header {
+    @apply flex flex-col gap-3 border-b border-base-300 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6;
+  }
+
+  .redwood-section-title {
+    @apply text-base font-semibold tracking-tight text-base-content;
+  }
+
+  .redwood-section-description {
+    @apply mt-1 text-sm leading-5 text-base-content/60;
+  }
+
+  .redwood-section-actions {
+    @apply flex shrink-0 flex-wrap items-center gap-2;
+  }
+
+  .redwood-section-content {
+    @apply p-5 sm:p-6;
+  }
+
+  .redwood-collection-toolbar {
+    @apply flex flex-col gap-3 border-b border-base-300 bg-base-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5;
+  }
+
+  .redwood-search-field {
+    @apply flex h-10 min-w-52 max-w-md flex-1 items-center gap-2 border border-base-300 bg-base-100 px-3 text-base-content/60 transition-colors focus-within:border-primary;
+    border-radius: var(--redwood-radius-control);
+  }
+
+  .redwood-search-field:focus-within {
+    box-shadow: 0 0 0 3px oklch(var(--p) / 0.14);
+  }
+
+  .redwood-search-field input {
+    @apply h-auto min-h-0 w-full border-0 bg-transparent p-0 text-sm text-base-content outline-none;
+  }
+
+  .redwood-collection-summary {
+    @apply text-xs font-medium text-base-content/55;
+  }
+
+  .redwood-inline-create {
+    @apply flex flex-wrap items-center gap-3 border-b border-base-300 bg-base-200/45 px-4 py-4 sm:px-5;
+  }
+
+  .redwood-empty-icon {
+    @apply flex size-12 items-center justify-center bg-base-200 text-primary;
+    border-radius: var(--redwood-radius-icon);
+  }
+
+  .redwood-metric-band {
+    @apply grid overflow-hidden border border-base-300 bg-base-100 sm:grid-cols-2 xl:grid-cols-4;
+    border-radius: var(--redwood-radius-region);
+    box-shadow: var(--redwood-shadow-sm);
+  }
+
+  .redwood-metric-item {
+    @apply min-w-0 border-b border-base-300 p-5 transition-colors hover:bg-primary/5 focus-visible:z-10 sm:border-r;
+  }
+
+  .redwood-metric-item:nth-child(even) {
+    @apply sm:border-r-0;
+  }
+
+  .redwood-metric-item:nth-last-child(-n + 2) {
+    @apply sm:border-b-0;
+  }
+
+  .redwood-metric-icon {
+    @apply flex size-9 shrink-0 items-center justify-center bg-base-200 text-primary transition-colors group-hover:bg-primary/10;
+    border-radius: var(--redwood-radius-icon);
+  }
+
+  .redwood-metric-arrow {
+    @apply shrink-0 -translate-x-1 text-primary opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100;
+  }
+
+  @media (min-width: 1280px) {
+    .redwood-metric-item {
+      @apply border-b-0 border-r;
+    }
+
+    .redwood-metric-item:nth-child(even) {
+      @apply border-r;
+    }
+
+    .redwood-metric-item:last-child {
+      @apply border-r-0;
+    }
+  }
+
+  .redwood-form-grid {
+    @apply grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_18rem];
+  }
+
+  .redwood-form-main {
+    @apply min-w-0 space-y-6;
+  }
+
+  .redwood-form-aside {
+    @apply space-y-4 xl:sticky xl:top-24 xl:self-start;
+  }
+
+  .redwood-form-actions {
+    @apply sticky bottom-0 z-20 -mx-4 mt-auto flex flex-col gap-3 border-t border-base-300 bg-base-100/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:-mx-8 lg:px-8;
+  }
+
+  .redwood-wizard-nav {
+    @apply overflow-hidden border border-base-300 bg-base-100 xl:flex xl:h-full xl:min-h-0 xl:flex-col;
+    border-radius: var(--redwood-radius-region);
+  }
+
+  .redwood-wizard-nav > nav {
+    @apply min-h-0 flex-1 overflow-y-auto;
+  }
+
+  .redwood-wizard-panel {
+    @apply min-w-0 overflow-hidden border border-base-300 bg-base-100;
+    border-radius: var(--redwood-radius-region);
+    box-shadow: var(--redwood-shadow-sm);
+  }
+
+  .redwood-selection-summary {
+    @apply flex items-center gap-4 border border-primary/30 bg-primary/10 p-4;
+    border-radius: var(--redwood-radius-region);
+  }
+
+  .redwood-summary-panel {
+    @apply flex flex-col justify-between border border-primary/30 bg-primary/10 p-5;
+    border-radius: var(--redwood-radius-region);
+  }
+
+  .redwood-visual-space {
+    @apply flex h-screen min-h-0 flex-col overflow-hidden bg-base-200 text-base-content;
+  }
+
+  .redwood-visual-header {
+    @apply z-20 flex min-h-[4.75rem] shrink-0 items-center justify-between gap-3 border-b border-base-300 bg-base-100 px-3 py-3 sm:px-5;
+  }
+
+  .redwood-visual-layout {
+    @apply grid min-h-0 flex-1 grid-rows-[minmax(14rem,38vh)_minmax(20rem,1fr)] overflow-hidden md:grid-cols-[22rem_minmax(0,1fr)] md:grid-rows-1;
+  }
+
+  .redwood-visual-panel {
+    @apply flex min-h-0 flex-col overflow-hidden border-b border-base-300 bg-base-100 md:border-b-0 md:border-r;
+  }
+
+  .redwood-visual-canvas {
+    @apply relative min-h-0 overflow-hidden bg-base-200;
   }
 
   .app-page-title {
-    @apply text-2xl font-bold tracking-tight text-base-content;
+    @apply font-serif text-3xl font-normal leading-tight tracking-tight text-base-content;
   }
 
   .app-page-description {
-    @apply mt-1 text-sm text-base-content/60;
+    @apply mt-2 max-w-3xl text-sm leading-6 text-base-content/65;
   }
 
   .app-section-title {
-    @apply text-lg font-semibold text-base-content;
+    @apply text-lg font-semibold tracking-tight text-base-content;
   }
 
   .app-text-secondary {
@@ -46,7 +292,23 @@ body {
   }
 
   .app-card {
-    @apply card card-border bg-base-100 shadow-sm;
+    @apply card card-border bg-base-100;
+    border-radius: var(--redwood-radius-card);
+    box-shadow: var(--redwood-shadow-sm);
+    overflow: clip;
+  }
+
+  .card {
+    border-radius: var(--redwood-radius-card);
+  }
+
+  .redwood-card {
+    border-radius: var(--redwood-radius-card);
+  }
+
+  .alert,
+  .modal-box {
+    border-radius: var(--redwood-radius-region);
   }
 
   /* `card-border` is the shared card surface variant. DaisyUI v4 does not
@@ -56,38 +318,84 @@ body {
   }
 
   .app-card-body {
-    @apply card-body;
+    @apply card-body gap-5 p-5 sm:p-6;
   }
 
   .app-table {
-    @apply table table-zebra;
+    @apply table;
+    border-radius: 0;
+  }
+
+  .app-table thead {
+    @apply bg-base-200/80;
+  }
+
+  .app-table thead th {
+    @apply border-b border-base-300 py-3 text-xs font-semibold normal-case tracking-wide text-base-content/70;
+  }
+
+  .app-table tbody tr {
+    @apply border-b border-base-300/70 transition-colors last:border-b-0 hover:bg-primary/5;
+  }
+
+  .app-table tbody td {
+    @apply py-3.5;
   }
 
   .app-field {
-    @apply input input-bordered w-full bg-base-100;
+    @apply input input-bordered w-full bg-base-100 transition-colors;
   }
 
   .app-select {
-    @apply select select-bordered w-full bg-base-100;
+    @apply select select-bordered w-full bg-base-100 transition-colors;
   }
 
   .app-textarea {
-    @apply textarea textarea-bordered w-full bg-base-100;
+    @apply textarea textarea-bordered w-full bg-base-100 transition-colors;
   }
 
-  /* The booking stepper keeps DaisyUI's colors but uses a lighter connector
-     so the progress line does not compete with the active step. */
+  /* Redwood/JET train geometry adapted to the required vertical workflow:
+     24px markers, 2px connectors, compact 48px rows, and a bold current step. */
+  .booking-steps {
+    @apply w-full;
+  }
+
+  .booking-steps.steps-vertical .step {
+    min-height: 3rem;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    grid-template-rows: minmax(3rem, auto);
+    column-gap: 0.75rem;
+    justify-items: start;
+    text-align: start;
+    border-radius: 0;
+  }
+
   .booking-steps.steps-vertical .step::before {
-    width: 0.25rem;
+    width: 2px;
   }
 
   .booking-steps .step {
     color: oklch(var(--bc) / 0.55);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     font-weight: 600;
   }
 
+  .booking-steps .step::after {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .booking-steps .step[aria-current='step'] {
+    color: oklch(var(--bc));
+    font-weight: 700;
+  }
+
   .app-label {
-    @apply label-text font-medium text-base-content/70;
+    @apply label-text text-sm font-semibold text-base-content/75;
   }
 
   /* Normalize older page markup so tables and fields have the same DaisyUI
@@ -96,8 +404,8 @@ body {
     @apply w-full text-left;
   }
 
-  main table:not(.table) tbody tr:nth-child(even) {
-    @apply bg-base-200/40;
+main table:not(.table) tbody tr:nth-child(even) {
+    @apply bg-base-200/30;
   }
 
 main input:not([type='checkbox']):not([type='radio']):not([type='range']) {
@@ -121,7 +429,7 @@ main .app-react-select input {
   }
 
   main button:not(.btn) {
-    @apply min-h-10 rounded-btn text-sm font-medium;
+    @apply min-h-10 rounded-btn text-sm font-semibold;
   }
 
   main button:not(.btn).p-2 {
@@ -137,15 +445,123 @@ main .app-react-select input {
     @apply inline-flex h-12 min-h-12 items-center justify-center gap-2 rounded-btn px-4 text-sm font-semibold text-primary-content;
   }
 
-  /* One radius language: surfaces are rounded-box, controls are rounded-btn,
-     and status badges remain pills through DaisyUI's badge component. */
+  /* Compatibility for older page markup. Generic surfaces are regions (8px).
+     Form controls and buttons are normalized separately to 4px above. */
   main .rounded-xl:not(.badge):not(.avatar):not(.mask) {
-    border-radius: var(--rounded-box, 1rem);
+    border-radius: var(--redwood-radius-region);
   }
 
-  main .rounded-lg:not(.badge):not(.btn):not(.input):not(.select):not(.textarea):not(.avatar):not(.mask) {
-    border-radius: var(--rounded-btn, 0.5rem);
+  main .rounded-lg:not(input):not(select):not(textarea):not(button):not(a):not(.badge):not(.avatar):not(.mask) {
+    border-radius: var(--redwood-radius-region);
   }
+}
+
+/* Keep Redwood elevation available during Vite hot reload even when the
+   running process predates the Tailwind config change. */
+.shadow-redwood {
+  box-shadow: var(--redwood-shadow-sm);
+}
+
+.shadow-redwood-lg {
+  box-shadow: var(--redwood-shadow-md);
+}
+
+.btn {
+  @apply border-transparent font-semibold normal-case shadow-none transition-all;
+  min-height: 2.75rem;
+  height: auto;
+  padding: 0.625rem 1rem;
+  border-radius: var(--redwood-radius-control);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.btn-sm {
+  min-height: 2.25rem;
+  padding: 0.5rem 1rem;
+  line-height: 1.25rem;
+}
+
+.btn-square,
+.btn-circle {
+  width: 2.25rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0;
+  border-radius: var(--redwood-radius-control);
+}
+
+.btn-primary {
+  @apply shadow-sm;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.92);
+}
+
+.btn-ghost:hover {
+  @apply bg-base-200;
+}
+
+.input,
+.select,
+.textarea {
+  @apply border-base-300 shadow-none outline-none;
+  border-radius: var(--redwood-radius-control);
+}
+
+.input:focus,
+.input:focus-within,
+.select:focus,
+.textarea:focus {
+  @apply border-primary;
+  box-shadow: 0 0 0 3px oklch(var(--p) / 0.14);
+}
+
+.redwood-shell {
+  @apply bg-base-200;
+}
+
+.redwood-main {
+  position: relative;
+}
+
+.redwood-main::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: #c74634;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.redwood-page-header {
+  @apply flex flex-wrap items-start justify-between gap-4 border-b border-base-300 pb-5;
+}
+
+.redwood-page-header h1,
+.app-page > div:first-child > div:first-child > h1 {
+  @apply font-serif text-3xl font-normal leading-tight tracking-tight text-base-content;
+}
+
+.redwood-kicker {
+  @apply text-xs font-semibold uppercase tracking-[0.12em] text-primary;
+}
+
+.redwood-scrim {
+  background-color: rgb(20 25 25 / 0.58);
+  backdrop-filter: blur(2px);
+}
+
+.redwood-empty-state {
+  @apply flex min-h-44 flex-col items-center justify-center gap-3 px-6 py-10 text-center text-base-content/65;
+}
+
+.redwood-login-pattern {
+  background-color: #1e3133;
+  background-image: url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%234f7d7b' stroke-opacity='.34'%3E%3Cpath d='M-30 72c48-44 99-44 147 0s99 44 153 0'/%3E%3Cpath d='M-30 132c48-44 99-44 147 0s99 44 153 0'/%3E%3Cpath d='M-30 192c48-44 99-44 147 0s99 44 153 0'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 main span.rounded-full.border {
@@ -154,8 +570,17 @@ main span.rounded-full.border {
 
 /* DaisyUI v4 has semantic badge colors but no native `badge-soft` modifier.
    Keep the familiar DaisyUI variants and render them as soft theme-aware chips. */
-.badge {
-  @apply border-transparent font-medium;
+.badge,
+main span.rounded-full.border {
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: 0.375rem;
+  border-color: transparent;
+  font-size: 0.6875rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  font-stretch: condensed;
 }
 
 .badge.badge-primary {
@@ -186,22 +611,56 @@ main span.rounded-full.border {
   @apply bg-base-200 text-base-content/70;
 }
 
-/* DaisyUI supplies these semantic variables for both supported themes. */
-:root {
+/* Keep the Redwood token contract live during Tailwind/DaisyUI hot reloads.
+   The values mirror tailwind.config.js and use DaisyUI 4's OKLCH components. */
+:root,
+:root[data-theme='light'] {
   color-scheme: light;
+  --p: 41.7966% 0.040076 205.281565;
+  --pc: 100% 0 0;
+  --s: 55.8023% 0.016771 201.916086;
+  --sc: 100% 0 0;
+  --a: 57.0723% 0.167742 30.766463;
+  --ac: 100% 0 0;
+  --n: 29.774% 0.024879 204.248198;
+  --nc: 97.6346% 0.002862 84.558924;
+  --b1: 98.857% 0.001704 67.802833;
+  --b2: 95.3111% 0.003439 67.782181;
+  --b3: 86.9697% 0.007789 61.438126;
+  --bc: 25.9437% 0.004515 17.448203;
+  --in: 55.6035% 0.050492 192.30171;
+  --inc: 100% 0 0;
+  --su: 51.9543% 0.083106 155.582109;
+  --suc: 100% 0 0;
+  --wa: 54.7058% 0.125458 62.388408;
+  --wac: 100% 0 0;
+  --er: 52.222% 0.159494 30.276724;
+  --erc: 100% 0 0;
+  --rounded-box: 0.5rem;
+  --rounded-btn: 0.25rem;
+  --rounded-badge: 0.375rem;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-}
-
-/* Temporary compatibility for older screens while their controls use semantic
-   DaisyUI classes. This prevents a white surface or pale separator from leaking
-   into the Dark theme. */
-[data-theme='dark'] .bg-white {
-  background-color: hsl(var(--b1)) !important;
-}
-
-[data-theme='dark'] .divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
-  border-color: hsl(var(--b2)) !important;
+  --p: 75.2396% 0.043951 192.544466 !important;
+  --pc: 25.0739% 0.021608 200.862937 !important;
+  --s: 78.679% 0.016563 196.821122 !important;
+  --sc: 25.0739% 0.021608 200.862937 !important;
+  --a: 73.8717% 0.127991 30.976626 !important;
+  --ac: 21.9576% 0.030398 29.994506 !important;
+  --n: 25.8996% 0.02155 200.875479 !important;
+  --nc: 96.2625% 0.005146 67.763148 !important;
+  --b1: 25.9861% 0.00748 211.057776 !important;
+  --b2: 21.8354% 0.006362 214.434023 !important;
+  --b3: 38.2259% 0.011784 196.669232 !important;
+  --bc: 95.3111% 0.003439 67.782181 !important;
+  --in: 73.6245% 0.049114 191.122275 !important;
+  --inc: 24.1982% 0.021608 195.817104 !important;
+  --su: 73.0308% 0.080742 153.208975 !important;
+  --suc: 23.5824% 0.033058 157.244899 !important;
+  --wa: 79.3916% 0.120877 80.433852 !important;
+  --wac: 24.4051% 0.043948 76.338128 !important;
+  --er: 73.8717% 0.127991 30.976626 !important;
+  --erc: 22.1187% 0.040321 28.22062 !important;
 }

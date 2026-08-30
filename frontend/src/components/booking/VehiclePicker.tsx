@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { CarFront } from 'lucide-react';
 import api from '../../services/api';
 import AppSelect from '../common/AppSelect';
+import { RedwoodCollectionToolbar, RedwoodEmptyState, RedwoodSection } from '../common/RedwoodPage';
 
 interface Car {
   id: number;
@@ -57,43 +58,42 @@ const VehiclePicker: React.FC<{
 
   return (
     <div className="space-y-4">
-      <div className="card card-border grid grid-cols-1 gap-3 bg-base-100 p-4 shadow-sm lg:grid-cols-[minmax(0,1fr)_10rem_10rem]">
-        <div className="relative min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={18} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by make, model, or plate..."
-            className="pl-10 pr-4 py-2 border border-base-300 rounded-lg w-full focus:ring-2 focus:ring-primary outline-none"
-          />
-        </div>
-        <AppSelect
-          value={makeFilter}
-          onChange={setMakeFilter}
-          className="w-full"
-          options={[{ value: 'all', label: 'All Makes' }, ...makes.map((make) => ({ value: make, label: make }))]}
+      <RedwoodSection title="Available vehicles" description="Choose one ready vehicle for this contract." contentMode="flush">
+        <RedwoodCollectionToolbar
+          search={{ value: search, onChange: setSearch, placeholder: 'Search make, model, or plate' }}
+          filters={
+            <>
+              <AppSelect
+                value={makeFilter}
+                onChange={setMakeFilter}
+                size="sm"
+                className="w-44"
+                aria-label="Filter by make"
+                options={[{ value: 'all', label: 'All makes' }, ...makes.map((make) => ({ value: make, label: make }))]}
+              />
+              <AppSelect
+                value={groupFilter}
+                onChange={setGroupFilter}
+                size="sm"
+                className="w-44"
+                aria-label="Filter by vehicle group"
+                options={[{ value: 'all', label: 'All groups' }, ...groups.map((group) => ({ value: group, label: group }))]}
+              />
+            </>
+          }
+          summary={`${filteredCars.length} available`}
         />
-        <AppSelect
-          value={groupFilter}
-          onChange={setGroupFilter}
-          className="w-full"
-          options={[{ value: 'all', label: 'All Groups' }, ...groups.map((group) => ({ value: group, label: group }))]}
-        />
-      </div>
-
-      <div className="card card-border bg-base-100 shadow-sm overflow-x-auto">
+        {filteredCars.length === 0 ? (
+          <RedwoodEmptyState icon={<CarFront size={22} />} title="No available vehicles match" description="Adjust the search, make, or group filters to see other available vehicles." />
+        ) : (
+        <div className="overflow-x-auto">
         <table className="app-table">
-          <thead className="bg-base-200 border-b border-base-300">
+          <thead>
             <tr>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Vehicle</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Year / KM</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Fuel</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Engine / HP</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Rate / Day</th>
-              <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Select</th>
+              <th>Vehicle</th><th>Year / km</th><th>Fuel</th><th>Engine</th><th>Daily rate</th><th>Select</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-base-300">
             {filteredCars.map((c) => (
               <tr
                 key={c.id}
@@ -122,17 +122,14 @@ const VehiclePicker: React.FC<{
                 </td>
               </tr>
             ))}
-            {filteredCars.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-base-content/60">No available cars match</td>
-              </tr>
-            )}
           </tbody>
         </table>
-      </div>
+        </div>
+        )}
+      </RedwoodSection>
 
       {car && (
-        <div className="flex items-center gap-4 rounded-xl border border-primary/30 bg-primary/10 p-4">
+        <div className="redwood-selection-summary">
           <div className="min-w-0">
             <p className="font-bold text-base-content">{car.make} {car.model}</p>
             <p className="text-xs text-base-content/60">

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { CarFront, ArrowLeft, Save, Wrench, Briefcase } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { CarFront, Save, ShieldCheck } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AppSelect from '../components/common/AppSelect';
 import AppDatePicker from '../components/common/AppDatePicker';
+import { RedwoodContextItem, RedwoodFormActions, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 interface Lookup {
   id: number;
@@ -62,24 +63,7 @@ const emptyForm: FormState = {
   status: 'available', location: '', mileage: '0', fuel_level: 'full',
 };
 
-const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
-
-const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; desc: string }> = ({
-  icon,
-  title,
-  desc,
-}) => (
-  <div className="flex items-center gap-2 mb-4">
-    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-      {icon}
-    </div>
-    <div>
-      <h2 className="text-sm font-bold text-base-content">{title}</h2>
-      <p className="text-xs text-base-content/60">{desc}</p>
-    </div>
-  </div>
-);
+const inputCls = 'app-field';
 
 const CarForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -174,43 +158,31 @@ const CarForm: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div className="mx-auto space-y-6">
-          <div className="flex items-center gap-4">
-            <Link to="/cars" className="p-2 hover:bg-base-300 rounded-lg text-base-content/80">
-              <ArrowLeft size={20} />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-                <CarFront className="text-primary" size={24} />
-                {isEdit ? `Edit Car #${id}` : 'Add New Car'}
-              </h1>
-              <p className="text-base-content/60 text-sm mt-1">
-                {isEdit ? 'Update vehicle information' : 'Register a new vehicle in the fleet'}
-              </p>
-            </div>
-          </div>
+      <RedwoodPage>
+          <RedwoodPageHeader
+            eyebrow={isEdit ? 'Advanced edit' : 'Advanced create'}
+            title={isEdit ? `Vehicle ${form.plate_number || `#${id}`}` : 'Add vehicle'}
+            description={isEdit ? 'Update identity, factory specifications, and operational readiness.' : 'Register a fleet vehicle with its identity, specifications, and operating rates.'}
+            icon={<CarFront size={21} />}
+            backLabel="Vehicles"
+            onBack={() => navigate('/cars')}
+            context={isEdit && form.plate_number ? <><RedwoodContextItem label="Plate" value={form.plate_number} /><RedwoodContextItem label="Status" value={form.status.replace('_', ' ')} /></> : undefined}
+          />
 
           {error && (
-            <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
+            <div role="alert" className="alert alert-error"><span>{error}</span></div>
           )}
 
           {loading ? (
-            <div className="bg-white rounded-xl p-12 text-center text-base-content/60">Loading...</div>
+      <div className="app-card p-12 text-center text-base-content/60">Loading…</div>
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="card card-border bg-base-100 shadow-sm p-6 space-y-8"
+              className="redwood-form-grid"
             >
+              <div className="redwood-form-main">
               {/* 1) Vehicle Identity */}
-              <div>
-                <SectionHeader
-                  icon={<CarFront size={16} />}
-                  title="Vehicle Identity"
-                  desc="What identifies this exact unit"
-                />
+              <RedwoodSection title="Vehicle identity" description="Registration and identifying information for this exact fleet unit.">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-base-content/80 mb-1">Make *</label>
@@ -254,15 +226,10 @@ const CarForm: React.FC = () => {
                     <AppDatePicker value={form.registration_expiry} onChange={handleSelectChange('registration_expiry')} placeholder="Select registration expiry" />
                   </div>
                 </div>
-              </div>
+              </RedwoodSection>
 
               {/* 2) Technical Specs */}
-              <div>
-                <SectionHeader
-                  icon={<Wrench size={16} />}
-                  title="Technical Specs"
-                  desc="Factory catalog specifications"
-                />
+              <RedwoodSection title="Technical specifications" description="Factory configuration used for fleet classification and matching.">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-base-content/80 mb-1">Body Type</label>
@@ -293,15 +260,10 @@ const CarForm: React.FC = () => {
                     <AppSelect value={form.group_id} onChange={handleSelectChange('group_id')} placeholder="—" options={lookups.car_groups.map((group) => ({ value: group.id, label: group.name }))} />
                   </div>
                 </div>
-              </div>
+              </RedwoodSection>
 
               {/* 3) Operations & Pricing */}
-              <div>
-                <SectionHeader
-                  icon={<Briefcase size={16} />}
-                  title="Operations & Pricing"
-                  desc="Daily business: rates, status, and current condition"
-                />
+              <RedwoodSection title="Operations and pricing" description="Rental rates, current location, mileage, and operating condition.">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-base-content/80 mb-1">Daily Rate (AED)</label>
@@ -332,25 +294,38 @@ const CarForm: React.FC = () => {
                     <AppSelect value={form.fuel_level} onChange={handleSelectChange('fuel_level')} options={['full', 'high', 'medium', 'low', 'empty'].map((level) => ({ value: level, label: level[0].toUpperCase() + level.slice(1) }))} />
                   </div>
                 </div>
+              </RedwoodSection>
               </div>
 
-              <div className="flex justify-end gap-3 pt-2 border-t border-base-300">
-                <Link to="/cars" className="px-5 py-2.5 text-base-content/80 hover:bg-base-200 rounded-lg font-medium">
-                  Cancel
-                </Link>
+              <aside className="redwood-form-aside">
+                <RedwoodSection title="Fleet readiness">
+                  <div className="space-y-4 text-sm leading-6 text-base-content/65">
+                    <ShieldCheck size={22} className="text-primary" aria-hidden />
+                    <p>Registration, technical status, pricing, mileage, and fuel level determine whether this vehicle is ready for assignment.</p>
+                    <dl className="space-y-2 border-t border-base-300 pt-3">
+                      <div className="flex justify-between gap-3"><dt>Status</dt><dd className="font-semibold capitalize text-base-content">{form.status.replace('_', ' ')}</dd></div>
+                      <div className="flex justify-between gap-3"><dt>Mileage</dt><dd className="font-semibold text-base-content">{Number(form.mileage || 0).toLocaleString()} km</dd></div>
+                    </dl>
+                  </div>
+                </RedwoodSection>
+              </aside>
+
+              <div className="xl:col-span-2">
+              <RedwoodFormActions message="Required identity fields must be complete before saving.">
+                <button type="button" onClick={() => navigate('/cars')} className="btn btn-ghost">Cancel</button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary font-medium flex items-center gap-2 disabled:opacity-70"
+            className="btn btn-primary gap-2 disabled:opacity-70"
                 >
-                  <Save size={18} />
-                  {saving ? 'Saving...' : isEdit ? 'Update Car' : 'Save Car'}
+                  <Save size={18} aria-hidden />
+                  {saving ? 'Saving…' : isEdit ? 'Update vehicle' : 'Save vehicle'}
                 </button>
+              </RedwoodFormActions>
               </div>
             </form>
           )}
-        </div>
-      </div>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CarFront, Search, AlertTriangle, Plus, Pencil, Trash2 } from 'lucide-react';
+import { CarFront, AlertTriangle, Plus, Pencil, Trash2 } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AppSelect from '../components/common/AppSelect';
+import { RedwoodCollectionToolbar, RedwoodEmptyState, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 interface Car {
   id: number;
@@ -78,61 +79,54 @@ const Cars: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-              <CarFront className="text-primary" size={24} /> Cars
-            </h1>
-            <p className="text-base-content/60 text-sm mt-1">Fleet overview — {cars.length} vehicles</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={18} />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search plate, make, model..."
-                className="pl-10 pr-4 py-2 border border-base-300 rounded-lg w-64 focus:ring-2 focus:ring-primary outline-none"
-              />
-            </div>
-            <AppSelect
-              value={statusFilter}
-              onChange={setStatusFilter}
-              className="w-44"
-              options={[
-                { value: 'all', label: 'All Statuses' },
-                { value: 'available', label: 'Available' },
-                { value: 'rented', label: 'Rented' },
-                { value: 'maintenance', label: 'Maintenance' },
-                { value: 'out_of_service', label: 'Out of Service' },
-              ]}
-            />
-            <Link to="/cars/add"className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary font-medium">
-              <Plus size={18} /> Add New Car
-            </Link>
-          </div>
-        </div>
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Fleet management"
+          title="Vehicles"
+          description="Monitor availability, registration health, mileage, rates, and vehicle specifications."
+          icon={<CarFront size={21} />}
+          actions={<Link to="/cars/add" className="btn btn-primary gap-2"><Plus size={18} aria-hidden /> Add vehicle</Link>}
+        />
 
-        <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
+        <RedwoodSection title="Fleet inventory" description="Operational vehicles and their current readiness." contentMode="flush">
+          <RedwoodCollectionToolbar
+            search={{ value: search, onChange: setSearch, placeholder: 'Search plate, make, or model' }}
+            filters={
+              <AppSelect
+                value={statusFilter}
+                onChange={setStatusFilter}
+                size="sm"
+                className="w-48"
+                aria-label="Filter by vehicle status"
+                options={[
+                  { value: 'all', label: 'All statuses' },
+                  { value: 'available', label: 'Available' },
+                  { value: 'rented', label: 'Rented' },
+                  { value: 'maintenance', label: 'Maintenance' },
+                  { value: 'out_of_service', label: 'Out of service' },
+                ]}
+              />
+            }
+            summary={`${filtered.length} of ${cars.length} vehicles`}
+          />
           {loading ? (
-            <div className="p-12 text-center text-base-content/60">Loading cars...</div>
+            <div className="redwood-empty-state"><span className="loading loading-spinner loading-md" /><span>Loading vehicles…</span></div>
+          ) : filtered.length === 0 ? (
+            <RedwoodEmptyState
+              icon={<CarFront size={22} />}
+              title={search || statusFilter !== 'all' ? 'No vehicles match these filters' : 'No vehicles yet'}
+              description={search || statusFilter !== 'all' ? 'Clear or adjust the search and status filter.' : 'Add the first vehicle to begin managing the fleet.'}
+              action={!search && statusFilter === 'all' ? <Link to="/cars/add" className="btn btn-primary btn-sm">Add vehicle</Link> : undefined}
+            />
           ) : (
+            <div className="overflow-x-auto">
             <table className="app-table">
-              <thead className="bg-base-200 border-b border-base-300">
+              <thead>
                 <tr>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Vehicle</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Plate / Color</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Year / KM</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Fuel Type / Level</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Engine / HP</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Rate / Day</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Registration</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-                  <th className="px-5 py-4 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+                  <th>Vehicle</th><th>Plate / color</th><th>Year / km</th><th>Fuel</th><th>Engine</th><th>Daily rate</th><th>Registration</th><th>Status</th><th><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-base-300">
                 {filtered.map((c) => {
                   const days = daysToExpiry(c.registration_expiry);
                   return (
@@ -187,14 +181,16 @@ const Cars: React.FC = () => {
                           <Link
                             to={`/cars/edit/${c.id}`}
                             title="Edit"
-                            className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                            aria-label={`Edit ${c.plate_number}`}
+                            className="btn btn-ghost btn-square btn-sm text-primary"
                           >
                             <Pencil size={16} />
                           </Link>
                           <button
                             onClick={() => handleDelete(c.id, c.plate_number)}
                             title="Delete"
-                            className="p-2 text-error hover:bg-error/10 rounded-lg"
+                            aria-label={`Delete ${c.plate_number}`}
+                            className="btn btn-ghost btn-square btn-sm text-error hover:bg-error/10"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -205,9 +201,10 @@ const Cars: React.FC = () => {
                 })}
               </tbody>
             </table>
+            </div>
           )}
-        </div>
-      </div>
+        </RedwoodSection>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

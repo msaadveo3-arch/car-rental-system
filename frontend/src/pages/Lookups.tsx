@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Settings2, Plus, Pencil, Trash2, Check, X, Power, Search } from 'lucide-react';
+import { Settings2, Plus, Pencil, Trash2, Check, X, Power } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import BorderFees from '../components/lookups/BorderFees';
@@ -7,6 +7,7 @@ import VehicleModels from '../components/lookups/VehicleModels';
 import TariffsManager from '../components/lookups/TariffsManager';
 import KmPoliciesManager from '../components/lookups/KmPoliciesManager';
 import AppSelect from '../components/common/AppSelect';
+import { RedwoodCollectionToolbar, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 type LookupType =
   | 'body_types' | 'fuel_types' | 'transmissions' | 'car_groups'
@@ -178,57 +179,47 @@ const Lookups: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="app-page">
-        <div>
-          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-            <Settings2 className="text-primary" size={24} /> Lookups
-          </h1>
-          <p className="text-base-content/60 text-sm mt-1">
-            Manage catalog values — any change appears in the forms instantly
-          </p>
-        </div>
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Application setup"
+          title="Reference data"
+          description="Manage controlled catalog values used across vehicles, customers, pricing, and contracts."
+          icon={<Settings2 size={21} />}
+        />
 
         {error && (
-          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">
-            {error}
-          </div>
+          <div role="alert" className="alert alert-error"><span>{error}</span></div>
         )}
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <div className="w-full sm:w-64">
+        <RedwoodSection
+          title={TABS.find((tab) => tab.key === active)?.label ?? 'Reference data'}
+          description="Changes apply immediately to the corresponding application forms."
+          contentMode="flush"
+        >
+          <RedwoodCollectionToolbar
+            search={{ value: search, onChange: setSearch, placeholder: 'Search reference values' }}
+            filters={
               <AppSelect
                 value={active}
                 onChange={(value) => setActive(value as LookupType)}
+                size="sm"
+                className="w-56"
                 options={TABS.map((tab) => ({ value: tab.key, label: tab.label }))}
                 aria-label="Lookup category"
               />
-            </div>
-            <div className="relative w-full sm:w-80">
-              <Search
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60"
-                size={18}
-                aria-hidden="true"
-              />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search lookup values..."
-                aria-label="Search lookup values"
-                className="input input-bordered h-12 min-h-12 w-full bg-base-100 pl-10 pr-4 focus:outline-primary"
-              />
-            </div>
-          </div>
+            }
+            summary={isGenericLookup ? `${filteredItems.length} of ${items.length} values` : undefined}
+          />
 
           {isGenericLookup && (
-            <div className="flex w-full flex-wrap items-center justify-end gap-3 lg:w-auto lg:flex-1">
+            <div className="redwood-inline-create">
               <input
                 value={newName}
                 onChange={(event) => setNewName(event.target.value)}
                 onKeyDown={(event) => event.key === 'Enter' && add()}
                 placeholder="Add new lookup..."
                 aria-label="New lookup value"
-                className="input input-bordered h-12 min-h-12 min-w-56 flex-1 bg-base-100 lg:max-w-md"
+                className="app-field min-w-56 flex-1 lg:max-w-md"
               />
               {extras.map((field) => (
                 <input
@@ -240,15 +231,14 @@ const Lookups: React.FC = () => {
                   min={field.min}
                   placeholder={field.label}
                   aria-label={field.label}
-                  className="input input-bordered h-12 min-h-12 w-36 bg-base-100"
+                  className="app-field w-40"
                 />
               ))}
-              <button onClick={add} className="btn btn-primary h-12 min-h-12 gap-2 whitespace-nowrap">
+              <button onClick={add} className="btn btn-primary gap-2 whitespace-nowrap">
                 <Plus size={16} aria-hidden="true" /> Add
               </button>
             </div>
           )}
-        </div>
 
         {isGenericLookup && (
         <div className="space-y-4">
@@ -258,21 +248,18 @@ const Lookups: React.FC = () => {
           ) : (
             <div className="overflow-x-auto">
               <table className="app-table">
-                <thead className="bg-base-200 border-b border-base-300">
+                <thead>
                   <tr>
-                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Name</th>
+                    <th>Name</th>
                     {extras.map((f) => (
-                      <th key={f.key} className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">
+                      <th key={f.key}>
                         {f.label}
                       </th>
                     ))}
-                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Status</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Created</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Updated</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+                    <th>Status</th><th>Created</th><th>Updated</th><th><span className="sr-only">Actions</span></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-base-300">
                   {filteredItems.map((item) => (
                     <tr key={item.id} className={item.status !== 'active' ? 'opacity-50' : ''}>
                       <td className="px-5 py-3">
@@ -340,23 +327,26 @@ const Lookups: React.FC = () => {
                         <div className="flex items-center gap-1">
                           {editingId === item.id ? (
                             <>
-                              <button onClick={() => saveEdit(item.id)} title="Save" className="p-2 text-success hover:bg-success/10 rounded-lg">
-                                <Check size={16} />
+                              <button type="button" onClick={() => saveEdit(item.id)} title="Save" aria-label={`Save ${item.name}`} className="btn btn-ghost btn-square btn-sm text-success">
+                                <Check size={16} aria-hidden />
                               </button>
-                              <button onClick={() => setEditingId(null)} title="Cancel" className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg">
-                                <X size={16} />
+                              <button type="button" onClick={() => setEditingId(null)} title="Cancel" aria-label={`Cancel editing ${item.name}`} className="btn btn-ghost btn-square btn-sm">
+                                <X size={16} aria-hidden />
                               </button>
                             </>
                           ) : (
                             <>
                               <button
+                                type="button"
                                 onClick={() => toggle(item)}
                                 title={item.status === 'active' ? 'Deactivate' : 'Activate'}
-                                className="p-2 text-warning hover:bg-warning/10 rounded-lg"
+                                aria-label={`${item.status === 'active' ? 'Deactivate' : 'Activate'} ${item.name}`}
+                                className="btn btn-ghost btn-square btn-sm text-warning"
                               >
-                                <Power size={16} />
+                                <Power size={16} aria-hidden />
                               </button>
                               <button
+                                type="button"
                                 onClick={() => {
                                   setEditingId(item.id);
                                   setEditName(item.name);
@@ -367,16 +357,19 @@ const Lookups: React.FC = () => {
                                   setEditExtras(ex);
                                 }}
                                 title="Edit"
-                                className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                                aria-label={`Edit ${item.name}`}
+                                className="btn btn-ghost btn-square btn-sm text-primary"
                               >
-                                <Pencil size={16} />
+                                <Pencil size={16} aria-hidden />
                               </button>
                               <button
+                                type="button"
                                 onClick={() => remove(item.id, item.name)}
                                 title="Delete"
-                                className="p-2 text-error hover:bg-error/10 rounded-lg"
+                                aria-label={`Delete ${item.name}`}
+                                className="btn btn-ghost btn-square btn-sm text-error"
                               >
-                                <Trash2 size={16} />
+                                <Trash2 size={16} aria-hidden />
                               </button>
                             </>
                           )}
@@ -402,7 +395,8 @@ const Lookups: React.FC = () => {
         {active === 'vehicle_models' && <VehicleModels searchQuery={search} />}
         {active === 'tariffs' && <TariffsManager searchQuery={search} />}
         {active === 'km_policies' && <KmPoliciesManager searchQuery={search} />}
-      </div>
+        </RedwoodSection>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

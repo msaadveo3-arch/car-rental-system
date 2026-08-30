@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, RefreshCw, Plus, Search, Trash2, Pencil } from 'lucide-react';
+import { Users, RefreshCw, Plus, Trash2, Pencil } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { RedwoodCollectionToolbar, RedwoodEmptyState, RedwoodPage, RedwoodPageHeader, RedwoodSection } from '../components/common/RedwoodPage';
 
 interface Customer {
   id: number;
@@ -60,60 +61,56 @@ const Customers: React.FC = () => {
 
   return (
     <DashboardLayout>
-    <div className="app-page">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-base-content flex items-center gap-2">
-            <Users className="text-primary" size={24} /> Customers
-          </h1>
-          <p className="text-base-content/60 text-sm mt-1">Manage your rental customers</p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={16} />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search customers..."
-              className="input input-bordered h-10 min-h-10 w-full bg-base-100 pl-9 pr-3 text-sm focus:outline-primary"
-            />
-          </div>
-          <div className="flex items-center gap-3">
+      <RedwoodPage>
+        <RedwoodPageHeader
+          eyebrow="Customer management"
+          title="Customers"
+          description="Find customer records, review rental credentials, and maintain contact details."
+          icon={<Users size={21} />}
+          actions={
           <Link
             to="/customers/add"
-            className="btn btn-primary h-10 min-h-10 whitespace-nowrap"
+            className="btn btn-primary gap-2 whitespace-nowrap"
           >
-            <Plus size={18} /> Add New Customer
+            <Plus size={18} aria-hidden /> Add customer
           </Link>
-          <button
-            onClick={loadCustomers}
-            className="btn btn-outline h-10 min-h-10 whitespace-nowrap"
-          >
-            <RefreshCw size={16} /> Refresh
-          </button>
-          </div>
-        </div>
-      </div>
+          }
+        />
 
-      <div className="card card-border bg-base-100 shadow-sm overflow-hidden">
+        <RedwoodSection
+          title="Customer directory"
+          description="All active customer profiles available to rental operations."
+          contentMode="flush"
+        >
+          <RedwoodCollectionToolbar
+            search={{ value: search, onChange: setSearch, placeholder: 'Search name, phone, email, or license' }}
+            summary={`${filteredCustomers.length} of ${customers.length} customers`}
+            actions={
+              <button onClick={loadCustomers} className="btn btn-ghost btn-sm gap-2">
+                <RefreshCw size={16} aria-hidden /> Refresh
+              </button>
+            }
+          />
         {loading ? (
-          <div className="p-12 text-center text-base-content/60">Loading customers...</div>
+          <div className="redwood-empty-state"><span className="loading loading-spinner loading-md" /><span>Loading customers…</span></div>
         ) : error ? (
-          <div className="p-12 text-center text-error">{error}</div>
+          <div role="alert" className="alert alert-error m-5 w-auto"><span>{error}</span></div>
+        ) : filteredCustomers.length === 0 ? (
+          <RedwoodEmptyState
+            icon={<Users size={22} />}
+            title={search ? 'No customers match your search' : 'No customers yet'}
+            description={search ? 'Try a different name, phone, email, or license number.' : 'Add the first customer to begin creating rental contracts.'}
+            action={!search ? <Link to="/customers/add" className="btn btn-primary btn-sm">Add customer</Link> : undefined}
+          />
         ) : (
+          <div className="overflow-x-auto">
           <table className="app-table">
-            <thead className="bg-base-200 border-b border-base-300">
+            <thead>
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">#</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">Name</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">Phone</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">Email</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">License</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">Address</th>
-                <th className="px-6 py-4 text-xs font-semibold text-base-content/60 uppercase">Actions</th>
+                <th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>License</th><th>Address</th><th><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-base-300">
                 {filteredCustomers.map((c) => (
                 <tr key={c.id} className="hover:bg-base-200/60">
                   <td className="px-6 py-4 text-base-content/60 text-sm">{c.id}</td>
@@ -127,14 +124,16 @@ const Customers: React.FC = () => {
                       <Link
                         to={`/customers/edit/${c.id}`}
                         title="Edit"
-                        className="p-2 text-primary hover:bg-primary/10 rounded-lg"
+                        aria-label={`Edit ${c.name}`}
+                        className="btn btn-ghost btn-square btn-sm text-primary"
                       >
                         <Pencil size={16} />
                       </Link>
                       <button
                         onClick={() => handleDelete(c.id, c.name)}
                         title="Delete"
-                        className="p-2 text-error hover:bg-error/10 rounded-lg"
+                        aria-label={`Delete ${c.name}`}
+                        className="btn btn-ghost btn-square btn-sm text-error hover:bg-error/10"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -144,9 +143,10 @@ const Customers: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         )}
-      </div>
-    </div>
+        </RedwoodSection>
+      </RedwoodPage>
     </DashboardLayout>
   );
 };

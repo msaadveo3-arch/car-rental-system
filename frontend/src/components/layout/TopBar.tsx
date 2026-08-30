@@ -1,59 +1,52 @@
 import React, { useState } from 'react';
-import { Home, Bell, Search, User, Settings, LogOut, Moon, Sun } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LogOut, Menu, Moon, Sun, UserRound } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useTheme } from '../../hooks/useTheme';
 
-const TopBar: React.FC = () => {
+const pageNames: Record<string, string> = {
+  '/': 'Dashboard',
+  '/customers': 'Customers',
+  '/cars': 'Fleet',
+  '/lookups': 'Reference data',
+  '/booking': 'New rental contract',
+  '/rentals': 'Rental contracts',
+  '/reports': 'Reports',
+  '/inspection-queue': 'Inspection queue',
+};
+
+interface TopBarProps {
+  onOpenNavigation: () => void;
+}
+
+const TopBar: React.FC<TopBarProps> = ({ onOpenNavigation }) => {
   const { user, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [notifications] = useState(6); // رقم ثابت للـ badge - هنربطه بـ API بعدين
+  const rootPath = `/${location.pathname.split('/').filter(Boolean)[0] ?? ''}`;
+  const pageName = pageNames[location.pathname] ?? pageNames[rootPath] ?? 'Fleet operations';
+  const displayName = (user as any)?.full_name ?? user?.name ?? 'User';
 
   return (
-    <header className="navbar min-h-16 bg-base-100 border-b border-base-300 shadow-sm px-4 sm:px-6 sticky top-0 z-50">
-      {/* Left: Search */}
-      <div className="flex items-center gap-4 flex-1">
-        <div className="relative w-52 sm:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60" size={16} />
-          <input
-            type="text"
-            placeholder="Search here..."
-            className="input input-bordered input-sm h-9 min-h-9 w-full bg-base-200 pl-9 pr-3 text-sm focus:outline-primary"
-            disabled
-            title="Search feature coming soon"
-          />
+    <header className="navbar sticky top-0 z-40 min-h-[4.5rem] border-b border-base-300 bg-base-100/95 px-3 backdrop-blur-sm sm:px-6">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <button
+          type="button"
+          className="btn btn-ghost btn-square btn-sm lg:hidden"
+          onClick={onOpenNavigation}
+          aria-label="Open navigation"
+        >
+          <Menu size={20} aria-hidden />
+        </button>
+        <div className="min-w-0">
+          <p className="text-[11px] font-medium text-base-content/50">Car rental system</p>
+          <p className="truncate text-sm font-semibold text-base-content">{pageName}</p>
         </div>
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center gap-3">
-        {/* Home */}
-        <button
-          onClick={() => navigate('/')}
-          className="btn btn-ghost btn-square btn-sm"
-          title="Home"
-        >
-          <Home size={20} />
-        </button>
-
-        {/* Notifications */}
-        <div className="relative">
-          <button
-            className="btn btn-ghost btn-square btn-sm relative"
-            title="Notifications"
-          >
-            <Bell size={20} />
-            {notifications > 0 && (
-              <span className="badge badge-error badge-xs absolute top-1 right-1 text-[10px] font-bold">
-                {notifications}
-              </span>
-            )}
-          </button>
-        </div>
-
+      <div className="flex items-center gap-1 sm:gap-2">
         <label
           className="swap swap-rotate btn btn-ghost btn-circle btn-sm"
           title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
@@ -74,11 +67,14 @@ const TopBar: React.FC = () => {
         <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
-            className="btn btn-ghost btn-circle btn-sm"
+            className="btn btn-ghost h-10 min-h-10 gap-2 rounded-btn px-2 sm:px-3"
+            aria-label="Open user menu"
+            aria-expanded={showDropdown}
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-primary-content font-bold text-sm">
-              {user?.name?.charAt(0).toUpperCase() || 'U'}
+            <div className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-content">
+              {displayName.charAt(0).toUpperCase()}
             </div>
+            <span className="hidden max-w-32 truncate text-sm font-medium md:inline">{displayName}</span>
           </button>
 
           {showDropdown && (
@@ -90,33 +86,15 @@ const TopBar: React.FC = () => {
               />
 
               {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-56 rounded-xl bg-base-100 shadow-lg border border-base-300 py-2 z-50">
+              <div className="absolute right-0 z-50 mt-2 w-56 rounded-box border border-base-300 bg-base-100 py-2 shadow-redwood-lg">
                 <div className="px-4 py-3 border-b border-base-300">
-                  <p className="text-sm font-semibold text-base-content">{user?.name || 'User'}</p>
+                  <p className="text-sm font-semibold text-base-content">{displayName}</p>
                   <p className="text-xs text-base-content/60">{user?.email || 'user@example.com'}</p>
                 </div>
 
-                <div className="py-2">
-                  <button
-                    onClick={() => {
-                      navigate('/profile');
-                      setShowDropdown(false);
-                    }}
-                    className="w-full px-4 py-2 text-sm text-base-content/80 hover:bg-base-200 flex items-center gap-2"
-                  >
-                    <User size={16} />
-                    Profile
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/settings');
-                      setShowDropdown(false);
-                    }}
-                    className="w-full px-4 py-2 text-sm text-base-content/80 hover:bg-base-200 flex items-center gap-2"
-                  >
-                    <Settings size={16} />
-                    Settings
-                  </button>
+                <div className="flex items-center gap-2 px-4 py-3 text-sm text-base-content/65">
+                  <UserRound size={16} aria-hidden />
+                  <span className="capitalize">{(user as any)?.role ?? 'staff'} access</span>
                 </div>
 
                 <div className="border-t border-base-300 py-2">
@@ -128,7 +106,7 @@ const TopBar: React.FC = () => {
                     className="w-full px-4 py-2 text-sm text-error hover:bg-error/10 flex items-center gap-2"
                   >
                     <LogOut size={16} />
-                    SignOut
+                    Sign out
                   </button>
                 </div>
               </div>
