@@ -81,7 +81,7 @@ const RentalDetails: React.FC = () => {
           context={
             <>
               <RedwoodContextItem label="Contract" value={r.contract_number ?? 'Not assigned'} />
-              <RedwoodContextItem label="Status" value={<span className={`badge badge-sm capitalize ${badge(r.status)}`}>{r.status}</span>} />
+              <RedwoodContextItem label="Status" value={<span className={`badge capitalize ${badge(r.status)}`}>{r.status}</span>} />
               <RedwoodContextItem label="Created by" value={r.staff_name ?? '—'} />
               <RedwoodContextItem label="Created" value={r.created_at ? new Date(r.created_at).toLocaleDateString() : '—'} />
             </>
@@ -92,7 +92,7 @@ const RentalDetails: React.FC = () => {
               <button
                 onClick={() => changeStatus('cancelled', `Cancel booking ${r.booking_number}?`)}
                 disabled={busy}
-                className="btn btn-outline btn-error px-4 disabled:opacity-50"
+                className="btn btn-outline btn-error disabled:opacity-50"
               >
                 <XCircle size={16} aria-hidden /> Cancel booking
               </button>
@@ -101,7 +101,7 @@ const RentalDetails: React.FC = () => {
               <button
                 onClick={() => changeStatus('returned', `Return car ${r.plate_number}?`)}
                 disabled={busy}
-                className="btn btn-warning px-4 disabled:opacity-50"
+                className="btn btn-warning disabled:opacity-50"
               >
                 <Undo2 size={16} aria-hidden /> Return vehicle
               </button>
@@ -110,7 +110,7 @@ const RentalDetails: React.FC = () => {
               <button
                 onClick={() => changeStatus('completed', `Close contract ${r.booking_number}?`)}
                 disabled={busy}
-                className="btn btn-neutral px-4 disabled:opacity-50"
+                className="btn btn-neutral disabled:opacity-50"
               >
                 <CheckCircle2 size={16} aria-hidden /> Complete contract
               </button>
@@ -201,7 +201,7 @@ const RentalDetails: React.FC = () => {
             <div>
               <p className="text-xs text-base-content/60">Received</p>
               <span
-                className={`badge badge-sm ${
+                className={`badge ${
                   Number(r.deposit_received) === 1
                     ? 'badge-success'
                     : 'badge-ghost'

@@ -38,7 +38,7 @@ type TariffsManagerProps = {
 };
 
 const inputCls =
-  'w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none';
+  'app-field';
 
 const labelCls = 'block text-sm font-medium text-base-content/80 mb-1';
 
@@ -236,7 +236,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
   return (
     <div className="space-y-6">
       {error && (
-        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div role="alert" className="alert alert-error">{error}</div>
       )}
 
       {/* Tariff lists */}
@@ -289,31 +289,31 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
           <tbody className="divide-y divide-base-300">
               {filteredTariffs.map((t) => (
                 <tr key={t.id} className={t.status !== 'active' ? 'opacity-50' : ''}>
-                  <td className="px-5 py-3">
+                  <td>
                     {editId === t.id ? (
                       <input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="w-full px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                        className="app-field-sm w-full"
                         autoFocus
                       />
                     ) : (
                       <span className="font-medium text-base-content">{t.name}</span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-base-content/80">{t.description ?? '—'}</td>
-                  <td className="px-5 py-3">
+                  <td className="text-base-content/80">{t.description ?? '—'}</td>
+                  <td>
                     <span
-                      className={`text-[11px] px-2 py-0.5 rounded-full border ${
+                      className={`badge ${
                         t.status === 'active'
-                          ? 'bg-success/10 text-success border-success/30'
-                          : 'bg-base-200 text-base-content/60 border-base-300'
+                          ? 'badge-success'
+                          : 'badge-ghost'
                       }`}
                     >
                       {t.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3">
+                  <td>
                     <div className="flex items-center gap-1">
                       {editId === t.id ? (
                         <>
@@ -417,7 +417,7 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                 type="checkbox"
                 checked={dDefault}
                 onChange={(e) => setDDefault(e.target.checked)}
-                className="w-4 h-4 text-primary rounded"
+                className="checkbox checkbox-primary checkbox-sm"
               />
               Default
             </label>
@@ -448,12 +448,12 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
           <tbody className="divide-y divide-base-300">
               {filteredDetails.map((d) => (
                 <tr key={d.id} className={d.status !== 'active' ? 'opacity-50' : ''}>
-                  <td className="px-5 py-3 font-medium text-base-content">{d.tariff_name}</td>
-                  <td className="px-5 py-3 text-base-content/80">{d.group_name}</td>
-                  <td className="px-5 py-3 text-base-content/80">{d.branch_name ?? 'All'}</td>
-                  <td className="px-5 py-3 text-base-content/80">{d.pricing_mode}</td>
-                  <td className="px-5 py-3 text-base-content/80">{d.rental_type}</td>
-                  <td className="px-5 py-3">
+                  <td className="font-medium text-base-content">{d.tariff_name}</td>
+                  <td className="text-base-content/80">{d.group_name}</td>
+                  <td className="text-base-content/80">{d.branch_name ?? 'All'}</td>
+                  <td className="text-base-content/80">{d.pricing_mode}</td>
+                  <td className="text-base-content/80">{d.rental_type}</td>
+                  <td>
                     {editDetailId === d.id ? (
                       <input
                         value={eRack}
@@ -461,16 +461,16 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                         type="number"
                         min="0"
                         step="0.5"
-                        className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none"
+                        className="app-field-sm w-24"
                         autoFocus
                       />
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">
+                      <span className="badge badge-warning">
                         AED {Number(d.rack_rate)}
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3">
+                  <td>
                     {editDetailId === d.id ? (
                       <input
                         value={eFloor}
@@ -478,24 +478,25 @@ const TariffsManager: React.FC<TariffsManagerProps> = ({ searchQuery = '' }) => 
                         type="number"
                         min="0"
                         step="0.5"
-                        className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none"
+                        className="app-field-sm w-24"
                       />
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full border bg-error/10 text-error border-error/30">
+                      <span className="badge badge-error">
                         AED {Number(d.floor_rate)}
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3">
+                  <td>
                     <button
                       onClick={() => toggleDefault(d)}
                       title={d.is_default ? 'Remove default' : 'Make default'}
-                      className={d.is_default ? 'text-warning' : 'text-base-content/60 hover:text-warning'}
+                      aria-label={d.is_default ? 'Remove default tariff rate' : 'Make tariff rate default'}
+                      className={`btn btn-ghost btn-square btn-sm ${d.is_default ? 'text-warning' : 'text-base-content/60 hover:text-warning'}`}
                     >
                       <Star size={18} fill={d.is_default ? 'currentColor' : 'none'} />
                     </button>
                   </td>
-                  <td className="px-5 py-3">
+                  <td>
                     <div className="flex items-center gap-1">
                       {editDetailId === d.id ? (
                         <>

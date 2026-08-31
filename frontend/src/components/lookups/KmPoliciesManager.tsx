@@ -126,7 +126,7 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
       <p className="text-sm leading-6 text-base-content/60">Define included kilometers, excess usage rates, and unlimited-distance add-ons by rental type and vehicle group.</p>
 
       {error && (
-        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm mb-4">{error}</div>
+        <div role="alert" className="alert alert-error mb-4">{error}</div>
       )}
 
       <div className="redwood-inline-create grid grid-cols-1 rounded-box border border-base-300 md:grid-cols-3">
@@ -170,41 +170,41 @@ const KmPoliciesManager: React.FC<KmPoliciesManagerProps> = ({ searchQuery = '' 
           <tbody className="divide-y divide-base-300">
             {filteredRows.map((p) => (
               <tr key={p.id} className={p.status !== 'active' ? 'opacity-50' : ''}>
-                <td className="px-5 py-3 font-medium text-base-content">{p.rental_type}</td>
-                <td className="px-5 py-3 text-base-content/80">{p.group_name}</td>
-                <td className="px-5 py-3">
+                <td className="font-medium text-base-content">{p.rental_type}</td>
+                <td className="text-base-content/80">{p.group_name}</td>
+                <td>
                   {editId === p.id ? (
-                    <input value={eMax} onChange={(e) => setEMax(e.target.value)} type="number" min="0" step="1" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" autoFocus />
+                    <input value={eMax} onChange={(e) => setEMax(e.target.value)} type="number" min="0" step="1" className="app-field-sm w-24" autoFocus />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-primary/10 text-primary border-primary/30">{p.max_km} km</span>
+                    <span className="badge badge-primary">{p.max_km} km</span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   {editId === p.id ? (
-                    <input value={eExtra} onChange={(e) => setEExtra(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" />
+                    <input value={eExtra} onChange={(e) => setEExtra(e.target.value)} type="number" min="0" step="0.5" className="app-field-sm w-24" />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">AED {Number(p.extra_km_rate)}</span>
+                    <span className="badge badge-warning">AED {Number(p.extra_km_rate)}</span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   {editId === p.id ? (
-                    <input value={eUnl} onChange={(e) => setEUnl(e.target.value)} type="number" min="0" step="0.5" className="w-24 px-2 py-1.5 border border-base-300 rounded-lg outline-none" />
+                    <input value={eUnl} onChange={(e) => setEUnl(e.target.value)} type="number" min="0" step="0.5" className="app-field-sm w-24" />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-success/10 text-success border-success/30">AED {Number(p.unlimited_daily_amount)}</span>
+                    <span className="badge badge-success">AED {Number(p.unlimited_daily_amount)}</span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   <span
-                    className={`text-[11px] px-2 py-0.5 rounded-full border ${
+                    className={`badge ${
                       p.status === 'active'
-                        ? 'bg-success/10 text-success border-success/30'
-                        : 'bg-base-200 text-base-content/60 border-base-300'
+                        ? 'badge-success'
+                        : 'badge-ghost'
                     }`}
                   >
                     {p.status}
                   </span>
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   <div className="flex items-center gap-1">
                     {editId === p.id ? (
                       <>

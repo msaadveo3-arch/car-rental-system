@@ -32,10 +32,10 @@ interface Car {
 }
 
 const statusStyles: Record<string, string> = {
-  available: 'bg-success/10 text-success border-success/30',
-  rented: 'bg-primary/10 text-primary border-primary/30',
-  maintenance: 'bg-warning/10 text-warning border-warning/30',
-  out_of_service: 'bg-error/10 text-error border-error/30',
+  available: 'badge-success',
+  rented: 'badge-primary',
+  maintenance: 'badge-warning',
+  out_of_service: 'badge-error',
 };
 
 const Cars: React.FC = () => {
@@ -131,35 +131,35 @@ const Cars: React.FC = () => {
                   const days = daysToExpiry(c.registration_expiry);
                   return (
                     <tr key={c.id} className="hover:bg-base-200/60">
-                      <td className="px-5 py-4">
+                      <td>
                         <p className="font-semibold text-base-content">{c.make} {c.model}</p>
                         <span className="text-xs text-base-content/60">
                           {c.car_group} • {c.body_type} • {c.seats} seats
                         </span>
                       </td>
-                      <td className="px-5 py-4">
+                      <td>
                         <p className="font-medium text-base-content">{c.plate_number}</p>
                         <span className="text-xs text-base-content/60">{c.color}</span>
                         {c.vin && <span className="block text-[11px] text-base-content/60">VIN: {c.vin}</span>}
                       </td>
-                      <td className="px-5 py-4 text-base-content/80">
+                      <td className="text-base-content/80">
                         {c.year}
                         <span className="block text-xs text-base-content/60">
                           {Number(c.mileage).toLocaleString()} km
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-base-content/80">
+                      <td className="text-base-content/80">
                         {c.fuel_type}
                         <span className="block text-xs text-base-content/60 capitalize">{c.fuel_level}</span>
                       </td>
-                      <td className="px-5 py-4 text-base-content/80">
+                      <td className="text-base-content/80">
                         {c.engine_capacity} cc
                         <span className="block text-xs text-base-content/60">{c.horsepower} HP</span>
                       </td>
-                      <td className="px-5 py-4 font-semibold text-base-content">AED {c.daily_rate}</td>
-                      <td className="px-5 py-4">
+                      <td className="font-semibold text-base-content">AED {c.daily_rate}</td>
+                      <td>
                         {days !== null && days <= 30 ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-medium bg-error/10 text-error border border-error/30 px-2 py-1 rounded-full">
+                          <span className="badge badge-error gap-1">
                             <AlertTriangle size={12} />
                             {days <= 0 ? 'Expired!' : `Expires in ${days}d`}
                           </span>
@@ -167,16 +167,16 @@ const Cars: React.FC = () => {
                           <span className="text-base-content/80 text-sm">{c.registration_expiry}</span>
                         )}
                       </td>
-                      <td className="px-5 py-4">
+                      <td>
                         <span
-                          className={`text-xs font-medium px-2.5 py-1 rounded-full border ${
-                            statusStyles[c.status] ?? 'bg-base-200 text-base-content/80'
+                          className={`badge ${
+                            statusStyles[c.status] ?? 'badge-ghost'
                           }`}
                         >
                           {c.status.replace('_', ' ')}
                         </span>
                       </td>
-                                            <td className="px-5 py-4">
+                                            <td>
                         <div className="flex items-center gap-1">
                           <Link
                             to={`/cars/edit/${c.id}`}

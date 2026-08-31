@@ -35,8 +35,6 @@ export interface Customer {
   created_at: string | null;
 }
 
-const inputCls = 'app-field';
-
 const empty = {
   name: '', phone: '', email: '', customer_type_id: '', nationality: '', gender: '',
   birth_date: '', job: '',
@@ -50,7 +48,12 @@ const CustomerForm: React.FC<{
   initial?: Customer | null;
   onSaved: (c: Customer) => void;
   onCancel?: () => void;
-}> = ({ initial, onSaved, onCancel }) => {
+  size?: 'sm' | 'md';
+}> = ({ initial, onSaved, onCancel, size = 'md' }) => {
+  const compact = size === 'sm';
+  const inputCls = compact ? 'app-field-sm w-full' : 'app-field';
+  const textareaCls = compact ? 'app-textarea-sm' : 'app-textarea';
+  const buttonSize = compact ? 'btn-sm app-btn-sm' : '';
   const [customerTypes, setCustomerTypes] = useState<{ id: number; name: string }[]>([]);
   const [licenseTypes, setLicenseTypes] = useState<{ id: number; name: string }[]>([]);
 
@@ -132,7 +135,7 @@ const CustomerForm: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Customer Type *</label>
-            <AppSelect value={form.customer_type_id} onChange={setSelect('customer_type_id')} placeholder="—" options={customerTypes.map((type) => ({ value: type.id, label: type.name }))} />
+            <AppSelect size={size} value={form.customer_type_id} onChange={setSelect('customer_type_id')} placeholder="—" options={customerTypes.map((type) => ({ value: type.id, label: type.name }))} />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Nationality *</label>
@@ -140,15 +143,16 @@ const CustomerForm: React.FC<{
               value={form.nationality}
               onChange={(v) => setForm({ ...form, nationality: v })}
               required
+              size={size}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Gender *</label>
-            <AppSelect value={form.gender} onChange={setSelect('gender')} placeholder="—" options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }]} />
+            <AppSelect size={size} value={form.gender} onChange={setSelect('gender')} placeholder="—" options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }]} />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Birth Date *</label>
-            <AppDatePicker value={form.birth_date} onChange={setSelect('birth_date')} placeholder="Select birth date" required />
+            <AppDatePicker size={size} value={form.birth_date} onChange={setSelect('birth_date')} placeholder="Select birth date" required />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Job *</label>
@@ -166,11 +170,11 @@ const CustomerForm: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">ID Issue Date</label>
-            <AppDatePicker value={form.id_issue_date} onChange={setSelect('id_issue_date')} placeholder="Select issue date" />
+            <AppDatePicker size={size} value={form.id_issue_date} onChange={setSelect('id_issue_date')} placeholder="Select issue date" />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">ID Expiry Date</label>
-            <AppDatePicker value={form.id_expiry_date} onChange={setSelect('id_expiry_date')} placeholder="Select expiry date" />
+            <AppDatePicker size={size} value={form.id_expiry_date} onChange={setSelect('id_expiry_date')} placeholder="Select expiry date" />
           </div>
         </div>
       </RedwoodSection>
@@ -180,7 +184,7 @@ const CustomerForm: React.FC<{
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">License Type</label>
-            <AppSelect value={form.license_type_id} onChange={setSelect('license_type_id')} placeholder="—" options={licenseTypes.map((type) => ({ value: type.id, label: type.name }))} />
+            <AppSelect size={size} value={form.license_type_id} onChange={setSelect('license_type_id')} placeholder="—" options={licenseTypes.map((type) => ({ value: type.id, label: type.name }))} />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">License Number</label>
@@ -188,11 +192,11 @@ const CustomerForm: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">License Issue Date</label>
-            <AppDatePicker value={form.license_issue_date} onChange={setSelect('license_issue_date')} placeholder="Select issue date" />
+            <AppDatePicker size={size} value={form.license_issue_date} onChange={setSelect('license_issue_date')} placeholder="Select issue date" />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">License Expiry Date</label>
-            <AppDatePicker value={form.license_expiry_date} onChange={setSelect('license_expiry_date')} placeholder="Select expiry date" />
+            <AppDatePicker size={size} value={form.license_expiry_date} onChange={setSelect('license_expiry_date')} placeholder="Select expiry date" />
           </div>
         </div>
       </RedwoodSection>
@@ -222,7 +226,7 @@ const CustomerForm: React.FC<{
       {/* Notes */}
       <RedwoodSection title="Internal notes" description="Operational notes are visible to staff managing this customer.">
         <label className="block text-sm font-medium text-base-content/80 mb-1">Notes</label>
-        <textarea value={form.notes} onChange={set('notes')} rows={3} className="app-textarea" />
+        <textarea value={form.notes} onChange={set('notes')} rows={compact ? 2 : 3} className={textareaCls} />
       </RedwoodSection>
       </div>
 
@@ -238,11 +242,11 @@ const CustomerForm: React.FC<{
 
       <div className="xl:col-span-2">
       <RedwoodFormActions message="Changes are validated before the record is saved.">
-        {onCancel && <button type="button" onClick={onCancel} className="btn btn-ghost">Cancel</button>}
+        {onCancel && <button type="button" onClick={onCancel} className={`btn btn-ghost ${buttonSize}`}>Cancel</button>}
         <button
           type="submit"
           disabled={saving}
-          className="btn btn-primary gap-2 disabled:opacity-60"
+          className={`btn btn-primary gap-2 disabled:opacity-60 ${buttonSize}`}
         >
           <Save size={16} aria-hidden /> {saving ? 'Saving…' : initial ? 'Update customer' : 'Save customer'}
         </button>

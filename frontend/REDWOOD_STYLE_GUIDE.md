@@ -15,7 +15,7 @@ This frontend adapts Oracle Redwood’s visual and interaction principles to the
 - Start with page templates: welcome, dashboard, collection, detail, and advanced create/edit layouts shape the application shell and route pages.
 - Use a large, readable default scale with sentence-case headings, shallow hierarchy, and concise labels.
 - Use warm neutral surfaces and restrained enterprise-product teal. Oracle Red is a small brand accent, never the dominant action color.
-- Use Oracle Sans when it is installed locally, then fall back to the platform UI stack. Georgia is reserved for prominent welcome and page titles.
+- Use the bundled Oracle Sans files for application text, with the platform UI stack as fallback. Georgia is reserved for prominent welcome and page titles; standard page titles are 28px/36px at weight 400.
 - Keep one clear primary action in a page header. Secondary actions stay visually quieter.
 - Prefer flat bordered surfaces, modest elevation, generous whitespace, and role-specific geometry. Gradients are not part of this adaptation.
 - Tables remain the primary desktop collection component, with horizontal scrolling on narrow screens, explicit headers, calm row hover feedback, and action-oriented empty states.
@@ -60,7 +60,7 @@ Standard buttons use 14px type, a 24px line height, and `0.625rem 1rem` padding.
 - Advanced create/edit screens use a main form column, contextual guidance rail, grouped sections, and persistent `RedwoodFormActions`.
 - Object-detail screens expose record context and status in the page header, then group read-only attributes into scannable sections.
 - Guided transactions keep one active step mounted, show progress and context continuously, and provide persistent Back/Next actions.
-- The rental workflow keeps a vertical, scroll-safe step rail with Redwood/JET train geometry: 24px markers, 2px connectors, 14px labels, and a bold selected label.
+- The rental workflow keeps a vertical, scroll-safe step rail with Redwood/JET train geometry: 24px markers, 2px connectors, 14px labels, and a bold selected label. On narrow screens the same rail is available through a compact “Step X of 9” disclosure instead of consuming the content viewport.
 - Visual workspaces reserve the largest region for the interactive canvas and keep observations in a responsive adjacent panel.
 - Inputs use shared components or `.app-field`, `.app-select`, and `.app-textarea`.
 - Selects, date pickers, and dialogs continue to use `AppSelect`, `AppDatePicker`, and `Modal`.

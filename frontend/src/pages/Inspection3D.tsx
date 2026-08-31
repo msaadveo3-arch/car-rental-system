@@ -188,7 +188,7 @@ const Inspection3D: React.FC = () => {
                 <h2 className="text-base font-semibold text-base-content">Damage observations</h2>
                 <p className="mt-1 text-xs text-base-content/60">Select the vehicle model to add an observation.</p>
               </div>
-              <span className="badge badge-primary badge-sm">{damages.length}</span>
+              <span className="badge badge-primary">{damages.length}</span>
             </div>
           </div>
 
@@ -240,7 +240,7 @@ const Inspection3D: React.FC = () => {
                     <article key={i} className="redwood-card min-w-0 border border-base-300 bg-base-100 p-3">
                       <div className="flex items-start justify-between gap-2">
                         <p className="min-w-0 break-words text-sm font-semibold text-base-content">{d.part || `Observation ${i + 1}`}</p>
-                        <span className={`badge badge-sm shrink-0 ${d.severity === 'Severe' ? 'badge-error' : d.severity === 'Moderate' ? 'badge-warning' : 'badge-neutral'}`}>
+                        <span className={`badge shrink-0 ${d.severity === 'Severe' ? 'badge-error' : d.severity === 'Moderate' ? 'badge-warning' : 'badge-neutral'}`}>
                           {d.severity || '—'}
                         </span>
                       </div>
@@ -278,7 +278,7 @@ const Inspection3D: React.FC = () => {
                 <p className="text-[11px] text-base-content/60">Review observations before saving</p>
               </div>
             </div>
-            <span className="badge badge-primary badge-sm">{damages.length}</span>
+            <span className="badge badge-primary">{damages.length}</span>
           </div>
         </aside>
 

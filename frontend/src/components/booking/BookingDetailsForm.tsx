@@ -60,7 +60,7 @@ interface KmRow {
   status: string;
 }
 
-const inputCls = 'app-field';
+const inputCls = 'app-field-sm w-full';
 
 const BookingDetailsForm: React.FC<{
   value: BookingDraft;
@@ -152,7 +152,7 @@ const BookingDetailsForm: React.FC<{
         title="Rental setup"
         description="Contract type and originating business source."
         actions={days > 0 ? (
-            <span className="text-xs font-medium bg-primary/10 text-primary border border-primary/30 px-2 py-1 rounded-full">
+            <span className="badge badge-primary">
               Period: {days} Days • {band?.name ?? '—'}
             </span>
           ) : undefined}
@@ -163,12 +163,13 @@ const BookingDetailsForm: React.FC<{
             <input
               value={value.rentalType === 'monthly' ? 'Monthly' : 'Daily'}
               disabled
-              className="w-full px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80"
+              className="app-field-sm w-full bg-base-200 text-base-content/80"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Hirer Source</label>
             <AppSelect
+              size="sm"
               value={value.hirerSourceId}
               onChange={(hirerSourceId) => onChange({ hirerSourceId })}
               placeholder="—"
@@ -183,15 +184,16 @@ const BookingDetailsForm: React.FC<{
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Check-In (Pickup) *</label>
-            <AppDatePicker value={value.startDate} onChange={(startDate) => onChange({ startDate })} placeholder="Select pickup date" required />
+            <AppDatePicker size="sm" value={value.startDate} onChange={(startDate) => onChange({ startDate })} placeholder="Select pickup date" required />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Check-Out (Return) *</label>
-            <AppDatePicker value={value.endDate} onChange={(endDate) => onChange({ endDate })} placeholder="Select return date" required />
+            <AppDatePicker size="sm" value={value.endDate} onChange={(endDate) => onChange({ endDate })} placeholder="Select return date" required />
           </div>
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Pickup Location</label>
             <AppSelect
+              size="sm"
               value={value.pickupBranchId}
               onChange={(pickupBranchId) => {
                 const b = branches.find((x) => String(x.id) === pickupBranchId);
@@ -214,6 +216,7 @@ const BookingDetailsForm: React.FC<{
           <div>
             <label className="block text-sm font-medium text-base-content/80 mb-1">Drop-Off Location</label>
             <AppSelect
+              size="sm"
               value={value.returnBranchId}
               onChange={(returnBranchId) => {
                 const b = branches.find((x) => String(x.id) === returnBranchId);
@@ -241,37 +244,37 @@ const BookingDetailsForm: React.FC<{
       <RedwoodSection title="Mileage policy" description="Included distance and excess kilometer terms for this rental.">
 
         {!carGroupName && (
-          <div className="bg-warning/10 border border-warning/30 text-warning px-4 py-2.5 rounded-lg text-sm mb-4">
+          <div role="status" className="alert alert-warning mb-4 py-2.5">
             Select a vehicle first to load the KM policy
           </div>
         )}
 
         {carGroupName && !kmRow && days > 0 && (
-          <div className="bg-error/10 border border-error/30 text-error px-4 py-2.5 rounded-lg text-sm mb-4">
+          <div role="alert" className="alert alert-error mb-4 py-2.5">
             No KM policy configured for <strong>{carGroupName}</strong> • <strong>{band?.name ?? '—'}</strong> — add it in Lookups → KM Policies
           </div>
         )}
 
         <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-base-content/80">
+          <label className="flex min-h-9 items-center gap-2 text-sm text-base-content/80">
             <input
               type="radio"
               checked={value.kmPolicy === 'limited'}
               onChange={() => onChange({ kmPolicy: 'limited' })}
-              className="w-4 h-4"
+              className="radio radio-primary radio-xs"
             />
             Limited
           </label>
-          <label className="flex items-center gap-2 text-sm text-base-content/80">
+          <label className="flex min-h-9 items-center gap-2 text-sm text-base-content/80">
             <input
               type="radio"
               checked={value.kmPolicy === 'unlimited'}
               onChange={() => onChange({ kmPolicy: 'unlimited' })}
-              className="w-4 h-4"
+              className="radio radio-primary radio-xs"
             />
             Unlimited
             {kmRow && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full border bg-success/10 text-success border-success/30">
+              <span className="badge badge-success">
                 + AED {Number(kmRow.unlimited_daily_amount)}/day
               </span>
             )}
@@ -284,7 +287,7 @@ const BookingDetailsForm: React.FC<{
                   type="number"
                   value={value.allowedKm}
                   readOnly
-                  className="w-28 px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80 font-medium"
+                  className="app-field-sm w-28 bg-base-200 font-medium text-base-content/80"
                 />
                 <span className="text-xs text-base-content/60 font-medium">KM Total</span>
               </div>
@@ -294,7 +297,7 @@ const BookingDetailsForm: React.FC<{
                   step="0.5"
                   value={value.extraKmFee}
                   readOnly
-                  className="w-24 px-4 py-2 border border-base-300 rounded-lg bg-base-200 text-base-content/80 font-medium"
+                  className="app-field-sm w-24 bg-base-200 font-medium text-base-content/80"
                 />
                 <span className="text-xs text-base-content/60 font-medium">AED/Extra KM</span>
               </div>
@@ -313,23 +316,24 @@ const BookingDetailsForm: React.FC<{
       <RedwoodSection title="Cross-border travel" description="Optional destination and the applicable vehicle-group fee.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <AppSelect
+            size="sm"
             value={value.crossBorderId}
             onChange={(crossBorderId) => onChange({ crossBorderId })}
             placeholder="No cross border"
             options={borders.map((border) => ({ value: border.id, label: border.name }))}
           />
           {border && !carGroupName && (
-            <div className="bg-base-200 border border-base-300 text-base-content/60 px-4 py-2.5 rounded-lg text-sm">
+            <div className="alert border-base-300 bg-base-200 py-2.5 text-base-content/60">
               Select a vehicle to see the group rate
             </div>
           )}
           {border && carGroupName && borderFee && (
-            <div className="bg-warning/10 border border-warning/30 text-warning px-4 py-2.5 rounded-lg text-sm font-medium">
+            <div role="status" className="alert alert-warning py-2.5 font-medium">
               + AED {Number(borderFee.fee)} fee applies ({carGroupName} rate)
             </div>
           )}
           {border && carGroupName && !borderFee && (
-            <div className="bg-error/10 border border-error/30 text-error px-4 py-2.5 rounded-lg text-sm">
+            <div role="alert" className="alert alert-error py-2.5">
               No fee configured for {carGroupName} → {border.name} — add it in Lookups
             </div>
           )}
@@ -339,7 +343,7 @@ const BookingDetailsForm: React.FC<{
       {/* NOTES */}
       <RedwoodSection title="Contract notes" description="Operational notes carried with the rental transaction.">
         <label className="block text-sm font-medium text-base-content/80 mb-1">Notes</label>
-        <textarea rows={3} value={value.notes} onChange={(e) => onChange({ notes: e.target.value })} className="app-textarea" />
+        <textarea rows={2} value={value.notes} onChange={(e) => onChange({ notes: e.target.value })} className="app-textarea-sm" />
       </RedwoodSection>
     </div>
   );

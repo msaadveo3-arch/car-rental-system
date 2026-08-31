@@ -77,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onMobileClose }) => {
                 'flex items-center gap-3 rounded-btn py-2.5 text-sm font-medium transition-colors duration-200',
                 collapsed ? 'lg:justify-center lg:px-0' : 'px-3',
                 isActive
-                  ? 'bg-neutral-content text-neutral shadow-sm'
+                  ? 'bg-neutral-content/15 text-neutral-content'
                   : 'text-neutral-content/70 hover:bg-neutral-content/10 hover:text-neutral-content',
               ].join(' ')
             }

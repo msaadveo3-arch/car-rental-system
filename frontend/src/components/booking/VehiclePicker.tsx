@@ -100,24 +100,24 @@ const VehiclePicker: React.FC<{
                 onClick={() => onSelect(c.id)}
                 className={`cursor-pointer ${selectedId === c.id ? 'bg-primary/10' : 'hover:bg-base-200/60'}`}
               >
-                <td className="px-5 py-3">
+                <td>
                   <p className="font-semibold text-base-content">{c.make} {c.model}</p>
                   <span className="text-xs text-base-content/60">{c.car_group} • {c.plate_number}</span>
                 </td>
-                <td className="px-5 py-3 text-base-content/80">
+                <td className="text-base-content/80">
                   {c.year}
                   <span className="block text-xs text-base-content/60">{Number(c.mileage).toLocaleString()} km</span>
                 </td>
-                <td className="px-5 py-3 text-base-content/80">{c.fuel_type}</td>
-                <td className="px-5 py-3 text-base-content/80">{c.engine_capacity ?? '—'} / {c.horsepower} HP</td>
-                <td className="px-5 py-3 font-semibold text-base-content">AED {c.daily_rate}</td>
-                <td className="px-5 py-3">
+                <td className="text-base-content/80">{c.fuel_type}</td>
+                <td className="text-base-content/80">{c.engine_capacity ?? '—'} / {c.horsepower} HP</td>
+                <td className="font-semibold text-base-content">AED {c.daily_rate}</td>
+                <td>
                   <input
                     type="radio"
                     name="vehicle"
                     checked={selectedId === c.id}
                     onChange={() => onSelect(c.id)}
-                    className="w-4 h-4 text-primary"
+                    className="radio radio-primary radio-xs"
                   />
                 </td>
               </tr>

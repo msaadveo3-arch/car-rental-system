@@ -241,7 +241,7 @@ const TariffSummary: React.FC<{
               min="0"
               value={value.discount}
               onChange={(e) => onChange({ discount: e.target.value })}
-              className="app-field h-9 min-h-9 w-28 text-right"
+                className="app-field-sm w-28 text-right"
             />
           </div>
           {capped && (

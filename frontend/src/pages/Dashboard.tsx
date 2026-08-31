@@ -126,7 +126,7 @@ const Dashboard: React.FC = () => {
                         <td><span className="font-mono text-xs text-base-content/75">{r.plate_number || '—'}</span></td>
                         <td><span className="block text-sm text-base-content/80">{r.start_date?.slice(0, 10) || '—'}</span><span className="block text-xs text-base-content/50">to {r.end_date?.slice(0, 10) || '—'}</span></td>
                         <td className="text-right font-semibold tabular-nums">{r.total_amount != null ? `AED ${Number(r.total_amount).toLocaleString()}` : '—'}</td>
-                        <td><span className={`badge badge-sm capitalize ${statusBadge(r.status)}`}>{r.status}</span></td>
+                        <td><span className={`badge capitalize ${statusBadge(r.status)}`}>{r.status}</span></td>
                       </tr>
                     ))}
                     {!loading && rentals.length === 0 && <tr><td colSpan={6} className="py-10 text-center text-base-content/60">No contracts yet</td></tr>}

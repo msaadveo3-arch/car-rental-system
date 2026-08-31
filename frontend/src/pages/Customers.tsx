@@ -113,13 +113,13 @@ const Customers: React.FC = () => {
             <tbody className="divide-y divide-base-300">
                 {filteredCustomers.map((c) => (
                 <tr key={c.id} className="hover:bg-base-200/60">
-                  <td className="px-6 py-4 text-base-content/60 text-sm">{c.id}</td>
-                  <td className="px-6 py-4 font-medium text-base-content">{c.name}</td>
-                  <td className="px-6 py-4 text-base-content/80">{c.phone}</td>
-                  <td className="px-6 py-4 text-base-content/80">{c.email ?? '—'}</td>
-                  <td className="px-6 py-4 text-base-content/80">{c.license_number ?? '—'}</td>
-                  <td className="px-6 py-4 text-base-content/80">{c.address ?? '—'}</td>
-                  <td className="px-6 py-4">
+                  <td className="text-base-content/60 text-sm">{c.id}</td>
+                  <td className="font-medium text-base-content">{c.name}</td>
+                  <td className="text-base-content/80">{c.phone}</td>
+                  <td className="text-base-content/80">{c.email ?? '—'}</td>
+                  <td className="text-base-content/80">{c.license_number ?? '—'}</td>
+                  <td className="text-base-content/80">{c.address ?? '—'}</td>
+                  <td>
                     <div className="flex items-center gap-1">
                       <Link
                         to={`/customers/edit/${c.id}`}

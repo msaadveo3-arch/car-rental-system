@@ -43,9 +43,19 @@ const selectStyles = (size: 'sm' | 'md'): StylesConfig<AppSelectOption, false> =
     input: (base) => ({ ...base, height: '1.25rem', minHeight: 0, margin: 0, padding: 0, color: 'oklch(var(--bc))' }),
     placeholder: (base) => ({ ...base, color: 'oklch(var(--bc) / 0.55)' }),
     singleValue: (base) => ({ ...base, color: 'oklch(var(--bc))' }),
-    indicatorSeparator: (base) => ({ ...base, margin: '0.5rem 0', backgroundColor: 'oklch(var(--bc) / 0.2)' }),
-    dropdownIndicator: (base) => ({ ...base, padding: '0.625rem', color: 'oklch(var(--bc) / 0.6)' }),
-    clearIndicator: (base) => ({ ...base, padding: '0.625rem', color: 'oklch(var(--bc) / 0.6)' }),
+    indicatorSeparator: () => ({ display: 'none' }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      padding: size === 'sm' ? '0 0.625rem' : '0 0.875rem',
+      color: 'oklch(var(--bc) / 0.6)',
+      '& svg': { width: '1rem', height: '1rem' },
+    }),
+    clearIndicator: (base) => ({
+      ...base,
+      padding: size === 'sm' ? '0 0.625rem' : '0 0.875rem',
+      color: 'oklch(var(--bc) / 0.6)',
+      '& svg': { width: '1rem', height: '1rem' },
+    }),
     menu: (base) => ({ ...base, marginTop: '0.5rem', border: 0, boxShadow: 'none', backgroundColor: 'transparent' }),
     menuList: (base) => ({ ...base, maxHeight: '18rem', padding: 0 }),
     option: (base, state) => ({

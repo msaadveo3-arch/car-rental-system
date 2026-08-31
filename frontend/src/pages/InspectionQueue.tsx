@@ -265,17 +265,17 @@ const InspectionQueue: React.FC = () => {
                 <tbody className="divide-y divide-base-300">
                 {items.map((r) => (
                   <tr key={r.id} className="hover:bg-base-200/60">
-                    <td className="px-5 py-4 font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
-                    <td className="px-5 py-4 text-base-content/80">{r.customer_name}</td>
-                    <td className="px-5 py-4 text-base-content/80">
+                    <td className="font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
+                    <td className="text-base-content/80">{r.customer_name}</td>
+                    <td className="text-base-content/80">
                       {r.plate_number}
                       <span className="block text-xs text-base-content/60">{[r.make, r.model].filter(Boolean).join(' ')}</span>
                     </td>
-                    <td className="px-5 py-4 text-base-content/60 text-sm">{r.start_date?.slice(0, 10)}</td>
-                    <td className="px-5 py-4">
+                    <td className="text-base-content/60 text-sm">{r.start_date?.slice(0, 10)}</td>
+                    <td>
                       <button
                         onClick={() => navigate(`/inspection-view/${r.id}`)}
-                        className="btn btn-warning btn-sm px-4 text-sm font-medium"
+                        className="btn btn-warning btn-sm"
                       >
                         <Box size={16} aria-hidden /> Start inspection
                       </button>
@@ -311,23 +311,23 @@ const InspectionQueue: React.FC = () => {
                 <tbody className="divide-y divide-base-300">
                 {done.map((it) => (
                   <tr key={it.inspection_id} className="hover:bg-base-200/60">
-                    <td className="px-5 py-4 font-medium text-base-content">{it.booking_number ?? `#${it.rental_id}`}</td>
-                    <td className="px-5 py-4 text-base-content/80">{it.customer_name}</td>
-                    <td className="px-5 py-4 text-base-content/80">{it.plate_number}</td>
-                    <td className="px-5 py-4 text-base-content/60 text-xs">
+                    <td className="font-medium text-base-content">{it.booking_number ?? `#${it.rental_id}`}</td>
+                    <td className="text-base-content/80">{it.customer_name}</td>
+                    <td className="text-base-content/80">{it.plate_number}</td>
+                    <td className="text-base-content/60 text-xs">
                       {it.inspection_date ? new Date(it.inspection_date).toLocaleString() : '—'}
                     </td>
-                    <td className="px-5 py-4">
-                      <span className="badge badge-ghost badge-sm">
+                    <td>
+                      <span className="badge badge-ghost">
                         {safeParse(it.damage_report).length} issue(s)
                       </span>
                     </td>
-                    <td className="px-5 py-4">
-                      <span className="badge badge-success badge-sm capitalize">
+                    <td>
+                      <span className="badge badge-success capitalize">
                         {it.rental_status}
                       </span>
                     </td>
-                    <td className="px-5 py-4">
+                    <td>
                       <div className="flex items-center gap-1">
                         <button
                           disabled

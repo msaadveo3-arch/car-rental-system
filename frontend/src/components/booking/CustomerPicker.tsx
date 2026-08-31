@@ -74,7 +74,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
           <button
             type="button"
             onClick={() => setFormMode((v) => (v === 'new' ? null : 'new'))}
-            className="btn btn-primary btn-sm gap-2 whitespace-nowrap"
+            className="btn btn-primary btn-sm app-btn-sm gap-2 whitespace-nowrap"
           >
             <UserPlus size={17} aria-hidden /> New customer
           </button>
@@ -82,6 +82,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
       >
         <div className="min-w-0 flex-1">
           <AppSelect<CustomerOption>
+            size="sm"
             inputId="customer-picker"
             value={selectedId}
             options={customerOptions}
@@ -114,11 +115,11 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
       </RedwoodSection>
 
       {formMode === 'new' && (
-        <CustomerForm onSaved={handleSaved} onCancel={() => setFormMode(null)} />
+        <CustomerForm size="sm" onSaved={handleSaved} onCancel={() => setFormMode(null)} />
       )}
 
       {formMode === 'edit' && selected && (
-        <CustomerForm initial={selected} onSaved={handleSaved} onCancel={() => setFormMode(null)} />
+        <CustomerForm size="sm" initial={selected} onSaved={handleSaved} onCancel={() => setFormMode(null)} />
       )}
 
       {selected && (
@@ -133,7 +134,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
                 <button
                   onClick={() => setCollapsed((v) => !v)}
                   title={collapsed ? 'Expand' : 'Collapse'}
-                  className="p-2 text-base-content/60 hover:bg-base-200 rounded-lg"
+                className="btn btn-ghost btn-square btn-sm app-btn-sm text-base-content/60"
                 >
                   {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
                 </button>
@@ -171,7 +172,7 @@ const CustomerPicker: React.FC<Props> = ({ selectedId, onSelect, onClear, onChan
                     </p>
                     <button
                       onClick={() => setFormMode('edit')}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
+              className="btn btn-ghost btn-sm app-btn-sm gap-1 text-primary"
                     >
                       <Pencil size={13} /> Edit
                     </button>

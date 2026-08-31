@@ -262,13 +262,13 @@ const Lookups: React.FC = () => {
               <tbody className="divide-y divide-base-300">
                   {filteredItems.map((item) => (
                     <tr key={item.id} className={item.status !== 'active' ? 'opacity-50' : ''}>
-                      <td className="px-5 py-3">
+                      <td>
                         {editingId === item.id ? (
                           <input
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && saveEdit(item.id)}
-                            className="w-full px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                            className="app-field-sm w-full"
                             autoFocus
                           />
                         ) : (
@@ -285,10 +285,10 @@ const Lookups: React.FC = () => {
                               type={f.kind === 'number' ? 'number' : 'text'}
                               step={f.step ?? '0.0001'}
                               min={f.min}
-                              className="w-28 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                              className="app-field-sm w-28"
                             />
                           ) : f.badge ? (
-                            <span className="badge badge-warning badge-sm">
+                            <span className="badge badge-warning">
                               {f.badge} {Number(extraValue(item, f.key) ?? 0)}
                             </span>
                           ) : (
@@ -297,9 +297,9 @@ const Lookups: React.FC = () => {
                         </td>
                       ))}
 
-                      <td className="px-5 py-3">
+                      <td>
                         <span
-                          className={`badge badge-sm capitalize ${
+                          className={`badge capitalize ${
                             item.status === 'active'
                               ? 'badge-success'
                               : 'badge-ghost'
@@ -309,21 +309,21 @@ const Lookups: React.FC = () => {
                         </span>
                       </td>
 
-                      <td className="px-5 py-3">
+                      <td>
                         <p className="text-sm text-base-content/80">{item.created_by_name ?? '—'}</p>
                         <p className="text-xs text-base-content/60">
                           {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
                         </p>
                       </td>
 
-                      <td className="px-5 py-3">
+                      <td>
                         <p className="text-sm text-base-content/80">{item.updated_by_name ?? '—'}</p>
                         <p className="text-xs text-base-content/60">
                           {item.updated_at ? new Date(item.updated_at).toLocaleString() : ''}
                         </p>
                       </td>
 
-                      <td className="px-5 py-3">
+                      <td>
                         <div className="flex items-center gap-1">
                           {editingId === item.id ? (
                             <>

@@ -293,25 +293,25 @@ const Rentals: React.FC = () => {
                   const insp = inspByRental.get(r.id);
                   return (
                     <tr key={r.id} className="hover:bg-base-200/60">
-                      <td className="px-5 py-4 font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
-                      <td className="px-5 py-4 text-base-content/80">{r.contract_number ?? '—'}</td>
-                      <td className="px-5 py-4 text-base-content/80">{r.customer_name}</td>
-                      <td className="px-5 py-4 text-base-content/80">
+                      <td className="font-medium text-base-content">{r.booking_number ?? `#${r.id}`}</td>
+                      <td className="text-base-content/80">{r.contract_number ?? '—'}</td>
+                      <td className="text-base-content/80">{r.customer_name}</td>
+                      <td className="text-base-content/80">
                         {r.plate_number}
                         <span className="block text-xs text-base-content/60">{[r.make, r.model].filter(Boolean).join(' ')}</span>
                       </td>
-                      <td className="px-5 py-4 text-base-content/60 text-xs">
+                      <td className="text-base-content/60 text-xs">
                         {r.start_date?.slice(0, 10)} → {r.end_date?.slice(0, 10)}
                       </td>
-                      <td className="px-5 py-4 font-semibold text-base-content">
+                      <td className="font-semibold text-base-content">
                         {r.total_amount != null ? `AED ${Number(r.total_amount).toLocaleString()}` : '—'}
                       </td>
-                      <td className="px-5 py-4">
-                        <span className={`badge badge-sm capitalize ${badge(r.status)}`}>
+                      <td>
+                        <span className={`badge capitalize ${badge(r.status)}`}>
                           {r.status}
                         </span>
                       </td>
-                      <td className="px-5 py-4">
+                      <td>
                         <div className="flex items-center gap-1">
                           <Link
                             to={`/rentals/${r.id}`}

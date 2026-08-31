@@ -118,7 +118,7 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
       <p className="text-sm leading-6 text-base-content/60">Choose a destination and vehicle group, then set the applicable cross-border fee.</p>
 
       {error && (
-        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div role="alert" className="alert alert-error">{error}</div>
       )}
 
       <div className="redwood-inline-create rounded-box border border-base-300">
@@ -156,9 +156,9 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
           <tbody className="divide-y divide-base-300">
             {filteredRows.map((r) => (
               <tr key={r.id}>
-                <td className="px-5 py-3 font-medium text-base-content">{r.border_name}</td>
-                <td className="px-5 py-3 text-base-content/80">{r.group_name}</td>
-                <td className="px-5 py-3">
+                <td className="font-medium text-base-content">{r.border_name}</td>
+                <td className="text-base-content/80">{r.group_name}</td>
+                <td>
                   {editId === r.id ? (
                     <input
                       value={editFee}
@@ -166,16 +166,16 @@ const BorderFees: React.FC<BorderFeesProps> = ({ searchQuery = '' }) => {
                       type="number"
                       min="0"
                       step="0.5"
-                      className="w-24 px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      className="app-field-sm w-24"
                       autoFocus
                     />
                   ) : (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full border bg-warning/10 text-warning border-warning/30">
+                    <span className="badge badge-warning">
                       AED {Number(r.fee)}
                     </span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   <div className="flex items-center gap-1">
                     {editId === r.id ? (
                       <>

@@ -48,7 +48,7 @@ const TopBar: React.FC<TopBarProps> = ({ onOpenNavigation }) => {
 
       <div className="flex items-center gap-1 sm:gap-2">
         <label
-          className="swap swap-rotate btn btn-ghost btn-circle btn-sm"
+          className="swap swap-rotate btn btn-ghost btn-square btn-sm"
           title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
         >
@@ -67,11 +67,11 @@ const TopBar: React.FC<TopBarProps> = ({ onOpenNavigation }) => {
         <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
-            className="btn btn-ghost h-10 min-h-10 gap-2 rounded-btn px-2 sm:px-3"
+            className="btn btn-ghost gap-2 px-2 sm:px-3"
             aria-label="Open user menu"
             aria-expanded={showDropdown}
           >
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-content">
+            <div className="flex size-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-content">
               {displayName.charAt(0).toUpperCase()}
             </div>
             <span className="hidden max-w-32 truncate text-sm font-medium md:inline">{displayName}</span>
@@ -103,7 +103,7 @@ const TopBar: React.FC<TopBarProps> = ({ onOpenNavigation }) => {
                       logout();
                       setShowDropdown(false);
                     }}
-                    className="w-full px-4 py-2 text-sm text-error hover:bg-error/10 flex items-center gap-2"
+                    className="btn btn-ghost h-auto min-h-10 w-full justify-start gap-2 px-4 py-2 text-sm text-error hover:bg-error/10"
                   >
                     <LogOut size={16} />
                     Sign out

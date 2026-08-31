@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, FileText } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import CustomerPicker from '../components/booking/CustomerPicker';
@@ -23,7 +23,7 @@ const STEPS = [
   { n: 9, label: 'NOL & Contract', key: 'legal', contentTitle: 'Legal Documentation & Signatures' },
 ];
 
-const inputCls = 'app-field';
+const inputCls = 'app-field-sm w-full';
 
 const Placeholder: React.FC<{ label: string }> = ({ label }) => (
   <div className="redwood-empty-state rounded-box border border-dashed border-base-300 bg-base-200/35">
@@ -48,6 +48,7 @@ const Booking: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [savedNumber, setSavedNumber] = useState('');
   const [error, setError] = useState('');
+  const [mobileStepsOpen, setMobileStepsOpen] = useState(false);
   const [cars, setCars] = useState<
     { id: number; car_group: string | null; daily_rate: string | null; monthly_rate: string | null }[]
   >([]);
@@ -115,7 +116,24 @@ const Booking: React.FC = () => {
 
         <div className="grid grid-cols-1 items-start gap-6 xl:min-h-0 xl:flex-1 xl:grid-cols-4 xl:items-stretch">
           <aside className="redwood-wizard-nav self-start xl:sticky xl:top-0 xl:self-stretch">
-            <nav aria-label="Rental contract steps" className="p-4">
+            <button
+              type="button"
+              className="redwood-wizard-toggle btn btn-ghost flex w-full justify-between border-b border-base-300 px-4 py-3 text-left xl:hidden"
+              aria-expanded={mobileStepsOpen}
+              aria-controls="rental-contract-steps"
+              onClick={() => setMobileStepsOpen((open) => !open)}
+            >
+              <span>
+                <span className="block text-xs font-medium text-base-content/55">Contract workflow</span>
+                <span className="block text-sm font-semibold text-base-content">Step {activeStep.n} of {STEPS.length}: {activeStep.label}</span>
+              </span>
+              {mobileStepsOpen ? <ChevronUp size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
+            </button>
+            <nav
+              id="rental-contract-steps"
+              aria-label="Rental contract steps"
+              className={`${mobileStepsOpen ? 'block' : 'hidden'} p-4 xl:block`}
+            >
               <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.12em] text-base-content/50">Contract workflow</p>
               <ol className="booking-steps steps steps-vertical w-full">
                 {STEPS.map((step, index) => {
@@ -126,13 +144,17 @@ const Booking: React.FC = () => {
                     <li
                       key={step.n}
                       data-content={step.n}
-                      onClick={isCompleted && !isCurrent ? () => setCurrentStepIndex(index) : undefined}
+                      onClick={isCompleted && !isCurrent ? () => {
+                        setCurrentStepIndex(index);
+                        setMobileStepsOpen(false);
+                      } : undefined}
                       onKeyDown={
                         isCompleted && !isCurrent
                           ? (event) => {
                               if (event.key === 'Enter' || event.key === ' ') {
                                 event.preventDefault();
                                 setCurrentStepIndex(index);
+                                setMobileStepsOpen(false);
                               }
                             }
                           : undefined
@@ -158,21 +180,19 @@ const Booking: React.FC = () => {
           </aside>
 
           <section className="redwood-wizard-panel xl:col-span-3 xl:h-full xl:min-h-0 xl:flex xl:flex-col xl:overflow-hidden">
-            <div className="card-body gap-8 p-8 sm:p-10 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
+            <div className="card-body gap-6 p-5 sm:p-6 xl:min-h-0 xl:flex-1 xl:overflow-y-auto">
 
         {/* Active step */}
-        <div className="border-b border-base-300 pb-6">
-          <p className="redwood-kicker">Step {activeStep.n} of {STEPS.length}</p>
-          <h2 className="mt-2 font-serif text-3xl font-normal text-base-content">{activeStep.contentTitle}</h2>
-          <p className="mt-2 text-sm text-base-content/60">Complete the required details below to continue.</p>
+        <div className="flex flex-col gap-2 border-b border-base-300 pb-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+          <div className="min-w-0">
+            <p className="redwood-kicker">Step {activeStep.n} of {STEPS.length}</p>
+            <h2 className="mt-1 text-xl font-semibold leading-7 text-base-content">{activeStep.contentTitle}</h2>
+          </div>
+          <p className="max-w-md text-sm leading-5 text-base-content/60 sm:text-right">Complete the required details below to continue.</p>
         </div>
 
         {/* One focused panel for the active step */}
         <div>
-          {activeStep.key !== 'details' && activeStep.key !== 'tariff' && activeStep.key !== 'payment' && (
-            <h3 className="mb-4 text-lg font-bold text-base-content">{activeStep.contentTitle}</h3>
-          )}
-
           {activeStep.key === 'customer' && (
                 <CustomerPicker
                   selectedId={customerId}
@@ -187,7 +207,7 @@ const Booking: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-base-content/80 mb-1">Deposit Amount</label>
-                      <div className="flex items-center justify-between px-4 py-2 border border-base-300 rounded-lg bg-base-200">
+                      <div className="flex items-center justify-between rounded-box border border-base-300 bg-base-200 px-4 py-2">
                         <span className="text-[10px] font-semibold text-base-content/60 uppercase">System Generated</span>
                         <span className="text-lg font-bold text-base-content">AED 1,000</span>
                       </div>
@@ -195,6 +215,7 @@ const Booking: React.FC = () => {
                     <div>
                       <label className="block text-sm font-medium text-base-content/80 mb-1">Payment Method *</label>
                       <AppSelect
+                        size="sm"
                         value={depositMethodId}
                         onChange={setDepositMethodId}
                         placeholder="—"
@@ -204,6 +225,7 @@ const Booking: React.FC = () => {
                     <div>
                       <label className="block text-sm font-medium text-base-content/80 mb-1">Currency</label>
                       <AppSelect
+                        size="sm"
                         value={currencyId}
                         onChange={setCurrencyId}
                         placeholder="—"
@@ -229,13 +251,13 @@ const Booking: React.FC = () => {
                     </div>
                     <input
                       type="checkbox"
-                      className="toggle toggle-primary"
+                      className="toggle toggle-primary toggle-sm"
                       checked={depositReceived}
                       onChange={(event) => setDepositReceived(event.target.checked)}
                       aria-label="Confirm payment received"
                     />
                     {depositReceived && (
-                      <div className="bg-success/10 border border-success/30 text-success px-4 py-2 rounded-lg text-sm font-medium">
+                      <div role="status" className="alert alert-success py-2 font-medium">
                         Payment Received — recorded for this booking
                       </div>
                     )}
@@ -258,10 +280,10 @@ const Booking: React.FC = () => {
     {activeStep.key === 'legal' && (
           <div className="redwood-section space-y-4 p-6">
         {error && (
-          <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+          <div role="alert" className="alert alert-error">{error}</div>
         )}
         {savedNumber ? (
-          <div className="bg-success/10 border border-success/30 text-success px-5 py-4 rounded-lg font-medium flex items-center justify-between">
+          <div role="status" className="alert alert-success flex items-center justify-between px-5 py-4 font-medium">
             <span>🎉 Contract {savedNumber} created successfully</span>
             <Link to="/rentals" className="link link-success text-sm">View Rentals</Link>
           </div>
@@ -326,7 +348,7 @@ const Booking: React.FC = () => {
                   }
                 }}
                 disabled={!page1Done || !page2Done || saving}
-                className="btn btn-success px-6 py-3 font-bold disabled:opacity-50"
+                className="btn btn-primary disabled:opacity-50"
               >
                 <FileCheck2 size={18} /> {saving ? 'Saving...' : 'Confirm & Save Contract'}
               </button>
@@ -342,7 +364,7 @@ const Booking: React.FC = () => {
           </div>
 
         {/* Persistent wizard navigation */}
-        <div className="flex shrink-0 justify-between border-t border-base-300 bg-base-100/95 px-8 py-4 backdrop-blur-sm sm:px-10">
+        <div className="flex shrink-0 justify-between border-t border-base-300 bg-base-100/95 px-5 py-4 backdrop-blur-sm sm:px-6">
           <button
             onClick={() => setCurrentStepIndex((step) => Math.max(0, step - 1))}
             disabled={currentStepIndex === 0}

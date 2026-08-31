@@ -103,7 +103,7 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
       <p className="text-sm leading-6 text-base-content/60">Choose a vehicle make, add its model, and maintain availability for vehicle registration.</p>
 
       {error && (
-        <div className="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm">{error}</div>
+        <div role="alert" className="alert alert-error">{error}</div>
       )}
 
       <div className="redwood-inline-create rounded-box border border-base-300">
@@ -141,19 +141,19 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
           <tbody className="divide-y divide-base-300">
             {shown.map((m) => (
               <tr key={m.id} className={m.status !== 'active' ? 'opacity-50' : ''}>
-                <td className="px-5 py-3">
+                <td>
                   {editId === m.id ? (
                     <input
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-3 py-1.5 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      className="app-field-sm w-full"
                       autoFocus
                     />
                   ) : (
                     <span className="font-medium text-base-content">{m.name}</span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   {editId === m.id ? (
                     <AppSelect
                       value={editMakeId}
@@ -166,18 +166,18 @@ const VehicleModels: React.FC<VehicleModelsProps> = ({ searchQuery = '' }) => {
                     <span className="text-base-content/80">{makeName(m.make_id)}</span>
                   )}
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   <span
-                    className={`text-[11px] px-2 py-0.5 rounded-full border ${
+                    className={`badge ${
                       m.status === 'active'
-                        ? 'bg-success/10 text-success border-success/30'
-                        : 'bg-base-200 text-base-content/60 border-base-300'
+                        ? 'badge-success'
+                        : 'badge-ghost'
                     }`}
                   >
                     {m.status}
                   </span>
                 </td>
-                <td className="px-5 py-3">
+                <td>
                   <div className="flex items-center gap-1">
                     {editId === m.id ? (
                       <>

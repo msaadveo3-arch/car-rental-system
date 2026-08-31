@@ -9,6 +9,7 @@ type AppDatePickerProps = {
   disabled?: boolean;
   required?: boolean;
   className?: string;
+  size?: 'sm' | 'md';
 };
 
 const toDate = (value: string) => (value ? new Date(`${value}T12:00:00`) : undefined);
@@ -36,9 +37,11 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
   disabled = false,
   required = false,
   className = '',
+  size = 'md',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selected = toDate(value);
+  const controlSize = size === 'sm' ? 'h-9 min-h-9 px-3 text-sm' : 'h-12 min-h-12 px-4';
 
   return (
     <details
@@ -47,7 +50,7 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
       onToggle={(event) => setIsOpen(event.currentTarget.open)}
     >
       <summary
-        className={`input input-bordered flex h-12 min-h-12 w-full list-none items-center justify-between rounded-btn px-4 [&::-webkit-details-marker]:hidden ${
+        className={`input input-bordered flex w-full list-none items-center justify-between rounded-btn [&::-webkit-details-marker]:hidden ${controlSize} ${
           disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
         }`}
         aria-label={placeholder}
@@ -56,7 +59,7 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
         <span className={selected ? 'text-base-content' : 'text-base-content/50'}>
           {displayValue(value) || placeholder}
         </span>
-        <CalendarDays size={18} className="text-base-content/60" aria-hidden="true" />
+        <CalendarDays size={size === 'sm' ? 16 : 18} className="text-base-content/60" aria-hidden="true" />
       </summary>
 
       {!disabled && (
@@ -93,7 +96,7 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
           <div className="mt-2 flex justify-between border-t border-base-300 pt-2">
             <button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className={`btn btn-ghost btn-sm ${size === 'sm' ? 'app-btn-sm' : ''}`}
               onClick={() => {
                 onChange('');
                 setIsOpen(false);
@@ -103,7 +106,7 @@ const AppDatePicker: React.FC<AppDatePickerProps> = ({
             </button>
             <button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className={`btn btn-ghost btn-sm ${size === 'sm' ? 'app-btn-sm' : ''}`}
               onClick={() => {
                 onChange(toValue(new Date()));
                 setIsOpen(false);

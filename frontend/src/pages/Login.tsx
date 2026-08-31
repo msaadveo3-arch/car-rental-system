@@ -65,7 +65,7 @@ const Login: React.FC = () => {
 
       <section className="relative flex items-center justify-center p-5 sm:p-8 lg:p-12">
         <label
-          className="swap swap-rotate btn btn-ghost btn-circle btn-sm absolute right-5 top-5"
+          className="swap swap-rotate btn btn-ghost btn-square btn-sm absolute right-5 top-5"
           title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
           aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
         >

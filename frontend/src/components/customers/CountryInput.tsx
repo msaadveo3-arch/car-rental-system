@@ -6,7 +6,8 @@ const CountryInput: React.FC<{
   onChange: (v: string) => void;
   required?: boolean;
   withCode?: boolean;
-}> = ({ value, onChange, required, withCode = true }) => {
+  size?: 'sm' | 'md';
+}> = ({ value, onChange, required, withCode = true, size = 'md' }) => {
   const [open, setOpen] = useState(false);
 
   const suggestions = useMemo(() => {
@@ -26,7 +27,7 @@ const CountryInput: React.FC<{
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 120)}
         placeholder="Type country name..."
-        className="w-full px-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+        className={size === 'sm' ? 'app-field-sm w-full' : 'app-field'}
       />
       {open && suggestions.length > 0 && (
       <ul className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-box border border-base-300 bg-base-100 shadow-redwood-lg">
@@ -36,7 +37,9 @@ const CountryInput: React.FC<{
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onChange(withCode ? `${c.name} (${c.code})` : c.name); setOpen(false); }}
-                className="w-full text-left px-4 py-2 hover:bg-primary/10 text-sm text-base-content/80"
+                className={`btn btn-ghost h-auto w-full justify-start text-left text-sm font-normal text-base-content/80 ${
+                  size === 'sm' ? 'min-h-9 px-3 py-1.5' : 'min-h-10 px-4 py-2'
+                }`}
               >
                 {c.name} ({c.code})
               </button>

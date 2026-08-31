@@ -33,7 +33,7 @@ html {
 
 :root {
   /* Oracle Redwood component geometry. These are deliberately role-specific:
-     controls 4px, cards 6px, regions/dialogs 8px, and badges remain pills. */
+     controls 4px, cards/badges 6px, and regions/dialogs 8px. */
   --redwood-radius-control: 0.25rem;
   --redwood-radius-card: 0.375rem;
   --redwood-radius-region: 0.5rem;
@@ -272,7 +272,9 @@ textarea {
   }
 
   .app-page-title {
-    @apply font-serif text-3xl font-normal leading-tight tracking-tight text-base-content;
+    @apply font-serif font-normal tracking-tight text-base-content;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
   }
 
   .app-page-description {
@@ -311,6 +313,26 @@ textarea {
     border-radius: var(--redwood-radius-region);
   }
 
+  .alert {
+    @apply border px-4 py-3 text-sm;
+  }
+
+  .alert-error {
+    @apply border-error/30 bg-error/10 text-error;
+  }
+
+  .alert-warning {
+    @apply border-warning/30 bg-warning/10 text-warning;
+  }
+
+  .alert-success {
+    @apply border-success/30 bg-success/10 text-success;
+  }
+
+  .alert-info {
+    @apply border-info/30 bg-info/10 text-info;
+  }
+
   /* `card-border` is the shared card surface variant. DaisyUI v4 does not
      expose this v5 utility yet, so define its semantic equivalent once. */
   .card-border {
@@ -331,7 +353,7 @@ textarea {
   }
 
   .app-table thead th {
-    @apply border-b border-base-300 py-3 text-xs font-semibold normal-case tracking-wide text-base-content/70;
+    @apply border-b border-base-300 px-5 py-3 text-xs font-semibold normal-case tracking-wide text-base-content/70;
   }
 
   .app-table tbody tr {
@@ -339,11 +361,15 @@ textarea {
   }
 
   .app-table tbody td {
-    @apply py-3.5;
+    @apply px-5 py-3.5;
   }
 
   .app-field {
     @apply input input-bordered w-full bg-base-100 transition-colors;
+  }
+
+  .app-field-sm {
+    @apply input input-bordered input-sm h-9 min-h-9 bg-base-100 transition-colors;
   }
 
   .app-select {
@@ -352,6 +378,16 @@ textarea {
 
   .app-textarea {
     @apply textarea textarea-bordered w-full bg-base-100 transition-colors;
+  }
+
+  .app-textarea-sm {
+    @apply textarea textarea-bordered textarea-sm w-full bg-base-100 transition-colors;
+  }
+
+  .app-btn-sm {
+    height: 2.25rem;
+    min-height: 2.25rem;
+    max-height: 2.25rem;
   }
 
   /* Redwood/JET train geometry adapted to the required vertical workflow:
@@ -398,62 +434,14 @@ textarea {
     @apply label-text text-sm font-semibold text-base-content/75;
   }
 
-  /* Normalize older page markup so tables and fields have the same DaisyUI
-     behavior while individual screens are progressively simplified. */
-  main table:not(.table) {
-    @apply w-full text-left;
+  /* AppSelect owns an internal text input; it must not inherit the height of
+     the visible shared control. */
+  .app-react-select input {
+    height: auto !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
   }
 
-main table:not(.table) tbody tr:nth-child(even) {
-    @apply bg-base-200/30;
-  }
-
-main input:not([type='checkbox']):not([type='radio']):not([type='range']) {
-  @apply h-12 min-h-12 rounded-btn;
-}
-
-/* AppSelect contains its own invisible text input. Keep it out of the
-   legacy control-size normalization so the shared select matches DaisyUI inputs. */
-main .app-react-select input {
-  height: auto !important;
-  min-height: 0 !important;
-  border-radius: 0 !important;
-}
-
-  main select {
-    @apply h-12 min-h-12 rounded-btn;
-  }
-
-  main textarea {
-    @apply rounded-btn;
-  }
-
-  main button:not(.btn) {
-    @apply min-h-10 rounded-btn text-sm font-semibold;
-  }
-
-  main button:not(.btn).p-2 {
-    @apply inline-flex size-9 min-h-9 items-center justify-center p-0 rounded-btn;
-  }
-
-  main a.p-2 {
-    @apply inline-flex size-9 items-center justify-center p-0 rounded-btn;
-  }
-
-  main button.bg-primary:not(.btn),
-  main a.bg-primary:not(.btn) {
-    @apply inline-flex h-12 min-h-12 items-center justify-center gap-2 rounded-btn px-4 text-sm font-semibold text-primary-content;
-  }
-
-  /* Compatibility for older page markup. Generic surfaces are regions (8px).
-     Form controls and buttons are normalized separately to 4px above. */
-  main .rounded-xl:not(.badge):not(.avatar):not(.mask) {
-    border-radius: var(--redwood-radius-region);
-  }
-
-  main .rounded-lg:not(input):not(select):not(textarea):not(button):not(a):not(.badge):not(.avatar):not(.mask) {
-    border-radius: var(--redwood-radius-region);
-  }
 }
 
 /* Keep Redwood elevation available during Vite hot reload even when the
@@ -482,8 +470,14 @@ main .app-react-select input {
   line-height: 1.25rem;
 }
 
-.btn-square,
-.btn-circle {
+.btn-xs {
+  min-height: 1.75rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.btn-square {
   width: 2.25rem;
   min-width: 2.25rem;
   height: 2.25rem;
@@ -492,12 +486,23 @@ main .app-react-select input {
   border-radius: var(--redwood-radius-control);
 }
 
+.btn-square.btn-xs {
+  width: 1.75rem;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  min-height: 1.75rem;
+}
+
 .btn-primary {
   @apply shadow-sm;
 }
 
 .btn-primary:hover {
   filter: brightness(0.92);
+}
+
+.redwood-wizard-toggle.btn {
+  border-radius: 0;
 }
 
 .btn-ghost:hover {
@@ -541,9 +546,10 @@ main .app-react-select input {
   @apply flex flex-wrap items-start justify-between gap-4 border-b border-base-300 pb-5;
 }
 
-.redwood-page-header h1,
-.app-page > div:first-child > div:first-child > h1 {
-  @apply font-serif text-3xl font-normal leading-tight tracking-tight text-base-content;
+.redwood-page-header h1 {
+  @apply font-serif font-normal tracking-tight text-base-content;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
 }
 
 .redwood-kicker {
@@ -564,14 +570,9 @@ main .app-react-select input {
   background-image: url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%234f7d7b' stroke-opacity='.34'%3E%3Cpath d='M-30 72c48-44 99-44 147 0s99 44 153 0'/%3E%3Cpath d='M-30 132c48-44 99-44 147 0s99 44 153 0'/%3E%3Cpath d='M-30 192c48-44 99-44 147 0s99 44 153 0'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-main span.rounded-full.border {
-  @apply badge badge-sm;
-}
-
 /* DaisyUI v4 has semantic badge colors but no native `badge-soft` modifier.
    Keep the familiar DaisyUI variants and render them as soft theme-aware chips. */
-.badge,
-main span.rounded-full.border {
+.badge {
   height: 1.5rem;
   min-height: 1.5rem;
   padding: 0 0.5rem;
